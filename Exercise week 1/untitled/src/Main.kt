@@ -30,12 +30,27 @@ fun directdecendants(mother: person, List: List<person>): Sequence<person> = seq
         yieldAll(directdecendants(d,List)) // så tag alle kør funktion på hver barn, recursion nedad
     }
 }
+// 01.06
+fun nimDecendants(mother: person, List: List<person>): Sequence<person> = sequence{
+    val decendants = List.filter { it.mother == mother }
 
+    for (d in decendants){
+        yieldAll(Helper(d,List))
+    }
+}
 
+fun Helper(mother: person, List: List<person>): Sequence<person> = sequence{
+    val decendants = List.filter { it.mother == mother }
+    for (d in decendants){
+        yield(d)
+        yieldAll(Helper(d,List))
+    }
+
+}
 
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 fun main() {
-    println(directdecendants(Eve,people).toList()) // to list er vigtig for at konvertere fra sequence objekt til liste.
+    println(nimDecendants(Eve,people).toList()) // to list er vigtig for at konvertere fra sequence objekt til liste.
 }
