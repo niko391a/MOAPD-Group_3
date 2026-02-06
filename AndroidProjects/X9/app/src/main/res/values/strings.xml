@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">X9</string>
+    <string name="report_title">Report Title</string>
+    <string name="report_location">Report Location</string>
+    <string name="report_date">Report Date</string>
+    <string name="report_type">Report Type</string>
+    <string name="report_type_desc">Select report type</string>
+    <string name="button_low"> Low </string>
+    <string name="button_mid"> Mid </string>
+    <string name="button_high"> High </string>
+    <string-array name="report_types">
+        <item>Speed Camera</item>
+        <item>Heavy Traffic</item>
+        <item>Road Incidents</item>
+        <item>Broken Vehicles</item>
+        <item>Other</item>
+    </string-array>
+    ...
+    <plurals name="report_days">
+        <item quantity="one">$d day. </item>
+        <item quantity="other">$d days. </item>
+    </plurals>
 </resources>
