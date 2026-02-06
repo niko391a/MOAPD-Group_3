@@ -8,6 +8,7 @@
     <string name="button_low"> Low </string>
     <string name="button_mid"> Mid </string>
     <string name="button_high"> High </string>
+    <string name="button_submit"> Submit </string>
     <string-array name="report_types">
         <item>Speed Camera</item>
         <item>Heavy Traffic</item>

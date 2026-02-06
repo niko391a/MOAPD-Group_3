@@ -38,17 +38,43 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupUI() =
         with(binding) {
-            // Create the adapter using your string array
-            val adapter = ArrayAdapter.createFromResource(
-                root.context, // Use 'root.context' or 'this@MainActivity'
-                R.array.report_types,
-                android.R.layout.simple_spinner_item
-            )
+            with(contentMain) {
+                // Create the adapter using your string array
+                val adapter = ArrayAdapter.createFromResource(
+                    root.context, // Use 'root.context' or 'this@MainActivity'
+                    R.array.report_types,
+                    android.R.layout.simple_spinner_item
+                )
 
-            // Specify the layout for the dropdown choices
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                // Specify the layout for the dropdown choices
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-            // Apply it to the spinner (using the ID from your XML)
-            contentMain.reportTypesSpinner.adapter = adapter
+                // Apply it to the spinner (using the ID from your XML)
+                reportTypesSpinner.adapter = adapter
+
+
+                // Serverity buttons
+                buttonLow.setOnClickListener {
+                    textViewMessage.text = getString(R.string.true_text)
+                }
+                buttonMid.setOnClickListener {
+                    textViewMessage.text =
+                        getString(R.string.false_text) // send back a value of severity
+                }
+                buttonHigh.setOnClickListener {
+                    textViewMessage.text = getString(R.string.false_text)
+                }
+
+                // Submit button
+                buttonSubmit.setOnClickListener {
+                    textViewMessage.text = getString(R.string.false_text)
+                }
+
+                checkBoxSelect.setOnCheckedChangeListener { buttonView, isChecked ->
+                    if (!buttonView.isPressed) return@setOnCheckedChangeListener
+                    val status = if (isChecked) "checked" else "unchecked"
+                    textViewMessage.text = resources.getString(R.string.selected_text, status)
+                }
+            }
         }
 }
