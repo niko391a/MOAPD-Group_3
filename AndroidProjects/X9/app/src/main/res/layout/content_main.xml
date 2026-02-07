@@ -14,48 +14,68 @@
         android:textAppearance="?attr/textAppearanceHeadline6"
         android:textColor="?attr/colorPrimary"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/text_report_title"
+        app:layout_constraintBottom_toTopOf="@+id/layout_report_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
     />
 
-    <EditText
-        android:id="@+id/text_report_title"
-        android:text="@string/report_title"
-        android:textAlignment="center"
-        android:textAppearance="?attr/textAppearanceHeadline6"
+    <!--Text Fields are Nice!
+    https://m2.material.io/components/text-fields/android#using-text-fields-->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_report_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:hint="@string/report_title"
+        android:layout_marginTop="32dp"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_welcome"
-        android:layout_marginTop="32dp"
-    />
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/text_report_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapSentences"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Spinner
         android:id="@+id/spinner_report_types"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
-        app:layout_constraintTop_toBottomOf="@+id/text_report_title"
+        app:layout_constraintTop_toBottomOf="@+id/layout_report_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="32dp"
     />
 
-    <EditText
-        android:id="@+id/text_report_description"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_report_description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/report_description"
         android:textAlignment="center"
         android:textAppearance="?attr/textAppearanceHeadline6"
+        android:hint="@string/report_description"
         app:layout_constraintTop_toBottomOf="@+id/spinner_report_types"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-    />
+        android:layout_marginTop="32dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/text_report_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            android:inputType="textMultiLine"
+            android:minLines="3"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/button_low"
@@ -66,7 +86,7 @@
         android:text="@string/button_low"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button_mid"
-        app:layout_constraintTop_toBottomOf="@+id/text_report_description"
+        app:layout_constraintTop_toBottomOf="@+id/layout_report_description"
     />
 
     <Button
