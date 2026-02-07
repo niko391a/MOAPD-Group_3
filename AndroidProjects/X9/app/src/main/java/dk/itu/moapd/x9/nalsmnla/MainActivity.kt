@@ -9,6 +9,7 @@ import androidx.core.view.WindowInsetsCompat
 import dk.itu.moapd.x9.nalsmnla.databinding.ActivityMainBinding
 import dk.itu.moapd.x9.nalsmnla.R
 import android.util.Log
+import kotlin.math.log
 
 /**
  * An activity class with methods to manage the main activity of X9 application.
@@ -37,44 +38,45 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupUI() =
-        with(binding) {
-            with(contentMain) {
-                // Create the adapter using your string array
-                val adapter = ArrayAdapter.createFromResource(
-                    root.context, // Use 'root.context' or 'this@MainActivity'
-                    R.array.report_types,
-                    android.R.layout.simple_spinner_item
-                )
+        with(binding.contentMain) {
+            // Create the adapter using your string array
+            val adapter = ArrayAdapter.createFromResource(
+                root.context, // Use 'root.context' or 'this@MainActivity'
+                R.array.report_types,
+                android.R.layout.simple_spinner_item
+            )
 
-                // Specify the layout for the dropdown choices
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            // Specify the layout for the dropdown choices
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-                // Apply it to the spinner (using the ID from your XML)
-                reportTypesSpinner.adapter = adapter
+            // Apply it to the spinner (using the ID from your XML)
+            spinnerReportTypes.adapter = adapter
 
+            // Serverity buttons
+            var severity : String = "Low"
 
-                // Serverity buttons
-                buttonLow.setOnClickListener {
-                    textViewMessage.text = getString(R.string.true_text)
-                }
-                buttonMid.setOnClickListener {
-                    textViewMessage.text =
-                        getString(R.string.false_text) // send back a value of severity
-                }
-                buttonHigh.setOnClickListener {
-                    textViewMessage.text = getString(R.string.false_text)
-                }
+            buttonLow.setOnClickListener {
+                severity = "Low"
+            }
+            buttonMid.setOnClickListener {
+                severity = "Mid"
+            }
+            buttonHigh.setOnClickListener {
+                severity = "High"
+            }
 
-                // Submit button
-                buttonSubmit.setOnClickListener {
-                    textViewMessage.text = getString(R.string.false_text)
-                }
-
-                checkBoxSelect.setOnCheckedChangeListener { buttonView, isChecked ->
-                    if (!buttonView.isPressed) return@setOnCheckedChangeListener
-                    val status = if (isChecked) "checked" else "unchecked"
-                    textViewMessage.text = resources.getString(R.string.selected_text, status)
-                }
+            // Submit button
+            buttonSubmit.setOnClickListener {
+                val reportTitle : String = textReportTitle.text.toString()
+                val reportType : String = spinnerReportTypes.selectedItem.toString()
+                val reportDescription : String = textReportDescription.text.toString()
+                submitReport(reportTitle, reportType, reportDescription, severity)
             }
         }
 }
+private fun submitReport(reportTitle : String,
+                         reportType : String,
+                         reportDescription : String,
+                         severity : String) =
+    Log.d("Submit", "User report has been submitted")
+

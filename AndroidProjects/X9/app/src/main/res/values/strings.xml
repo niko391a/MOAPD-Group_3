@@ -5,6 +5,7 @@
     <string name="report_date">Report Date</string>
     <string name="report_type">Report Type</string>
     <string name="report_type_desc">Select report type</string>
+    <string name="report_description">Report Description</string>>
     <string name="button_low"> Low </string>
     <string name="button_mid"> Mid </string>
     <string name="button_high"> High </string>
