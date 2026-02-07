@@ -78,5 +78,11 @@ private fun submitReport(reportTitle : String,
                          reportType : String,
                          reportDescription : String,
                          severity : String) =
-    Log.d("Submit", "User report has been submitted")
+    Log.d("Submit", """
+        User report has been submitted with the following information
+        Report Title: ${reportTitle}
+        Report Type: ${reportType}
+        Report Description: ${reportDescription}
+        Severity: ${severity}
+    """.trimIndent())
 
