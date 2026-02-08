@@ -3,5 +3,13 @@
     <style name="Base.Theme.X9" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="colorPrimary">@color/mocha_mouse</item>
+        <item name="colorOnPrimary">@color/grey</item>
+        <item name="colorSecondary">@color/twilight_indigo</item>
+        <item name="colorSurface">@color/shadowy_grey</item>
+        <item name="colorSurfaceContainer">@color/shadowy_grey</item>
+        <item name="colorTertiary">@color/rosy_granite</item>
+        <item name="colorTertiaryContainer">@color/twilight_indigo</item>
+<!-- https://m3.material.io/styles/color/roles -->
     </style>
 </resources>

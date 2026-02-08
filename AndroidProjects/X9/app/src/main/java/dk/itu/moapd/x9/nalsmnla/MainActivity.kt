@@ -78,11 +78,20 @@ private fun submitReport(reportTitle : String,
                          reportType : String,
                          reportDescription : String,
                          severity : String) =
-    Log.d("Submit", """
-        User report has been submitted with the following information
-        Report Title: ${reportTitle}
-        Report Type: ${reportType}
-        Report Description: ${reportDescription}
-        Severity: ${severity}
-    """.trimIndent())
+    if (!reportTitle.isEmpty() || !reportDescription.isEmpty())
+        Log.d("Submit", """
+            User report has been submitted with the following information
+            Report Title: ${reportTitle}
+            Report Type: ${reportType}
+            Report Description: ${reportDescription}
+            Severity: ${severity}
+        """.trimIndent())
+    else
+        Log.d("Submit", """
+            User report has been submitted with invalid information:
+            Report Title: ${reportTitle}
+            Report Type: ${reportType}
+            Report Description: ${reportDescription}
+            Severity: ${severity}
+        """.trimIndent())
 
