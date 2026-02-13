@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/text_welcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textAppearance="?attr/textAppearanceHeadline6"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/layout_report_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <!--Text Fields are Nice!
+    https://m2.material.io/components/text-fields/android#using-text-fields-->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_report_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/report_title"
+        android:layout_marginTop="32dp"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_welcome"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/text_report_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapSentences"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Spinner
+        android:id="@+id/spinner_report_types"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/layout_report_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="32dp"
+        />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_report_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/report_description"
+        android:textAlignment="center"
+        android:textAppearance="?attr/textAppearanceHeadline6"
+        android:hint="@string/report_description"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_report_types"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="32dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/text_report_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            android:inputType="textMultiLine"
+            android:minLines="3"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/button_low"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/button_low"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/button_mid"
+        app:layout_constraintTop_toBottomOf="@+id/layout_report_description"
+        />
+
+    <Button
+        android:id="@+id/button_mid"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/button_mid"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/button_low"
+        app:layout_constraintStart_toEndOf="@+id/button_low"
+        app:layout_constraintEnd_toEndOf="@+id/button_high"
+        app:layout_constraintTop_toTopOf="@+id/button_high"
+        />
+
+    <Button
+        android:id="@+id/button_high"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/button_high"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/button_mid"
+        app:layout_constraintStart_toEndOf="@+id/button_mid"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <Button
+        android:id="@+id/button_submit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/button_submit"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/button_mid"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

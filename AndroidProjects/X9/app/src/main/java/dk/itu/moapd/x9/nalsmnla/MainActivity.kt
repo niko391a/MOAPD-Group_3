@@ -1,5 +1,6 @@
 package dk.itu.moapd.x9.nalsmnla
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import androidx.activity.enableEdgeToEdge
@@ -9,6 +10,7 @@ import androidx.core.view.WindowInsetsCompat
 import dk.itu.moapd.x9.nalsmnla.databinding.ActivityMainBinding
 import dk.itu.moapd.x9.nalsmnla.R
 import android.util.Log
+import com.google.android.material.bottomappbar.BottomAppBar
 import kotlin.math.log
 
 /**
@@ -27,71 +29,32 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Handle window insets to support edge-to-edge content.
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_activity)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
+
         // Set up the UI components.
         setupUI()
     }
 
-    private fun setupUI() =
-        with(binding.contentMain) {
-            // Create the adapter using your string array
-            val adapter = ArrayAdapter.createFromResource(
-                root.context, // Use 'root.context' or 'this@MainActivity'
-                R.array.report_types,
-                android.R.layout.simple_spinner_item
-            )
+    private fun setupUI() = with(binding) {
+        // 1. Use the correct Selection Listener
+        bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.create_report -> {
+                    val intent = Intent(this,CreateReportActivity::class)
+                    true // Returning true highlights the item as selected
+                }
+                R.id.home -> {
 
-            // Specify the layout for the dropdown choices
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-            // Apply it to the spinner (using the ID from your XML)
-            spinnerReportTypes.adapter = adapter
-
-            // Serverity buttons
-            var severity : String = "Low"
-
-            buttonLow.setOnClickListener {
-                severity = "Low"
-            }
-            buttonMid.setOnClickListener {
-                severity = "Mid"
-            }
-            buttonHigh.setOnClickListener {
-                severity = "High"
-            }
-
-            // Submit button
-            buttonSubmit.setOnClickListener {
-                val reportTitle : String = textReportTitle.text.toString()
-                val reportType : String = spinnerReportTypes.selectedItem.toString()
-                val reportDescription : String = textReportDescription.text.toString()
-                submitReport(reportTitle, reportType, reportDescription, severity)
+                    true
+                }
+                else -> false
             }
         }
-}
-private fun submitReport(reportTitle : String,
-                         reportType : String,
-                         reportDescription : String,
-                         severity : String) =
-    if (!reportTitle.isEmpty() || !reportDescription.isEmpty())
-        Log.d("Submit", """
-            User report has been submitted with the following information
-            Report Title: ${reportTitle}
-            Report Type: ${reportType}
-            Report Description: ${reportDescription}
-            Severity: ${severity}
-        """.trimIndent())
-    else
-        Log.d("Submit", """
-            User report has been submitted with invalid information:
-            Report Title: ${reportTitle}
-            Report Type: ${reportType}
-            Report Description: ${reportDescription}
-            Severity: ${severity}
-        """.trimIndent())
+    }
 
+}
