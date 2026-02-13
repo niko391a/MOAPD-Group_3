@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
                     true // Returning true highlights the item as selected
                 }
                 R.id.home -> {
-
+                    // needs to be empty no need to redirect here for now
                     true
                 }
                 else -> false

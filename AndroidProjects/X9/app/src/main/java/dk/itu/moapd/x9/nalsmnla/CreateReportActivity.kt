@@ -1,5 +1,6 @@
 package dk.itu.moapd.x9.nalsmnla
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import androidx.activity.enableEdgeToEdge
@@ -72,6 +73,24 @@ class CreateReportActivity : AppCompatActivity() {
                 val reportType : String = spinnerReportTypes.selectedItem.toString()
                 val reportDescription : String = textReportDescription.text.toString()
                 submitReport(reportTitle, reportType, reportDescription, severity)
+                val intent = Intent(this@CreateReportActivity, MainActivity::class.java)
+                startActivity(intent)
+            }
+            bottomNavigation.setOnItemSelectedListener { item ->
+                when (item.itemId) {
+                    R.id.create_report -> {
+                        val intent = Intent(this@CreateReportActivity,CreateReportActivity::class.java)
+                        startActivity(intent)
+                        true // Returning true highlights the item as selected
+                    }
+                    R.id.home -> {
+                        // needs to be empty no need to redirect here for now
+                        val intent = Intent(this@CreateReportActivity, MainActivity::class.java)
+                        startActivity(intent)
+                        true
+                    }
+                    else -> false
+                }
             }
         }
 }
