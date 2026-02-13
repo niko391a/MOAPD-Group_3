@@ -27,8 +27,8 @@ class CreateReportActivity : AppCompatActivity() {
         binding = ActivityCreateReportBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Handle window insets to support edge-to-edge content.
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.create_report)) { v, insets ->
+        // Handle window insets to support edge-to-edge content
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets

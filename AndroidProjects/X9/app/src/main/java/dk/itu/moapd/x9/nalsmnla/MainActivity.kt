@@ -29,7 +29,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Handle window insets to support edge-to-edge content.
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.)) { v, insets ->
+        // Handle window insets to support edge-to-edge content.
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
@@ -45,7 +46,8 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.create_report -> {
-                    val intent = Intent(this,CreateReportActivity::class)
+                    val intent = Intent(this@MainActivity,CreateReportActivity::class.java)
+                    startActivity(intent)
                     true // Returning true highlights the item as selected
                 }
                 R.id.home -> {
