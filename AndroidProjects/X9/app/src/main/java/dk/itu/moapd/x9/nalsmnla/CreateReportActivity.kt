@@ -21,6 +21,7 @@ class CreateReportActivity : AppCompatActivity() {
     private var severity: String = "Low"
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d("info","*** OnCreate was called from CreateReportActivity")
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         if (savedInstanceState != null) {
@@ -43,12 +44,14 @@ class CreateReportActivity : AppCompatActivity() {
         setupUI()
     }
     override fun onSaveInstanceState(outState: Bundle) {
+        Log.d("info","*** onSaveInstanceState was called from CreateReportActivity")
         super.onSaveInstanceState(outState)
         outState.putString("severity", severity)
     }
 
     private fun setupUI() =
         with(binding) {
+            Log.d("info","*** setupUI was called from CreateReportActivity")
             // Create the adapter using your string array
             val adapter = ArrayAdapter.createFromResource(
                 root.context, // Use 'root.context' or 'this@MainActivity'

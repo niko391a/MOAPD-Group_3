@@ -9,9 +9,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import dk.itu.moapd.x9.nalsmnla.databinding.ActivityMainBinding
 import dk.itu.moapd.x9.nalsmnla.R
-import android.util.Log
 import com.google.android.material.bottomappbar.BottomAppBar
 import kotlin.math.log
+import android.util.Log
 
 /**
  * An activity class with methods to manage the main activity of X9 application.
@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d("info","*** On Create was called from MainActivity")
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
@@ -41,6 +42,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupUI() = with(binding) {
+        Log.d("info","*** setupUI was called from MainActivity")
         bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.create_report -> {
