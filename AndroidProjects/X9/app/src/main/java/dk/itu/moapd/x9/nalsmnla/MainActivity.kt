@@ -29,7 +29,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Handle window insets to support edge-to-edge content.
-        // Handle window insets to support edge-to-edge content.
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -42,20 +41,35 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupUI() = with(binding) {
-        // 1. Use the correct Selection Listener
         bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.create_report -> {
-                    val intent = Intent(this@MainActivity,CreateReportActivity::class.java)
+                    val intent = Intent(this@MainActivity, CreateReportActivity::class.java)
                     startActivity(intent)
                     true // Returning true highlights the item as selected
                 }
+
                 R.id.home -> {
                     // needs to be empty no need to redirect here for now
                     true
                 }
+
                 else -> false
             }
+        }
+        val reportTitle = intent.getStringExtra("REPORT_TITLE")
+        val reportType = intent.getStringExtra("REPORT_TYPE")
+        val reportDescription = intent.getStringExtra("REPORT_DESCRIPTION")
+        val severity = intent.getStringExtra("REPORT_SEVERITY")
+
+        if (reportTitle != null && reportType != null && reportDescription != null && severity != null) {
+            textSubmittedReport.setText("""
+                    User report has been submitted with the following information
+                    Report Title: ${reportTitle}
+                    Report Type: ${reportType}
+                    Report Description: ${reportDescription}
+                    Severity: ${severity}
+                    """)
         }
     }
 

@@ -18,10 +18,14 @@ import kotlin.math.log
  */
 class CreateReportActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCreateReportBinding
+    private var severity: String = "Low"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        if (savedInstanceState != null) {
+            severity = savedInstanceState.getString("severity","Low")
+        }
 
         // Migrate from Kotlin synthetics to Jetpack view binding.
         // https://developer.android.com/topic/libraries/view-binding/migration
@@ -37,6 +41,10 @@ class CreateReportActivity : AppCompatActivity() {
 
         // Set up the UI components.
         setupUI()
+    }
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("severity", severity)
     }
 
     private fun setupUI() =
@@ -54,9 +62,6 @@ class CreateReportActivity : AppCompatActivity() {
             // Apply it to the spinner (using the ID from your XML)
             spinnerReportTypes.adapter = adapter
 
-            // Serverity buttons
-            var severity : String = "Low"
-
             buttonLow.setOnClickListener {
                 severity = "Low"
             }
@@ -69,49 +74,64 @@ class CreateReportActivity : AppCompatActivity() {
 
             // Submit button
             buttonSubmit.setOnClickListener {
-                val reportTitle : String = textReportTitle.text.toString()
-                val reportType : String = spinnerReportTypes.selectedItem.toString()
-                val reportDescription : String = textReportDescription.text.toString()
+                val reportTitle: String = textReportTitle.text.toString()
+                val reportType: String = spinnerReportTypes.selectedItem.toString()
+                val reportDescription: String = textReportDescription.text.toString()
                 submitReport(reportTitle, reportType, reportDescription, severity)
-                val intent = Intent(this@CreateReportActivity, MainActivity::class.java)
-                startActivity(intent)
             }
             bottomNavigation.setOnItemSelectedListener { item ->
                 when (item.itemId) {
                     R.id.create_report -> {
-                        val intent = Intent(this@CreateReportActivity,CreateReportActivity::class.java)
+                        val intent =
+                            Intent(this@CreateReportActivity, CreateReportActivity::class.java)
                         startActivity(intent)
                         true // Returning true highlights the item as selected
                     }
+
                     R.id.home -> {
                         // needs to be empty no need to redirect here for now
                         val intent = Intent(this@CreateReportActivity, MainActivity::class.java)
                         startActivity(intent)
                         true
                     }
+
                     else -> false
                 }
             }
         }
-}
-private fun submitReport(reportTitle : String,
-                         reportType : String,
-                         reportDescription : String,
-                         severity : String) =
-    if (!reportTitle.isEmpty() || !reportDescription.isEmpty())
-        Log.d("Submit", """
+
+    private fun submitReport(
+        reportTitle: String,
+        reportType: String,
+        reportDescription: String,
+        severity: String
+    ) =
+        if (!reportTitle.isEmpty() || !reportDescription.isEmpty()) {
+            Log.d(
+                "Submit", """
             User report has been submitted with the following information
             Report Title: ${reportTitle}
             Report Type: ${reportType}
             Report Description: ${reportDescription}
             Severity: ${severity}
-        """.trimIndent())
-    else
-        Log.d("Submit", """
+        """.trimIndent()
+            )
+            val intent = Intent(this@CreateReportActivity, MainActivity::class.java)
+            intent.putExtra("REPORT_TITLE", reportTitle)
+            intent.putExtra("REPORT_TYPE", reportType)
+            intent.putExtra("REPORT_DESCRIPTION", reportDescription)
+            intent.putExtra("REPORT_SEVERITY", severity)
+            startActivity(intent)
+        } else {
+            Log.d(
+                "Submit", """
             User report has been submitted with invalid information:
             Report Title: ${reportTitle}
             Report Type: ${reportType}
             Report Description: ${reportDescription}
             Severity: ${severity}
-        """.trimIndent())
+        """.trimIndent()
+            )
+        }
+}
 
