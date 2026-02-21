@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.ktlint)
 }
 
 android {
@@ -40,6 +42,37 @@ android {
         compose = true
     }
 }
+    ktlint {
+        android.set(true)
+        outputToConsole.set(true)
+        ignoreFailures.set(false)
+
+        filter {
+            exclude("**/build/**")
+            exclude("**/generated/**")
+        }
+    }
+
+    detekt {
+        toolVersion = libs.versions.detekt.get()
+
+        buildUponDefaultConfig = true
+        allRules = false
+        parallel = false
+
+        config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
+        baseline = file("$rootDir/config/detekt/baseline.xml")
+    }
+
+    tasks.named("check") {
+        dependsOn("ktlintCheck")
+    }
+
+    tasks.register("fix") {
+        group = "verification"
+        description = "Auto-fix formatting issues (ktlint)."
+        dependsOn("ktlintFormat", "ktlintKotlinScriptFormat")
+    }
 
 dependencies {
     implementation(libs.androidx.core.ktx)
@@ -50,11 +83,6 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
 }
