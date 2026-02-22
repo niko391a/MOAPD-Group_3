@@ -1,26 +1,36 @@
 <resources>
     <string name="app_name">X9</string>
-    <string name="report_title">Report Title</string>
-    <string name="report_location">Report Location</string>
-    <string name="report_date">Report Date</string>
-    <string name="report_type">Report Type</string>
-    <string name="report_type_desc">Select report type</string>
-    <string name="report_description">Report Description</string>>
+
     <string name="button_low"> Low </string>
     <string name="button_mid"> Mid </string>
     <string name="button_high"> High </string>
     <string name="button_submit"> Submit </string>
-    <string name="home_title">Home</string>
-    <string name="create_report_title">Create report</string>
-    <string-array name="report_types">
+    <string name="home_title">Welcome to X9</string>
+
+    <string name="nav_home">Home</string>
+    <string name="nav_report">report</string>
+
+    <string name="create_report_header">Create report</string>
+    <string name="create_report_title">Report Title</string>
+    <string name="create_report_location">Report Location</string>
+    <string name="create_report_date">Report Date</string>
+    <string name="create_report_type">Report Type</string>
+    <string name="create_report_type_desc">Select report type</string>
+    <string name="create_report_description">Report Description</string>>
+    <string name="create_report_severity_low">LOW</string>>
+    <string name="create_report_severity_mid">MID</string>>
+    <string name="create_report_severity_high">HIGH</string>>
+    <string name="create_report_submit">Submit</string>>
+    <string-array name="create_report_types">
         <item>Speed Camera</item>
         <item>Heavy Traffic</item>
         <item>Road Incidents</item>
         <item>Broken Vehicles</item>
         <item>Other</item>
     </string-array>
+
     ...
-    <plurals name="report_days">
+    <plurals name="create_report_days">
         <item quantity="one">$d day. </item>
         <item quantity="other">$d days. </item>
     </plurals>
