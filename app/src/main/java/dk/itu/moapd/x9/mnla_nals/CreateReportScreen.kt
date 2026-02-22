@@ -16,7 +16,10 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateReportScreen(modifier: Modifier = Modifier) {
+fun CreateReportScreen(
+    modifier: Modifier = Modifier,
+    onSubmitReport: (Report) -> Unit
+) {
     var reportTitle by rememberSaveable  { mutableStateOf("") }
     var reportDescription by rememberSaveable  { mutableStateOf("") }
     var reportType by rememberSaveable  { mutableStateOf("") }
@@ -123,7 +126,20 @@ fun CreateReportScreen(modifier: Modifier = Modifier) {
 
         Button(
             onClick = {
-                SubmitReport(reportTitle, reportType, reportDescription, reportSeverity)
+                if(reportTitle.isNotEmpty() && reportDescription.isNotEmpty() && reportType.isNotEmpty() && reportSeverity.isNotEmpty()) {
+                    val report = Report(reportTitle, reportType, reportDescription, reportSeverity)
+                    onSubmitReport(report)
+                } else {
+                    Log.d(
+                    "Submit", """
+                    User report has been submitted with invalid information:
+                    Report Title: ${reportTitle}
+                    Report Type: ${reportType}
+                    Report Description: ${reportDescription}
+                    Severity: ${reportSeverity}
+                    """.trimIndent()
+                    )
+                }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -134,39 +150,5 @@ fun CreateReportScreen(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(24.dp))
     }
 }
-
-private fun SubmitReport(
-    reportTitle: String,
-    reportType: String,
-    reportDescription: String,
-    severity: String
-) =
-    if (!reportTitle.isEmpty() || !reportDescription.isEmpty()) {
-        Log.d(
-            "Submit", """
-            User report has been submitted with the following information
-            Report Title: ${reportTitle}
-            Report Type: ${reportType}
-            Report Description: ${reportDescription}
-            Severity: ${severity}
-        """.trimIndent()
-        )
-//        val intent = Intent(this@CreateReportActivity, MainActivity::class.java)
-//        intent.putExtra("REPORT_TITLE", reportTitle)
-//        intent.putExtra("REPORT_TYPE", reportType)
-//        intent.putExtra("REPORT_DESCRIPTION", reportDescription)
-//        intent.putExtra("REPORT_SEVERITY", severity)
-//        startActivity(intent)
-    } else {
-        Log.d(
-            "Submit", """
-            User report has been submitted with invalid information:
-            Report Title: ${reportTitle}
-            Report Type: ${reportType}
-            Report Description: ${reportDescription}
-            Severity: ${severity}
-        """.trimIndent()
-        )
-    }
 
 

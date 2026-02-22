@@ -16,17 +16,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import dk.itu.moapd.x9.mnla_nals.ui.theme.X9Theme
-
-// This is for selecting between compose files instead of using fragments and activities
-import dk.itu.moapd.x9.mnla_nals.CreateReportScreen
-import dk.itu.moapd.x9.mnla_nals.HomeScreen
-
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,6 +46,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppNavigationBar() {
     var selectedNavItem by rememberSaveable  { mutableIntStateOf(0) }
+    val reports = rememberSaveable { mutableStateListOf<Report>() }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -74,10 +72,14 @@ fun AppNavigationBar() {
         // This is for selecting between compose files instead of using fragments and activities
         when (selectedNavItem) {
             0 -> {
-                HomeScreen()
+                HomeScreen(reports)
             }
             1 -> {
-                CreateReportScreen(Modifier.padding(innerPadding))
+                CreateReportScreen(Modifier.padding(innerPadding),
+                    onSubmitReport = { report ->
+                        reports.add(report)
+                        selectedNavItem = 0
+                    } )
             }
 
         }
