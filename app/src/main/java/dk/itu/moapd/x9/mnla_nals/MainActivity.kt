@@ -24,6 +24,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import dk.itu.moapd.x9.mnla_nals.ui.theme.X9Theme
 import android.util.Log
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,9 +52,12 @@ class MainActivity : ComponentActivity() {
 fun AppNavigationBar() {
     var selectedNavItem by rememberSaveable  { mutableIntStateOf(0) }
     val reports = rememberSaveable { mutableStateListOf<Report>() }
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         bottomBar = {
             NavigationBar {
                 NavigationBarItem(
@@ -79,6 +87,9 @@ fun AppNavigationBar() {
                     onSubmitReport = { report ->
                         reports.add(report)
                         selectedNavItem = 0
+                        scope.launch {
+                            snackbarHostState.showSnackbar("Traffic report successfully created!")
+                        }
                     } )
             }
 
