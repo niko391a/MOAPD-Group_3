@@ -19,25 +19,29 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun HomeScreen(reports: List<Report>) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(0.dp,64.dp,0.dp,32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
             text = stringResource(id = R.string.home_title),
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold
         )
-    }
-    if (!reports.isEmpty()) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            items(reports) { report ->
-                ReportItem(report)
+
+        if (!reports.isEmpty()) {
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+//                verticalArrangement = Arrangement.Center
+            ) {
+                items(reports) { report ->
+                    ReportItem(report)
+                }
             }
         }
     }
