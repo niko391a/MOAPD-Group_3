@@ -9,11 +9,11 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dk.itu.moapd.x9.mnla_nals.components.AnimatedColorToggleButton
 import dk.itu.moapd.x9.mnla_nals.data.Report
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -101,29 +101,24 @@ fun CreateReportScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Button(
-                onClick = {
-                    reportSeverity = "Low"
-                          },
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(stringResource(id = R.string.create_report_severity_low),
-                    fontWeight = FontWeight.Bold)
-            }
-            Button(
-                onClick = { reportSeverity = "Mid" },
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(stringResource(id = R.string.create_report_severity_mid),
-                    fontWeight = FontWeight.Bold)
-            }
-            Button(
-                onClick = { reportSeverity = "High" },
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(stringResource(id = R.string.create_report_severity_high),
-                    fontWeight = FontWeight.Bold)
-            }
+            AnimatedColorToggleButton(
+                stringResource(id = R.string.create_report_severity_low),
+                modifier = Modifier.weight(1f),
+                isSelected = reportSeverity == "Low",
+                onClick = { reportSeverity = "Low" }
+            )
+            AnimatedColorToggleButton(
+                stringResource(id = R.string.create_report_severity_medium),
+                modifier = Modifier.weight(1f),
+                isSelected = reportSeverity == "Medium",
+                onClick = { reportSeverity = "Medium" }
+            )
+            AnimatedColorToggleButton(
+                stringResource(id = R.string.create_report_severity_high),
+                modifier = Modifier.weight(1f),
+                isSelected = reportSeverity == "High",
+                onClick = { reportSeverity = "High" }
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))

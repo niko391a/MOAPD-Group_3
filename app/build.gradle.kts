@@ -86,6 +86,7 @@ dependencies {
     implementation(libs.androidx.foundation.layout)
     implementation(libs.androidx.runtime.saveable)
     implementation(libs.material)
+    implementation(libs.androidx.compose.material.icons.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     debugImplementation(libs.androidx.compose.ui.tooling)
 }

@@ -18,7 +18,7 @@
     <string name="create_report_type_desc">Select report type</string>
     <string name="create_report_description">Report Description</string>>
     <string name="create_report_severity_low">LOW</string>>
-    <string name="create_report_severity_mid">MID</string>>
+    <string name="create_report_severity_medium">MEDIUM</string>>
     <string name="create_report_severity_high">HIGH</string>>
     <string name="create_report_submit">Submit</string>>
     <string-array name="create_report_types">
