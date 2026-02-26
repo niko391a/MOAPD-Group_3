@@ -9,10 +9,12 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dk.itu.moapd.x9.mnla_nals.data.Report
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -100,7 +102,9 @@ fun CreateReportScreen(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Button(
-                onClick = { reportSeverity = "Low" },
+                onClick = {
+                    reportSeverity = "Low"
+                          },
                 modifier = Modifier.weight(1f)
             ) {
                 Text(stringResource(id = R.string.create_report_severity_low),

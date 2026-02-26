@@ -1,4 +1,4 @@
-package dk.itu.moapd.x9.mnla_nals
+package dk.itu.moapd.x9.mnla_nals.data
 
 data class Report(
     val title: String,

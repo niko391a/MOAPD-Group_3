@@ -29,6 +29,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
+import dk.itu.moapd.x9.mnla_nals.data.Report
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,6 +91,7 @@ fun AppNavigationBar() {
                         scope.launch {
                             snackbarHostState.showSnackbar("Traffic report successfully created!")
                         }
+
                     } )
             }
 

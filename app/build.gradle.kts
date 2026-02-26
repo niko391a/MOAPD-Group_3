@@ -85,6 +85,7 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.foundation.layout)
     implementation(libs.androidx.runtime.saveable)
+    implementation(libs.material)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     debugImplementation(libs.androidx.compose.ui.tooling)
 }

@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dk.itu.moapd.x9.mnla_nals.data.Report
 
 @Composable
 fun HomeScreen(reports: List<Report>) {
