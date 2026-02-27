@@ -40,7 +40,7 @@ fun CreateReportScreen(
         Text(
             text = stringResource(id = R.string.create_report_header),
             style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
         )
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -50,7 +50,7 @@ fun CreateReportScreen(
             onValueChange = { reportTitle = it },
             label = { Text(stringResource(id = R.string.create_report_title)) },
             modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+            singleLine = true,
         )
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -92,7 +92,8 @@ fun CreateReportScreen(
             onValueChange = { reportDescription = it },
             label = { Text(stringResource(id = R.string.create_report_description)) },
             modifier = Modifier.fillMaxWidth(),
-            minLines = 3
+            minLines = 3,
+            maxLines = 3,
         )
 
         Spacer(modifier = Modifier.height(24.dp))
