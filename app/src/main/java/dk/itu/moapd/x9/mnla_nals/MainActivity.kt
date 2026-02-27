@@ -91,10 +91,8 @@ fun AppNavigationBar() {
                         scope.launch {
                             snackbarHostState.showSnackbar("Traffic report successfully created!")
                         }
-
-                    } )
+                    })
             }
-
         }
     }
 }

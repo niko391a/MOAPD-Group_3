@@ -17,6 +17,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dk.itu.moapd.x9.mnla_nals.data.Report
+import androidx.compose.foundation.layout.PaddingValues
+
 
 @Composable
 fun HomeScreen(reports: List<Report>) {
@@ -38,7 +40,7 @@ fun HomeScreen(reports: List<Report>) {
                     .weight(1f)
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
-//                verticalArrangement = Arrangement.Center
+                contentPadding = PaddingValues(bottom = 56.dp)
             ) {
                 items(reports) { report ->
                     ReportItem(report)
