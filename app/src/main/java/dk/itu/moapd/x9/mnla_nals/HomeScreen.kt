@@ -30,7 +30,8 @@ fun HomeScreen(reports: List<Report>, modifier: Modifier = Modifier, onAddReport
     Box(modifier = modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .padding(0.dp,32.dp,0.dp,0.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
