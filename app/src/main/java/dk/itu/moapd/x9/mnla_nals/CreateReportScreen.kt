@@ -1,6 +1,9 @@
 package dk.itu.moapd.x9.mnla_nals
 
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalFocusManager
 import android.util.Log
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -9,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -22,6 +26,8 @@ fun CreateReportScreen(
     modifier: Modifier = Modifier,
     onSubmitReport: (Report) -> Unit
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
     var reportTitle by rememberSaveable  { mutableStateOf("") }
     var reportDescription by rememberSaveable  { mutableStateOf("") }
     var reportType by rememberSaveable  { mutableStateOf("") }
@@ -34,7 +40,13 @@ fun CreateReportScreen(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(24.dp),
+            .padding(24.dp)
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    keyboardController?.hide()
+                    focusManager.clearFocus()
+                })
+            },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(

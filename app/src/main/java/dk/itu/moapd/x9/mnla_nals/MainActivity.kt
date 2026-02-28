@@ -36,11 +36,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         Log.d("Info","On Create was called for MainActivity")
-//        // Start the CreateReportActivity directly
-//           Legacy since we now use compose
-//        val intent = Intent(this, CreateReportActivity::class.java)
-//        startActivity(intent)
-
         setContent {
             X9Theme {
                 AppNavigationBar()
@@ -76,12 +71,13 @@ fun AppNavigationBar() {
             }
         }
     ) { innerPadding ->
-        // Content for the selected screen can be placed here
-        // For example:
-        // This is for selecting between compose files instead of using fragments and activities
         when (selectedNavItem) {
             0 -> {
-                HomeScreen(reports)
+                HomeScreen(
+                    reports = reports,
+                    modifier = Modifier.padding(innerPadding),
+                    onAddReport = { selectedNavItem = 1 }
+                )
             }
             1 -> {
                 CreateReportScreen(Modifier.padding(innerPadding),
@@ -91,10 +87,8 @@ fun AppNavigationBar() {
                         scope.launch {
                             snackbarHostState.showSnackbar("Traffic report successfully created!")
                         }
-
-                    } )
+                    })
             }
-
         }
     }
 }
