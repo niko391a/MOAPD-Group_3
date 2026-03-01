@@ -22,6 +22,7 @@ private val LightColorScheme = lightColorScheme(
     secondary = PurpleGrey40,
     tertiary = Pink40
 
+
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
     surface = Color(0xFFFFFBFE),
@@ -31,6 +32,17 @@ private val LightColorScheme = lightColorScheme(
     onBackground = Color(0xFF1C1B1F),
     onSurface = Color(0xFF1C1B1F),
     */
+)
+private val RainbowColorScheme = lightColorScheme(
+    primary = red,
+    secondary = yellow,
+    tertiary = green
+)
+
+private val UltraDarkColorScheme = darkColorScheme(
+    primary = Black,
+    secondary = Dark_grey,
+    tertiary = Grey
 )
 
 @Composable

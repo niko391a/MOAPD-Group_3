@@ -29,6 +29,14 @@
         <item>Broken Vehicles</item>
         <item>Other</item>
     </string-array>
+    <string name="theme_settings">Theme Settings</string>
+    <string-array name="Themes">
+        <item>Standard</item>
+        <item>Light</item>
+        <item>Dark</item>
+        <item>Rainbow</item>
+        <item>Ultra Dark</item>
+    </string-array>
 
     ...
     <plurals name="create_report_days">
