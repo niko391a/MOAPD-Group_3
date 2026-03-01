@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -68,6 +69,12 @@ fun AppNavigationBar() {
                     icon = { Icon(Icons.Default.List, contentDescription = "Reports") },
                     label = { Text(stringResource(id = R.string.nav_report)) }
                 )
+                NavigationBarItem(
+                    selected = selectedNavItem == 2,
+                    onClick = { selectedNavItem = 2 },
+                    icon = { Icon(Icons.Default.Settings, contentDescription = "Settings") },
+                    label = { Text(stringResource(id = R.string.nav_settings)) }
+                )
             }
         }
     ) { innerPadding ->
@@ -88,6 +95,9 @@ fun AppNavigationBar() {
                             snackbarHostState.showSnackbar("Traffic report successfully created!")
                         }
                     })
+            }
+            2 -> {
+                SettingsScreen(Modifier.padding(innerPadding))
             }
         }
     }
