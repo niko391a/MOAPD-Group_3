@@ -33,7 +33,7 @@ private val LightColorScheme = lightColorScheme(
     onSurface = Color(0xFF1C1B1F),
     */
 )
-private val RainbowColorScheme = lightColorScheme(
+private val RainbowColorScheme = darkColorScheme(
     primary = red,
     secondary = yellow,
     tertiary = green
@@ -67,4 +67,23 @@ fun X9Theme(
         typography = Typography,
         content = content
     )
+}
+@Composable
+fun CustomThemes(string: String, content: @Composable () -> Unit) {
+    if (string == "Rainbow") {
+        MaterialTheme(
+            colorScheme = RainbowColorScheme,
+            typography = Typography,
+            content = content
+        )
+    } else if (string == "Ultra Dark") {
+        MaterialTheme(
+            colorScheme = UltraDarkColorScheme,
+            typography = Typography,
+            content = content
+        )
+    } else {
+        X9Theme(content = content)
+    }
+
 }

@@ -34,6 +34,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.launch
 import dk.itu.moapd.x9.mnla_nals.data.Report
+import dk.itu.moapd.x9.mnla_nals.ui.theme.CustomThemes
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +45,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             var selectedTheme by rememberSaveable { mutableStateOf("Standard") }
 
-            appTheme(theme = selectedTheme) {
+            AppTheme(theme = selectedTheme) {
                 AppNavigationBar(onThemeChanged = { theme ->
                     selectedTheme = theme
                 })
@@ -120,13 +121,13 @@ fun MainScreenPreview() {
 }
 
 @Composable
-fun appTheme(theme: String, content: @Composable () -> Unit) {
+fun AppTheme(theme: String, content: @Composable () -> Unit) {
     when (theme) {
         "Standard" -> X9Theme(darkTheme = false, content = content)
         "Light" -> X9Theme(darkTheme = false, content = content)
         "Dark" -> X9Theme(darkTheme = true, content = content)
-        "Rainbow" -> X9Theme(darkTheme = false, content = content) // Add custom rainbow theme later
-        "Ultra Dark" -> X9Theme(darkTheme = true, content = content) // Add custom ultra dark theme later
+        "Rainbow" -> CustomThemes("Rainbow",content = content)  // Add custom rainbow theme later
+        "Ultra Dark" -> CustomThemes("Ultra Dark",content = content)  // Add custom ultra dark theme later
         else -> X9Theme(darkTheme = false, content = content)
     }
 }
