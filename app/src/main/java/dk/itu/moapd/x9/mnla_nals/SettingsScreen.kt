@@ -1,29 +1,17 @@
 package dk.itu.moapd.x9.mnla_nals
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import android.os.LocaleList
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Card
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import dk.itu.moapd.x9.mnla_nals.data.Report
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Button
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.os.LocaleListCompat
+import androidx.appcompat.app.AppCompatDelegate
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,9 +30,44 @@ fun SettingsThemeToggle() {
     Text(text = "Theme Toggle Button goes here")
 }
 
+// Min API 28+ friendly version:
+//@Composable
+//fun SettingsLanguageSelector() {
+//    val context = LocalContext.current
+//
+//    // Example button to switch to Danish
+//    Button(onClick = {
+//        val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags("da")
+//        AppCompatDelegate.setApplicationLocales(appLocale)
+//    }) {
+//        Text("Switch to Danish")
+//    }
+//
+//    // Example button to switch to English
+//    Button(onClick = {
+//        val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags("en")
+//        AppCompatDelegate.setApplicationLocales(appLocale)
+//    }) {
+//        Text("Switch to English")
+//    }
+//}
+
+// Min API 33+ friendly version:
 @Composable
 fun SettingsLanguageSelector() {
-    // Placeholder for language selector
-    Text(text = "Language Selector goes here")
-}
+    val context = LocalContext.current
 
+    Button(onClick = {
+        context.getSystemService(android.app.LocaleManager::class.java)
+            .applicationLocales = LocaleList(Locale.forLanguageTag("en"))
+    }) {
+        Text("Switch to English")
+    }
+
+    Button(onClick = {
+        context.getSystemService(android.app.LocaleManager::class.java)
+            .applicationLocales = LocaleList(Locale.forLanguageTag("da"))
+    }) {
+        Text("Switch to Danish")
+    }
+}
