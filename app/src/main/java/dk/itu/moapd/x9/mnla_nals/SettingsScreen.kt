@@ -17,21 +17,22 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringArrayResource
+import androidx.graphics.shapes.Cubic
 
 
 @Composable
-fun SettingsScreen(modifier: Modifier = Modifier, onThemeChanged: (String) -> Unit) {
+fun SettingsScreen(modifier: Modifier = Modifier, onThemeChanged: (String) -> Unit, currentTheme: String) {
     Column(modifier = modifier.fillMaxSize(),
     ) {
-        SettingsThemeToggle(onThemeChanged = onThemeChanged)
+        SettingsThemeToggle(onThemeChanged = onThemeChanged, currentTheme = currentTheme)
         SettingsLanguageSelector()
     }
 
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsThemeToggle(onThemeChanged: (String) -> Unit) {
-    var themeType by rememberSaveable  { mutableStateOf("Standard") }
+fun SettingsThemeToggle(onThemeChanged: (String) -> Unit, currentTheme: String) {
+    var themeType by rememberSaveable  { mutableStateOf(currentTheme) }
     var expanded by rememberSaveable  { mutableStateOf(false) }
     val themeTypes = stringArrayResource(R.array.Themes)
     ExposedDropdownMenuBox(

@@ -48,14 +48,14 @@ class MainActivity : ComponentActivity() {
             AppTheme(theme = selectedTheme) {
                 AppNavigationBar(onThemeChanged = { theme ->
                     selectedTheme = theme
-                })
+                }, currentTheme = selectedTheme)
             }
         }
     }
 }
 
 @Composable
-fun AppNavigationBar(onThemeChanged: (String) -> Unit) {
+fun AppNavigationBar(onThemeChanged: (String) -> Unit, currentTheme: String) {
     var selectedNavItem by rememberSaveable  { mutableIntStateOf(0) }
     val reports = rememberSaveable { mutableStateListOf<Report>() }
     val scope = rememberCoroutineScope()
@@ -106,7 +106,7 @@ fun AppNavigationBar(onThemeChanged: (String) -> Unit) {
                     })
             }
             2 -> {
-                SettingsScreen(Modifier.padding(innerPadding), onThemeChanged = onThemeChanged)
+                SettingsScreen(Modifier.padding(innerPadding), onThemeChanged = onThemeChanged, currentTheme = currentTheme)
             }
         }
     }
@@ -116,7 +116,7 @@ fun AppNavigationBar(onThemeChanged: (String) -> Unit) {
 @Composable
 fun MainScreenPreview() {
     X9Theme {
-        AppNavigationBar(onThemeChanged = {})
+        AppNavigationBar(onThemeChanged = {}, currentTheme = "Standard")
     }
 }
 
