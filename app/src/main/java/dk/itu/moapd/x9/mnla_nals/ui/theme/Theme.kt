@@ -33,15 +33,23 @@ private val LightColorScheme = lightColorScheme(
     onSurface = Color(0xFF1C1B1F),
     */
 )
-private val RainbowColorScheme = darkColorScheme(
+private val RainbowColorScheme = lightColorScheme(
     primary = red,
     secondary = yellow,
-    tertiary = green
+    tertiary = green,
+    background = Ice_blue,
+    onPrimary = White,
+    surface = Cyan_blue,
+    onSurface = Dark_blue,
+    onSecondary = Grass_green,
+    onTertiary = Neon_green,
+
+
 )
 
 private val UltraDarkColorScheme = darkColorScheme(
     primary = Black,
-    secondary = Dark_grey,
+    secondary = Purple40,
     tertiary = Grey
 )
 
