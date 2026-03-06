@@ -60,7 +60,7 @@ fun HomeScreen(reports: List<Report>, modifier: Modifier = Modifier, onAddReport
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp),
-            containerColor = Color.Blue
+
         ) {
             Icon(
                 imageVector = Icons.Default.Add,

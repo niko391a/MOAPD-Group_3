@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -26,26 +27,35 @@ import dk.itu.moapd.x9.mnla_nals.ui.theme.X9Theme
 import android.util.Log
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import kotlinx.coroutines.launch
 import dk.itu.moapd.x9.mnla_nals.data.Report
+import dk.itu.moapd.x9.mnla_nals.ui.theme.CustomThemes
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         Log.d("Info","On Create was called for MainActivity")
         setContent {
-            X9Theme {
-                AppNavigationBar()
+            var selectedTheme by rememberSaveable { mutableStateOf("Standard") }
+
+            AppTheme(theme = selectedTheme) {
+                AppNavigationBar(onThemeChanged = { theme ->
+                    selectedTheme = theme
+                }, currentTheme = selectedTheme)
             }
         }
     }
 }
 
 @Composable
-fun AppNavigationBar() {
+fun AppNavigationBar(onThemeChanged: (String) -> Unit, currentTheme: String) {
     var selectedNavItem by rememberSaveable  { mutableIntStateOf(0) }
     val reports = rememberSaveable { mutableStateListOf<Report>() }
     val scope = rememberCoroutineScope()
@@ -68,6 +78,12 @@ fun AppNavigationBar() {
                     icon = { Icon(Icons.Default.List, contentDescription = "Reports") },
                     label = { Text(stringResource(id = R.string.nav_report)) }
                 )
+                NavigationBarItem(
+                    selected = selectedNavItem == 2,
+                    onClick = { selectedNavItem = 2 },
+                    icon = { Icon(Icons.Default.Settings, contentDescription = "Settings") },
+                    label = { Text(stringResource(id = R.string.nav_settings)) }
+                )
             }
         }
     ) { innerPadding ->
@@ -89,6 +105,9 @@ fun AppNavigationBar() {
                         }
                     })
             }
+            2 -> {
+                SettingsScreen(Modifier.padding(innerPadding), onThemeChanged = onThemeChanged, currentTheme = currentTheme)
+            }
         }
     }
 }
@@ -97,6 +116,18 @@ fun AppNavigationBar() {
 @Composable
 fun MainScreenPreview() {
     X9Theme {
-        AppNavigationBar()
+        AppNavigationBar(onThemeChanged = {}, currentTheme = "Standard")
+    }
+}
+
+@Composable
+fun AppTheme(theme: String, content: @Composable () -> Unit) {
+    when (theme) {
+        "Standard" -> X9Theme(darkTheme = false, content = content)
+        "Light" -> X9Theme(darkTheme = false, content = content)
+        "Dark" -> X9Theme(darkTheme = true, content = content)
+        "Rainbow" -> CustomThemes("Rainbow",content = content)  // Add custom rainbow theme later
+        "Ultra Dark" -> CustomThemes("Ultra Dark",content = content)  // Add custom ultra dark theme later
+        else -> X9Theme(darkTheme = false, content = content)
     }
 }

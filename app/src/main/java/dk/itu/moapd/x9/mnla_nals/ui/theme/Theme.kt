@@ -22,6 +22,7 @@ private val LightColorScheme = lightColorScheme(
     secondary = PurpleGrey40,
     tertiary = Pink40
 
+
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
     surface = Color(0xFFFFFBFE),
@@ -31,6 +32,25 @@ private val LightColorScheme = lightColorScheme(
     onBackground = Color(0xFF1C1B1F),
     onSurface = Color(0xFF1C1B1F),
     */
+)
+private val RainbowColorScheme = lightColorScheme(
+    primary = red,
+    secondary = yellow,
+    tertiary = green,
+    background = Ice_blue,
+    onPrimary = White,
+    surface = Cyan_blue,
+    onSurface = Dark_blue,
+    onSecondary = Grass_green,
+    onTertiary = Neon_green,
+
+
+)
+
+private val UltraDarkColorScheme = darkColorScheme(
+    primary = Black,
+    secondary = Purple40,
+    tertiary = Grey
 )
 
 @Composable
@@ -55,4 +75,23 @@ fun X9Theme(
         typography = Typography,
         content = content
     )
+}
+@Composable
+fun CustomThemes(string: String, content: @Composable () -> Unit) {
+    if (string == "Rainbow") {
+        MaterialTheme(
+            colorScheme = RainbowColorScheme,
+            typography = Typography,
+            content = content
+        )
+    } else if (string == "Ultra Dark") {
+        MaterialTheme(
+            colorScheme = UltraDarkColorScheme,
+            typography = Typography,
+            content = content
+        )
+    } else {
+        X9Theme(content = content)
+    }
+
 }
