@@ -20,4 +20,8 @@
     <string name="create_report_severity_medium">MIDDEL</string>
     <string name="create_report_severity_high">HØJ</string>
     <string name="create_report_submit">Indsend</string>>
+    <string name="create_report_submit">Indsend</string>
+    <string name="snackbar_report_successful">Rapport er oprettet</string>
+    <string name="settings_language_en_text">Skift til Engelsk</string>
+    <string name="settings_language_da_text">Skift til Dansk</string>>
 </resources>

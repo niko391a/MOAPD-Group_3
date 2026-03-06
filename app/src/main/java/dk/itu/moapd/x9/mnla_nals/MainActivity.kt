@@ -87,12 +87,13 @@ fun AppNavigationBar() {
                 )
             }
             1 -> {
+                val snackBarReportSuccessful = stringResource(R.string.snackbar_report_successful)
                 CreateReportScreen(Modifier.padding(innerPadding),
                     onSubmitReport = { report ->
                         reports.add(report)
                         selectedNavItem = 0
                         scope.launch {
-                            snackbarHostState.showSnackbar("Traffic report successfully created!")
+                            snackbarHostState.showSnackbar(snackBarReportSuccessful)
                         }
                     })
             }
