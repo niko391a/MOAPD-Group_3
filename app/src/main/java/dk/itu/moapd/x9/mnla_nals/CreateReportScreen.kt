@@ -3,10 +3,14 @@ package dk.itu.moapd.x9.mnla_nals
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalFocusManager
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -20,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import dk.itu.moapd.x9.mnla_nals.components.AnimatedColorToggleButton
 import dk.itu.moapd.x9.mnla_nals.data.Report
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateReportScreen(
     modifier: Modifier = Modifier,
@@ -30,9 +33,8 @@ fun CreateReportScreen(
     val focusManager = LocalFocusManager.current
     var reportTitle by rememberSaveable  { mutableStateOf("") }
     var reportDescription by rememberSaveable  { mutableStateOf("") }
-    var reportType by rememberSaveable  { mutableStateOf("") }
+    var selectedReportType by rememberSaveable  { mutableStateOf("") }
     var reportSeverity by rememberSaveable  { mutableStateOf("") }
-    var expanded by rememberSaveable  { mutableStateOf(false) }
 
     val reportTypes = stringArrayResource(R.array.create_report_types)
 
@@ -67,34 +69,13 @@ fun CreateReportScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = { expanded = !expanded }
-        ) {
-            OutlinedTextField(
-                value = reportType,
-                onValueChange = {},
-                readOnly = true,
-                label = { Text(stringResource(id = R.string.create_report_type)) },
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                modifier = Modifier
-                    .menuAnchor()
-                    .fillMaxWidth()
-            )
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
-            ) {
-                reportTypes.forEach { type ->
-                    DropdownMenuItem(
-                        text = { Text(type) },
-                        onClick = {
-                            reportType = type
-                            expanded = false
-                        }
-                    )
-                }
+        BasicDropdownMenu(
+            reportType = selectedReportType,
+            reportTypes = reportTypes,
+            onTypeSelected = { newType ->
+                selectedReportType = newType // This is where the actual reassignment happens
             }
+            )
         }
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -138,15 +119,15 @@ fun CreateReportScreen(
 
         Button(
             onClick = {
-                if(reportTitle.isNotEmpty() && reportDescription.isNotEmpty() && reportType.isNotEmpty() && reportSeverity.isNotEmpty()) {
-                    val report = Report(reportTitle, reportType, reportDescription, reportSeverity)
+                if(reportTitle.isNotEmpty() && reportDescription.isNotEmpty() && selectedReportType.isNotEmpty() && reportSeverity.isNotEmpty()) {
+                    val report = Report(reportTitle, selectedReportType, reportDescription, reportSeverity)
                     onSubmitReport(report)
                 } else {
                     Log.d(
                     "Submit", """
                     User report has been submitted with invalid information:
                     Report Title: ${reportTitle}
-                    Report Type: ${reportType}
+                    Report Type: ${selectedReportType}
                     Report Description: ${reportDescription}
                     Severity: ${reportSeverity}
                     """.trimIndent()
@@ -161,6 +142,60 @@ fun CreateReportScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
     }
+
+
+@Composable
+fun BasicDropdownMenu(
+    reportType: String,         // The current value
+    reportTypes: Array<String>,  // The list of options
+    onTypeSelected: (String) -> Unit // The callback to update the state
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    // Wrap in a Box to provide a coordinate parent for the menu
+    Box(modifier = Modifier.fillMaxWidth()) {
+        OutlinedTextField(
+            value = reportType,
+            onValueChange = {},
+            readOnly = true,
+            label = { Text(stringResource(id = R.string.create_report_type)) },
+            trailingIcon = {
+                // Using a standard IconButton for the toggle
+                IconButton(onClick = { expanded = !expanded }) {
+                    Icon(
+                        imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                        contentDescription = null
+                    )
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        // This invisible box sits on top of the TextField to catch clicks
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .clickable { expanded = !expanded }
+        )
+
+        // The standard DropdownMenu
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            // This ensures the menu aligns with the start of the Box
+            modifier = Modifier.fillMaxWidth(0.9f) // Optional: Adjust width manually
+        ) {
+            reportTypes.forEach { type ->
+                DropdownMenuItem(
+                    text = { Text(type) },
+                    onClick = {
+                        // 1. Tell the parent the value changed
+                        onTypeSelected(type)
+                        // 2. Close the menu
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
 }
-
-

@@ -87,6 +87,7 @@ fun AppNavigationBar(onThemeChanged: (String) -> Unit, currentTheme: String) {
             }
         }
     ) { innerPadding ->
+        val snackbarReportSuccessful = stringResource(R.string.snackbar_report_successful)
         when (selectedNavItem) {
             0 -> {
                 HomeScreen(
@@ -101,7 +102,7 @@ fun AppNavigationBar(onThemeChanged: (String) -> Unit, currentTheme: String) {
                         reports.add(report)
                         selectedNavItem = 0
                         scope.launch {
-                            snackbarHostState.showSnackbar("Traffic report successfully created!")
+                            snackbarHostState.showSnackbar(snackbarReportSuccessful)
                         }
                     })
             }
