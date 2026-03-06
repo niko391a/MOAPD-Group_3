@@ -11,6 +11,7 @@ import androidx.compose.material3.Button
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.os.LocaleListCompat
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.ui.res.stringResource
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,13 +62,13 @@ fun SettingsLanguageSelector() {
         context.getSystemService(android.app.LocaleManager::class.java)
             .applicationLocales = LocaleList(Locale.forLanguageTag("en"))
     }) {
-        Text("Switch to English")
+        Text(stringResource(R.string.settings_language_en_text))
     }
 
     Button(onClick = {
         context.getSystemService(android.app.LocaleManager::class.java)
             .applicationLocales = LocaleList(Locale.forLanguageTag("da"))
     }) {
-        Text("Switch to Danish")
+        Text(stringResource(R.string.settings_language_da_text))
     }
 }
