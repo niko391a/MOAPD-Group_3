@@ -1,6 +1,8 @@
 package dk.itu.moapd.x9.mnla_nals
 
+import android.os.Build
 import android.os.LocaleList
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
@@ -20,7 +22,10 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
     Column(modifier = modifier.fillMaxSize(),
     ) {
         SettingsThemeToggle()
-        SettingsLanguageSelector()
+        if (Build.VERSION.SDK_INT >= 33) {
+            // This is the same as Build.VERSION_CODES.TIRAMISU
+            SettingsLanguageSelector()
+        }
     }
 
 }
@@ -31,29 +36,8 @@ fun SettingsThemeToggle() {
     Text(text = "Theme Toggle Button goes here")
 }
 
-// Min API 28+ friendly version:
-//@Composable
-//fun SettingsLanguageSelector() {
-//    val context = LocalContext.current
-//
-//    // Example button to switch to Danish
-//    Button(onClick = {
-//        val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags("da")
-//        AppCompatDelegate.setApplicationLocales(appLocale)
-//    }) {
-//        Text("Switch to Danish")
-//    }
-//
-//    // Example button to switch to English
-//    Button(onClick = {
-//        val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags("en")
-//        AppCompatDelegate.setApplicationLocales(appLocale)
-//    }) {
-//        Text("Switch to English")
-//    }
-//}
-
 // Min API 33+ friendly version:
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun SettingsLanguageSelector() {
     val context = LocalContext.current

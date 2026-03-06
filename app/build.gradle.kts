@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId = "dk.itu.moapd.x9.mnla_nals"
-        minSdk = 33
+        minSdk = 28
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
