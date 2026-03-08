@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">X9</string>
+
+    <string name="button_low">Lav</string>
+    <string name="button_mid">Middel</string>
+    <string name="button_high">Høj</string>
+    <string name="button_submit">Indsend</string>
+    <string name="home_title">Velkommen til X9</string>
+
+    <string name="nav_home">Hjem</string>
+    <string name="nav_report">Rapport</string>
+    <string name="nav_settings">Indstillinger</string>
+
+    <string name="create_report_header">Lav rapport</string>
+    <string name="create_report_title">Rapport tittel</string>
+    <string name="create_report_location">Rapport lokation</string>
+    <string name="create_report_date">Rapport dato</string>
+    <string name="create_report_type">Rapport type</string>
+    <string name="create_report_type_desc">Vælg rapport type</string>
+    <string name="create_report_description">Rapport beskrivelse</string>
+    <string name="create_report_severity_low">LAV</string>
+    <string name="create_report_severity_medium">MIDDEL</string>
+    <string name="create_report_severity_high">HØJ</string>
+    <string name="create_report_submit">Indsend</string>
+    <string-array name="create_report_types">
+        <item>Fart kamera</item>
+        <item>Tung traffik</item>
+        <item>Vej hændelser</item>
+        <item>Ødelagte køretøjer</item>
+        <item>Andet</item>
+    </string-array>
+    <string name="theme_settings">Theme Settings</string>
+    <string-array name="Themes">
+        <item>Standard</item>
+        <item>Lys</item>
+        <item>Mørk</item>
+        <item>Regnbue</item>
+        <item>Ultra Mørk</item>
+    </string-array>
+    <string name="snackbar_report_successful">Rapport er oprettet</string>
+    <string name="settings_language_en_text">Skift til Engelsk</string>
+    <string name="settings_language_da_text">Skift til Dansk</string>>
+</resources>

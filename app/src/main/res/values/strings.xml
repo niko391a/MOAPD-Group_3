@@ -37,10 +37,7 @@
         <item>Rainbow</item>
         <item>Ultra Dark</item>
     </string-array>
-
-    ...
-    <plurals name="create_report_days">
-        <item quantity="one">$d day. </item>
-        <item quantity="other">$d days. </item>
-    </plurals>
+    <string name="snackbar_report_successful">Report has been created!</string>
+    <string name="settings_language_en_text">Switch to English</string>
+    <string name="settings_language_da_text">Switch to Danish</string>
 </resources>
