@@ -27,13 +27,14 @@ import dk.itu.moapd.x9.mnla_nals.ui.theme.X9Theme
 import android.util.Log
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import kotlinx.coroutines.launch
 import dk.itu.moapd.x9.mnla_nals.data.Report
+import dk.itu.moapd.x9.mnla_nals.screens.CreateReportScreen
+import dk.itu.moapd.x9.mnla_nals.screens.HomeScreen
+import dk.itu.moapd.x9.mnla_nals.screens.SettingsScreen
 import dk.itu.moapd.x9.mnla_nals.ui.theme.CustomThemes
 
 class MainActivity : ComponentActivity() {
@@ -97,7 +98,8 @@ fun AppNavigationBar(onThemeChanged: (String) -> Unit, currentTheme: String) {
                 )
             }
             1 -> {
-                CreateReportScreen(Modifier.padding(innerPadding),
+                CreateReportScreen(
+                    Modifier.padding(innerPadding),
                     onSubmitReport = { report ->
                         reports.add(report)
                         selectedNavItem = 0
@@ -107,7 +109,11 @@ fun AppNavigationBar(onThemeChanged: (String) -> Unit, currentTheme: String) {
                     })
             }
             2 -> {
-                SettingsScreen(Modifier.padding(innerPadding), onThemeChanged = onThemeChanged, currentTheme = currentTheme)
+                SettingsScreen(
+                    Modifier.padding(innerPadding),
+                    onThemeChanged = onThemeChanged,
+                    currentTheme = currentTheme
+                )
             }
         }
     }

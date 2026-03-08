@@ -1,16 +1,12 @@
-package dk.itu.moapd.x9.mnla_nals
+package dk.itu.moapd.x9.mnla_nals.screens
 
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalFocusManager
 import android.util.Log
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -21,7 +17,9 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dk.itu.moapd.x9.mnla_nals.R
 import dk.itu.moapd.x9.mnla_nals.components.AnimatedColorToggleButton
+import dk.itu.moapd.x9.mnla_nals.components.BasicDropdownMenu
 import dk.itu.moapd.x9.mnla_nals.data.Report
 
 @Composable
@@ -144,61 +142,5 @@ fun CreateReportScreen(
         }
 
         Spacer(modifier = Modifier.height(24.dp))
-    }
-}
-
-@Composable
-fun BasicDropdownMenu(
-    reportType: String,         // The current value
-    reportTypes: Array<String>,  // The list of options
-    onTypeSelected: (String) -> Unit // The callback to update the state
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    // Wrap in a Box to provide a coordinate parent for the menu
-    Box(modifier = Modifier.fillMaxWidth()) {
-        OutlinedTextField(
-            value = reportType,
-            onValueChange = {},
-            readOnly = true,
-            label = { Text(stringResource(id = R.string.create_report_type)) },
-            trailingIcon = {
-                // Using a standard IconButton for the toggle
-                IconButton(onClick = { expanded = !expanded }) {
-                    Icon(
-                        imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                        contentDescription = null
-                    )
-                }
-            },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        // This invisible box sits on top of the TextField to catch clicks
-        Box(
-            modifier = Modifier
-                .matchParentSize()
-                .clickable { expanded = !expanded }
-        )
-
-        // The standard DropdownMenu
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            // This ensures the menu aligns with the start of the Box
-            modifier = Modifier.fillMaxWidth(0.9f) // Optional: Adjust width manually
-        ) {
-            reportTypes.forEach { type ->
-                DropdownMenuItem(
-                    text = { Text(type) },
-                    onClick = {
-                        // 1. Tell the parent the value changed
-                        onTypeSelected(type)
-                        // 2. Close the menu
-                        expanded = false
-                    }
-                )
-            }
-        }
     }
 }

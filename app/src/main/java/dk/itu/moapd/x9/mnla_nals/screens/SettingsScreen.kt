@@ -1,5 +1,6 @@
-package dk.itu.moapd.x9.mnla_nals
+package dk.itu.moapd.x9.mnla_nals.screens
 
+import android.app.LocaleManager
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import java.util.Locale
 import android.os.Build
 import android.os.LocaleList
+import dk.itu.moapd.x9.mnla_nals.R
 
 @Composable
 fun SettingsScreen(modifier: Modifier = Modifier, onThemeChanged: (String) -> Unit, currentTheme: String) {
@@ -80,14 +82,14 @@ fun SettingsLanguageSelector() {
     val context = LocalContext.current
 
     Button(onClick = {
-        context.getSystemService(android.app.LocaleManager::class.java)
+        context.getSystemService(LocaleManager::class.java)
             .applicationLocales = LocaleList(Locale.forLanguageTag("en"))
     }) {
         Text(stringResource(R.string.settings_language_en_text))
     }
 
     Button(onClick = {
-        context.getSystemService(android.app.LocaleManager::class.java)
+        context.getSystemService(LocaleManager::class.java)
             .applicationLocales = LocaleList(Locale.forLanguageTag("da"))
     }) {
         Text(stringResource(R.string.settings_language_da_text))

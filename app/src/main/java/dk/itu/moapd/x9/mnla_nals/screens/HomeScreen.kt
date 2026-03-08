@@ -1,4 +1,4 @@
-package dk.itu.moapd.x9.mnla_nals
+package dk.itu.moapd.x9.mnla_nals.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dk.itu.moapd.x9.mnla_nals.data.Report
 import androidx.compose.foundation.layout.PaddingValues
+import dk.itu.moapd.x9.mnla_nals.R
 
 
 @Composable
