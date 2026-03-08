@@ -31,10 +31,10 @@ fun CreateReportScreen(
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
-    var reportTitle by rememberSaveable  { mutableStateOf("") }
-    var reportDescription by rememberSaveable  { mutableStateOf("") }
-    var selectedReportType by rememberSaveable  { mutableStateOf("") }
-    var reportSeverity by rememberSaveable  { mutableStateOf("") }
+    var reportTitle by rememberSaveable { mutableStateOf("") }
+    var reportDescription by rememberSaveable { mutableStateOf("") }
+    var selectedReportType by rememberSaveable { mutableStateOf("") }
+    var reportSeverity by rememberSaveable { mutableStateOf("") }
 
     val reportTypes = stringArrayResource(R.array.create_report_types)
 
@@ -75,8 +75,8 @@ fun CreateReportScreen(
             onTypeSelected = { newType ->
                 selectedReportType = newType // This is where the actual reassignment happens
             }
-            )
-        }
+        )
+
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -119,12 +119,13 @@ fun CreateReportScreen(
 
         Button(
             onClick = {
-                if(reportTitle.isNotEmpty() && reportDescription.isNotEmpty() && selectedReportType.isNotEmpty() && reportSeverity.isNotEmpty()) {
-                    val report = Report(reportTitle, selectedReportType, reportDescription, reportSeverity)
+                if (reportTitle.isNotEmpty() && reportDescription.isNotEmpty() && selectedReportType.isNotEmpty() && reportSeverity.isNotEmpty()) {
+                    val report =
+                        Report(reportTitle, selectedReportType, reportDescription, reportSeverity)
                     onSubmitReport(report)
                 } else {
                     Log.d(
-                    "Submit", """
+                        "Submit", """
                     User report has been submitted with invalid information:
                     Report Title: ${reportTitle}
                     Report Type: ${selectedReportType}
@@ -136,13 +137,15 @@ fun CreateReportScreen(
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(stringResource(id = R.string.create_report_submit),
-                fontWeight = FontWeight.Bold)
+            Text(
+                stringResource(id = R.string.create_report_submit),
+                fontWeight = FontWeight.Bold
+            )
         }
 
         Spacer(modifier = Modifier.height(24.dp))
     }
-
+}
 
 @Composable
 fun BasicDropdownMenu(
