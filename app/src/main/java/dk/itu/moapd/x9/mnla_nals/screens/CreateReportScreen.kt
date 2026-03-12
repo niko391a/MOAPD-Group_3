@@ -122,6 +122,7 @@ fun CreateReportScreen(
                         Report(reportTitle, selectedReportType, reportDescription, reportSeverity)
                     onSubmitReport(report)
                 } else {
+                    // Will be reformatted to use SnackBar in the future
                     Log.d(
                         "Submit", """
                     User report has been submitted with invalid information:
