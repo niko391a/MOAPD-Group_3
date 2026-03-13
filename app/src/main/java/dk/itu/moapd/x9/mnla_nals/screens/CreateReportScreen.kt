@@ -1,4 +1,4 @@
-package dk.itu.moapd.x9.mnla_nals
+package dk.itu.moapd.x9.mnla_nals.screens
 
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalFocusManager
@@ -17,10 +17,11 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dk.itu.moapd.x9.mnla_nals.R
 import dk.itu.moapd.x9.mnla_nals.components.AnimatedColorToggleButton
+import dk.itu.moapd.x9.mnla_nals.components.BasicDropdownMenu
 import dk.itu.moapd.x9.mnla_nals.data.Report
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateReportScreen(
     modifier: Modifier = Modifier,
@@ -28,11 +29,10 @@ fun CreateReportScreen(
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
-    var reportTitle by rememberSaveable  { mutableStateOf("") }
-    var reportDescription by rememberSaveable  { mutableStateOf("") }
-    var reportType by rememberSaveable  { mutableStateOf("") }
-    var reportSeverity by rememberSaveable  { mutableStateOf("") }
-    var expanded by rememberSaveable  { mutableStateOf(false) }
+    var reportTitle by rememberSaveable { mutableStateOf("") }
+    var reportDescription by rememberSaveable { mutableStateOf("") }
+    var selectedReportType by rememberSaveable { mutableStateOf("") }
+    var reportSeverity by rememberSaveable { mutableStateOf("") }
 
     val reportTypes = stringArrayResource(R.array.create_report_types)
 
@@ -67,35 +67,14 @@ fun CreateReportScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = { expanded = !expanded }
-        ) {
-            OutlinedTextField(
-                value = reportType,
-                onValueChange = {},
-                readOnly = true,
-                label = { Text(stringResource(id = R.string.create_report_type)) },
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                modifier = Modifier
-                    .menuAnchor()
-                    .fillMaxWidth()
-            )
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
-            ) {
-                reportTypes.forEach { type ->
-                    DropdownMenuItem(
-                        text = { Text(type) },
-                        onClick = {
-                            reportType = type
-                            expanded = false
-                        }
-                    )
-                }
+        BasicDropdownMenu(
+            reportType = selectedReportType,
+            reportTypes = reportTypes,
+            onTypeSelected = { newType ->
+                selectedReportType = newType // This is where the actual reassignment happens
             }
-        }
+        )
+
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -138,15 +117,17 @@ fun CreateReportScreen(
 
         Button(
             onClick = {
-                if(reportTitle.isNotEmpty() && reportDescription.isNotEmpty() && reportType.isNotEmpty() && reportSeverity.isNotEmpty()) {
-                    val report = Report(reportTitle, reportType, reportDescription, reportSeverity)
+                if (reportTitle.isNotEmpty() && reportDescription.isNotEmpty() && selectedReportType.isNotEmpty() && reportSeverity.isNotEmpty()) {
+                    val report =
+                        Report(reportTitle, selectedReportType, reportDescription, reportSeverity)
                     onSubmitReport(report)
                 } else {
+                    // Will be reformatted to use SnackBar in the future
                     Log.d(
-                    "Submit", """
+                        "Submit", """
                     User report has been submitted with invalid information:
                     Report Title: ${reportTitle}
-                    Report Type: ${reportType}
+                    Report Type: ${selectedReportType}
                     Report Description: ${reportDescription}
                     Severity: ${reportSeverity}
                     """.trimIndent()
@@ -155,12 +136,12 @@ fun CreateReportScreen(
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(stringResource(id = R.string.create_report_submit),
-                fontWeight = FontWeight.Bold)
+            Text(
+                stringResource(id = R.string.create_report_submit),
+                fontWeight = FontWeight.Bold
+            )
         }
 
         Spacer(modifier = Modifier.height(24.dp))
     }
 }
-
-
