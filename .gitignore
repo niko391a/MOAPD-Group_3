@@ -2,3 +2,6 @@
 /.gradle
 /app/build
 local.properties
+# google Services
+./google-service.json
+app/google-services.json
