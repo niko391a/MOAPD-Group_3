@@ -24,16 +24,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import dk.itu.moapd.x9.mnla_nals.AppNavigationBar
+import dk.itu.moapd.x9.mnla_nals.ui.theme.X9Theme
 
 @Composable
-//fun LoginScreen(onGoogleSignInClick: () -> Unit) {
-fun LoginScreen() {
+fun LoginScreen(onGoogleSignInClick: () -> Unit) {
+//fun LoginScreen() {
         Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFF0F172A)) // Deep Slate/Traffic Night color
     ) {
-        // Background Gradient for a "Road" feel
+        // Background Gradient
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -69,7 +73,7 @@ fun LoginScreen() {
                 style = MaterialTheme.typography.headlineSmall,
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                textAlign = TextAlign.Center,
 //                maxLines = 1,
 //                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                 modifier = Modifier.fillMaxWidth()
@@ -85,8 +89,8 @@ fun LoginScreen() {
 
             // Google Sign-In Button
             Button(
-//                onClick = onGoogleSignInClick,
-                onClick = { Log.d("Information", "Login pressed") },
+                onClick = onGoogleSignInClick,
+//                onClick = { Log.d("Information", "Login pressed") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
@@ -101,7 +105,6 @@ fun LoginScreen() {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    // You would replace this with an actual Google icon resource
                     Text(
                         text = "Continue with Google",
                         style = MaterialTheme.typography.titleMedium,
@@ -140,12 +143,20 @@ fun LoginScreen() {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Footer info
-            Text(
-                text = "By signing in, you agree to our Terms of Service",
-                style = MaterialTheme.typography.labelSmall,
-                color = Color.Gray
-            )
+//            // Footer info
+//            Text(
+//                text = "By signing in, you agree to our Terms of Service",
+//                style = MaterialTheme.typography.labelSmall,
+//                color = Color.Gray
+//            )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LoginScreenPreview() {
+    LoginScreen(
+        onGoogleSignInClick = TODO()
+    )
 }
