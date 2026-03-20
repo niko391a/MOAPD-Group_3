@@ -25,23 +25,15 @@
 
 ### Prerequisites
 
-*   Android Studio Ladybug or newer
+*   Android Studio
 *   JDK 17 or newer
 
 ### Installation
 
 1.  Clone the repo:
-    ```bash
-    git clone https://github.com/your-username/TrafficTracker.git
-    ```
 2.  Open the project in Android Studio.
 3.  Sync Gradle files to download dependencies.
-4.  Create a file named [`local.properties`](local.properties) in the root directory if it doesn't exist, and add your API keys (if applicable):
-    ```properties
-    sdk.dir=/path/to/android/sdk
-    MAPS_API_KEY=your_api_key_here
-    ```
-5.  Run the app on an emulator or physical device via the [`app`](app) configuration.
+4.  Run the app on an emulator or physical device via the [`app`](app) configuration.
 
 
 ## 📝 License
