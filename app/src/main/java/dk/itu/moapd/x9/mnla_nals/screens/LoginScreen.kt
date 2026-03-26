@@ -23,15 +23,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import dk.itu.moapd.x9.mnla_nals.AppNavigationBar
+import dk.itu.moapd.x9.mnla_nals.ViewModels.AuthViewModel
 import dk.itu.moapd.x9.mnla_nals.ui.theme.X9Theme
 
 @Composable
-fun LoginScreen(onGoogleSignInClick: () -> Unit) {
-//fun LoginScreen() {
+fun LoginScreen(authViewModel: AuthViewModel = viewModel()) {
+    val context = LocalContext.current
         Box(
         modifier = Modifier
             .fillMaxSize()
@@ -89,7 +92,7 @@ fun LoginScreen(onGoogleSignInClick: () -> Unit) {
 
             // Google Sign-In Button
             Button(
-                onClick = onGoogleSignInClick,
+                onClick = { authViewModel.signInWithGoogle(context) },
 //                onClick = { Log.d("Information", "Login pressed") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -156,7 +159,5 @@ fun LoginScreen(onGoogleSignInClick: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview() {
-    LoginScreen(
-        onGoogleSignInClick = TODO()
-    )
+    LoginScreen()
 }

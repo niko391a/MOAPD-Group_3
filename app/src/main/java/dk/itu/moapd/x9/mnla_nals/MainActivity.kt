@@ -31,8 +31,10 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.FirebaseApp
-import com.google.firebase.auth.FirebaseAuth
+import dk.itu.moapd.x9.mnla_nals.ViewModels.AuthViewModel
 import kotlinx.coroutines.launch
 import dk.itu.moapd.x9.mnla_nals.data.Report
 import dk.itu.moapd.x9.mnla_nals.screens.CreateReportScreen
@@ -47,20 +49,20 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         FirebaseApp.initializeApp(this)
-        val auth = FirebaseAuth.getInstance()
 
         enableEdgeToEdge()
+
         Log.d("Info","On Create was called for MainActivity")
 
         setContent {
+            val authViewModel: AuthViewModel = viewModel()
+            val user by authViewModel.user.collectAsStateWithLifecycle()
             var selectedTheme by rememberSaveable { mutableStateOf("Standard") }
 
             AppTheme(theme = selectedTheme) {
-                if(auth.currentUser == null) {
+                if(user == null) {
                     LoginScreen()
-                }
-
-                if (auth.currentUser != null) {
+                } else {
                     AppNavigationBar(onThemeChanged = { theme ->
                         selectedTheme = theme
                     }, currentTheme = selectedTheme)
