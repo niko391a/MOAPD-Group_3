@@ -38,7 +38,7 @@ fun LoginScreen(authViewModel: AuthViewModel = viewModel()) {
         Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF0F172A)) // Deep Slate/Traffic Night color
+            .background(Color(0xFF0F172A))
     ) {
         // Background Gradient
         Box(
@@ -61,11 +61,11 @@ fun LoginScreen(authViewModel: AuthViewModel = viewModel()) {
         ) {
             // App Branding
             Image(
-                painter = painterResource(id = R.drawable.x9_logo), // Replace with your drawable name
+                painter = painterResource(id = R.drawable.x9_logo),
                 contentDescription = "X9 Logo",
                 modifier = Modifier
                     .size(120.dp) // Adjusted size for an image
-                    .clip(RoundedCornerShape(24.dp)), // Keeps it consistent with the previous design
+                    .clip(RoundedCornerShape(24.dp)),
                 contentScale = ContentScale.Fit
             )
 
@@ -119,7 +119,7 @@ fun LoginScreen(authViewModel: AuthViewModel = viewModel()) {
 
             // Guest Sign-In Button
             Button(
-//                onClick = onGoogleSignInClick,
+//                onClick = onGuestSignInClick,
                 onClick = { Log.d("Information", "Login pressed") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -135,7 +135,6 @@ fun LoginScreen(authViewModel: AuthViewModel = viewModel()) {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    // You would replace this with an actual Google icon resource
                     Text(
                         text = "Continue as Guest",
                         style = MaterialTheme.typography.titleMedium,
@@ -145,13 +144,6 @@ fun LoginScreen(authViewModel: AuthViewModel = viewModel()) {
             }
 
             Spacer(modifier = Modifier.height(24.dp))
-
-//            // Footer info
-//            Text(
-//                text = "By signing in, you agree to our Terms of Service",
-//                style = MaterialTheme.typography.labelSmall,
-//                color = Color.Gray
-//            )
         }
     }
 }
