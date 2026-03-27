@@ -24,18 +24,35 @@ import androidx.compose.ui.platform.LocalContext
 import java.util.Locale
 import android.os.Build
 import android.os.LocaleList
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import dk.itu.moapd.x9.mnla_nals.R
 
 @Composable
 fun SettingsScreen(modifier: Modifier = Modifier, onThemeChanged: (String) -> Unit, currentTheme: String) {
     Column(modifier = modifier.fillMaxSize(),
     ) {
+        Spacer(modifier = Modifier.height(8.dp))
+
+        AccountInfo()
+
+        Spacer(modifier = Modifier.height(32.dp))
+
         SettingsThemeToggle(onThemeChanged = onThemeChanged, currentTheme = currentTheme)
         if (Build.VERSION.SDK_INT >= 33) {
+            Spacer(modifier = Modifier.height(32.dp))
             // This is the same as Build.VERSION_CODES.TIRAMISU
             SettingsLanguageSelector()
-        }    }
-
+        }
+    }
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -96,3 +113,29 @@ fun SettingsLanguageSelector() {
     }
 }
 
+@Composable
+fun AccountInfo() {
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(100.dp)
+    ) {
+        Text(
+            text = "Filled",
+            modifier = Modifier
+                .padding(16.dp),
+            textAlign = TextAlign.Center,
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SettingsScreenPreview() {
+    SettingsScreen(
+        onThemeChanged = {},
+        currentTheme = "Light"
+    )}
