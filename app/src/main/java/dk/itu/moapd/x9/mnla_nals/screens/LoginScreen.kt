@@ -39,7 +39,7 @@ fun LoginScreen(authViewModel: AuthViewModel = viewModel()) {
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color(0xFF0F172A))
-    ) {
+        ) {
         // Background Gradient
         Box(
             modifier = Modifier
