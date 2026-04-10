@@ -43,6 +43,21 @@ class AuthViewModel : ViewModel() {
         }
     }
 
+    fun signInAsGuest() {
+        // Await
+        viewModelScope.launch {
+            try {
+                // Wait for request to firebase to resolve before assigning user value
+                auth.signInAnonymously().await()
+                _user.value = auth.currentUser
+                Log.d("Auth", "Guest sign-in success: ${auth.currentUser?.uid}")
+            } catch (e: Exception) {
+                Log.e("Auth", "Guest sign-in failed", e)
+                _user.value = null
+            }
+        }
+    }
+
     private suspend fun handleSignIn(credential: Credential) {
         if (credential is CustomCredential &&
             credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL

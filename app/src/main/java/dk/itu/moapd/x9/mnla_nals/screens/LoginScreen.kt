@@ -36,9 +36,9 @@ import dk.itu.moapd.x9.mnla_nals.ui.theme.X9Theme
 fun LoginScreen(authViewModel: AuthViewModel = viewModel()) {
     val context = LocalContext.current
         Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF0F172A))
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFF0F172A))
     ) {
         // Background Gradient
         Box(
@@ -93,7 +93,6 @@ fun LoginScreen(authViewModel: AuthViewModel = viewModel()) {
             // Google Sign-In Button
             Button(
                 onClick = { authViewModel.signInWithGoogle(context) },
-//                onClick = { Log.d("Information", "Login pressed") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
@@ -119,8 +118,7 @@ fun LoginScreen(authViewModel: AuthViewModel = viewModel()) {
 
             // Guest Sign-In Button
             Button(
-//                onClick = onGuestSignInClick,
-                onClick = { Log.d("Information", "Login pressed") },
+                onClick = { authViewModel.signInAsGuest() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
