@@ -17,7 +17,9 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import dk.itu.moapd.x9.mnla_nals.R
+import dk.itu.moapd.x9.mnla_nals.ViewModels.ReportViewModel
 import dk.itu.moapd.x9.mnla_nals.components.AnimatedColorToggleButton
 import dk.itu.moapd.x9.mnla_nals.components.BasicDropdownMenu
 import dk.itu.moapd.x9.mnla_nals.data.Report
@@ -25,7 +27,8 @@ import dk.itu.moapd.x9.mnla_nals.data.Report
 @Composable
 fun CreateReportScreen(
     modifier: Modifier = Modifier,
-    onSubmitReport: (Report) -> Unit
+    reportViewModel: ReportViewModel = viewModel(),
+    navigate: () -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
@@ -120,7 +123,8 @@ fun CreateReportScreen(
                 if (reportTitle.isNotEmpty() && reportDescription.isNotEmpty() && selectedReportType.isNotEmpty() && reportSeverity.isNotEmpty()) {
                     val report =
                         Report(reportTitle, selectedReportType, reportDescription, reportSeverity)
-                    onSubmitReport(report)
+                    reportViewModel.addReport(report)
+                    navigate()
                 } else {
                     // Will be reformatted to use SnackBar in the future
                     Log.d(

@@ -23,11 +23,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dk.itu.moapd.x9.mnla_nals.data.Report
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import dk.itu.moapd.x9.mnla_nals.R
+import dk.itu.moapd.x9.mnla_nals.ViewModels.ReportViewModel
 
 
 @Composable
-fun HomeScreen(reports: List<Report>, modifier: Modifier = Modifier, onAddReport: () -> Unit = {}) {
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    onAddReport: () -> Unit = {},
+    reportViewModel: ReportViewModel = viewModel()
+) {
+    // Use by so we can take advantage of Kotlins inherent get-/setValue
+    val reports by reportViewModel.exposedReportList.collectAsState()
     Box(modifier = modifier.fillMaxSize()) {
         Column(
             modifier = Modifier

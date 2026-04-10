@@ -75,7 +75,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppNavigationBar(onThemeChanged: (String) -> Unit, currentTheme: String) {
     var selectedNavItem by rememberSaveable  { mutableIntStateOf(0) }
-    val reports = rememberSaveable { mutableStateListOf<Report>() }
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -109,21 +108,13 @@ fun AppNavigationBar(onThemeChanged: (String) -> Unit, currentTheme: String) {
         when (selectedNavItem) {
             0 -> {
                 HomeScreen(
-                    reports = reports,
                     modifier = Modifier.padding(innerPadding),
-                    onAddReport = { selectedNavItem = 1 }
                 )
             }
             1 -> {
                 CreateReportScreen(
                     Modifier.padding(innerPadding),
-                    onSubmitReport = { report ->
-                        reports.add(report)
-                        selectedNavItem = 0
-                        scope.launch {
-                            snackbarHostState.showSnackbar(snackbarReportSuccessful)
-                        }
-                    })
+                    navigate = { selectedNavItem = 0 })
             }
             2 -> {
                 SettingsScreen(
