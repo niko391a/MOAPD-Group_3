@@ -35,6 +35,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.FirebaseApp
 import dk.itu.moapd.x9.mnla_nals.ViewModels.AuthViewModel
+import dk.itu.moapd.x9.mnla_nals.ViewModels.ReportViewModel
 import kotlinx.coroutines.launch
 import dk.itu.moapd.x9.mnla_nals.data.Report
 import dk.itu.moapd.x9.mnla_nals.screens.CreateReportScreen
@@ -78,6 +79,8 @@ fun AppNavigationBar(onThemeChanged: (String) -> Unit, currentTheme: String) {
     val reports = rememberSaveable { mutableStateListOf<Report>() }
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+    val reportViewModel: ReportViewModel = viewModel()
+
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -118,7 +121,7 @@ fun AppNavigationBar(onThemeChanged: (String) -> Unit, currentTheme: String) {
                 CreateReportScreen(
                     Modifier.padding(innerPadding),
                     onSubmitReport = { report ->
-                        reports.add(report)
+                        reportViewModel.addReport(report)
                         selectedNavItem = 0
                         scope.launch {
                             snackbarHostState.showSnackbar(snackbarReportSuccessful)
