@@ -34,15 +34,22 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import dk.itu.moapd.x9.mnla_nals.R
+import dk.itu.moapd.x9.mnla_nals.ViewModels.AuthViewModel
 
 @Composable
-fun SettingsScreen(modifier: Modifier = Modifier, onThemeChanged: (String) -> Unit, currentTheme: String) {
+fun SettingsScreen(
+    modifier: Modifier = Modifier,
+    onThemeChanged: (String) -> Unit,
+    currentTheme: String,
+    authViewModel: AuthViewModel = viewModel()
+) {
     Column(modifier = modifier.fillMaxSize(),
     ) {
         Spacer(modifier = Modifier.height(8.dp))
 
-        AccountInfo()
+        AccountInfo(authViewModel)
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -114,7 +121,7 @@ fun SettingsLanguageSelector() {
 }
 
 @Composable
-fun AccountInfo() {
+fun AccountInfo(authViewModel: AuthViewModel) {
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -129,6 +136,11 @@ fun AccountInfo() {
                 .padding(16.dp),
             textAlign = TextAlign.Center,
         )
+        Button(
+            onClick = { authViewModel.signOut() }
+        ) {
+            Text(stringResource(R.string.settings_sign_out))
+        }
     }
 }
 

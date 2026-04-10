@@ -41,4 +41,5 @@
     <string name="settings_language_en_text">Switch to English</string>
     <string name="settings_language_da_text">Switch to Danish</string>
     <string name="web_client_id" translatable="false">62719430560-aqpv98lvu7f55colqnnh91qb84f5ckvd.apps.googleusercontent.com</string>
+    <string name="settings_sign_out">Log out</string>
 </resources>
