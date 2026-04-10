@@ -6,3 +6,4 @@ local.properties
 ./google-service.json
 app/google-services.json
 google-services.json
+**/.idea
