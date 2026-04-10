@@ -1,4 +1,5 @@
 package dk.itu.moapd.x9.mnla_nals
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -30,26 +31,42 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.firebase.FirebaseApp
+import dk.itu.moapd.x9.mnla_nals.ViewModels.AuthViewModel
 import kotlinx.coroutines.launch
 import dk.itu.moapd.x9.mnla_nals.data.Report
 import dk.itu.moapd.x9.mnla_nals.screens.CreateReportScreen
 import dk.itu.moapd.x9.mnla_nals.screens.HomeScreen
+import dk.itu.moapd.x9.mnla_nals.screens.LoginScreen
 import dk.itu.moapd.x9.mnla_nals.screens.SettingsScreen
 import dk.itu.moapd.x9.mnla_nals.ui.theme.CustomThemes
 
 class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
 
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        FirebaseApp.initializeApp(this)
+
         enableEdgeToEdge()
+
         Log.d("Info","On Create was called for MainActivity")
+
         setContent {
+            val authViewModel: AuthViewModel = viewModel()
+            val user by authViewModel.user.collectAsStateWithLifecycle()
             var selectedTheme by rememberSaveable { mutableStateOf("Standard") }
 
             AppTheme(theme = selectedTheme) {
-                AppNavigationBar(onThemeChanged = { theme ->
-                    selectedTheme = theme
-                }, currentTheme = selectedTheme)
+                if(user == null) {
+                    LoginScreen()
+                } else {
+                    AppNavigationBar(onThemeChanged = { theme ->
+                        selectedTheme = theme
+                    }, currentTheme = selectedTheme)
+                }
             }
         }
     }
