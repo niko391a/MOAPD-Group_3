@@ -75,7 +75,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppNavigationBar(onThemeChanged: (String) -> Unit, currentTheme: String) {
     var selectedNavItem by rememberSaveable  { mutableIntStateOf(0) }
-    val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
@@ -104,7 +103,6 @@ fun AppNavigationBar(onThemeChanged: (String) -> Unit, currentTheme: String) {
             }
         }
     ) { innerPadding ->
-        val snackbarReportSuccessful = stringResource(R.string.snackbar_report_successful)
         when (selectedNavItem) {
             0 -> {
                 HomeScreen(

@@ -23,12 +23,14 @@ import dk.itu.moapd.x9.mnla_nals.ViewModels.ReportViewModel
 import dk.itu.moapd.x9.mnla_nals.components.AnimatedColorToggleButton
 import dk.itu.moapd.x9.mnla_nals.components.BasicDropdownMenu
 import dk.itu.moapd.x9.mnla_nals.data.Report
+import kotlinx.coroutines.launch
 
 @Composable
 fun CreateReportScreen(
     modifier: Modifier = Modifier,
     reportViewModel: ReportViewModel = viewModel(),
-    navigate: () -> Unit
+    navigate: () -> Unit,
+    snackbarHostState: SnackbarHostState
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
@@ -37,6 +39,7 @@ fun CreateReportScreen(
     var selectedReportType by rememberSaveable { mutableStateOf("") }
     var reportSeverity by rememberSaveable { mutableStateOf("") }
 
+    val scope = rememberCoroutineScope()
     val reportTypes = stringArrayResource(R.array.create_report_types)
 
     Column(
@@ -121,9 +124,16 @@ fun CreateReportScreen(
         Button(
             onClick = {
                 if (reportTitle.isNotEmpty() && reportDescription.isNotEmpty() && selectedReportType.isNotEmpty() && reportSeverity.isNotEmpty()) {
-                    val report =
-                        Report(reportTitle, selectedReportType, reportDescription, reportSeverity)
+                    val report = Report(
+                        reportTitle,
+                        selectedReportType,
+                        reportDescription,
+                        reportSeverity
+                    )
                     reportViewModel.addReport(report)
+                    scope.launch {
+                        snackbarHostState.showSnackbar("${R.string.snackbar_report_successful}")
+                    }
                     navigate()
                 } else {
                     // Will be reformatted to use SnackBar in the future
@@ -136,6 +146,9 @@ fun CreateReportScreen(
                     Severity: ${reportSeverity}
                     """.trimIndent()
                     )
+                    scope.launch {
+                        snackbarHostState.showSnackbar("${R.string.snackbar_report_unsuccessful}")
+                    }
                 }
             },
             modifier = Modifier.fillMaxWidth()
