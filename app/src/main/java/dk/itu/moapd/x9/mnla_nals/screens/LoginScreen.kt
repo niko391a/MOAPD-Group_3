@@ -1,5 +1,6 @@
 package dk.itu.moapd.x9.mnla_nals.screens
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,11 +35,12 @@ import dk.itu.moapd.x9.mnla_nals.ui.theme.X9Theme
 
 @Composable
 fun LoginScreen(authViewModel: AuthViewModel = viewModel()) {
-    val context = LocalContext.current
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0xFF0F172A))
+    val context: Context
+    context = LocalContext.current
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF0F172A))
         ) {
         // Background Gradient
         Box(

@@ -17,15 +17,20 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import dk.itu.moapd.x9.mnla_nals.R
+import dk.itu.moapd.x9.mnla_nals.ViewModels.ReportViewModel
 import dk.itu.moapd.x9.mnla_nals.components.AnimatedColorToggleButton
 import dk.itu.moapd.x9.mnla_nals.components.BasicDropdownMenu
 import dk.itu.moapd.x9.mnla_nals.data.Report
+import kotlinx.coroutines.launch
 
 @Composable
 fun CreateReportScreen(
     modifier: Modifier = Modifier,
-    onSubmitReport: (Report) -> Unit
+    reportViewModel: ReportViewModel = viewModel(),
+    navigate: () -> Unit,
+    snackbarHostState: SnackbarHostState
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
@@ -34,6 +39,7 @@ fun CreateReportScreen(
     var selectedReportType by rememberSaveable { mutableStateOf("") }
     var reportSeverity by rememberSaveable { mutableStateOf("") }
 
+    val scope = rememberCoroutineScope()
     val reportTypes = stringArrayResource(R.array.create_report_types)
 
     Column(
@@ -118,9 +124,17 @@ fun CreateReportScreen(
         Button(
             onClick = {
                 if (reportTitle.isNotEmpty() && reportDescription.isNotEmpty() && selectedReportType.isNotEmpty() && reportSeverity.isNotEmpty()) {
-                    val report =
-                        Report(reportTitle, selectedReportType, reportDescription, reportSeverity)
-                    onSubmitReport(report)
+                    val report = Report(
+                        reportTitle,
+                        selectedReportType,
+                        reportDescription,
+                        reportSeverity
+                    )
+                    reportViewModel.addReport(report)
+                    scope.launch {
+                        snackbarHostState.showSnackbar("${R.string.snackbar_report_successful}")
+                    }
+                    navigate()
                 } else {
                     // Will be reformatted to use SnackBar in the future
                     Log.d(
@@ -132,6 +146,9 @@ fun CreateReportScreen(
                     Severity: ${reportSeverity}
                     """.trimIndent()
                     )
+                    scope.launch {
+                        snackbarHostState.showSnackbar("${R.string.snackbar_report_unsuccessful}")
+                    }
                 }
             },
             modifier = Modifier.fillMaxWidth()

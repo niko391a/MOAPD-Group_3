@@ -41,5 +41,6 @@
     <string name="snackbar_report_successful">Rapport er oprettet</string>
     <string name="settings_language_en_text">Skift til Engelsk</string>
     <string name="settings_language_da_text">Skift til Dansk</string>
-    <string name="settings_sign_out">Log af</string>>
+    <string name="settings_sign_out">Log af</string>
+    <string name="snackbar_report_unsuccessful">Alle felter skal udfyldes!</string>>
 </resources>
