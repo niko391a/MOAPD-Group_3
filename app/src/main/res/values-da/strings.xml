@@ -39,6 +39,8 @@
         <item>Ultra Mørk</item>
     </string-array>
     <string name="snackbar_report_successful">Rapport er oprettet</string>
+    <string name="snackbar_No_auth"> Du skal være logget ind for at lave en rapport</string>
+    <string name="Banner"> Du er logget ind som en Gæst </string>
     <string name="settings_language_en_text">Skift til Engelsk</string>
     <string name="settings_language_da_text">Skift til Dansk</string>
     <string name="settings_sign_out">Log af</string>

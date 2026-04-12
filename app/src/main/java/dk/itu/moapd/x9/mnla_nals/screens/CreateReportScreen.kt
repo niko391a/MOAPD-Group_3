@@ -17,8 +17,10 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dk.itu.moapd.x9.mnla_nals.R
+import dk.itu.moapd.x9.mnla_nals.ViewModels.AuthViewModel
 import dk.itu.moapd.x9.mnla_nals.ViewModels.ReportViewModel
 import dk.itu.moapd.x9.mnla_nals.components.AnimatedColorToggleButton
 import dk.itu.moapd.x9.mnla_nals.components.BasicDropdownMenu
@@ -30,8 +32,10 @@ fun CreateReportScreen(
     modifier: Modifier = Modifier,
     reportViewModel: ReportViewModel = viewModel(),
     navigate: () -> Unit,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
+    authViewModel: AuthViewModel = viewModel()
 ) {
+    val user by authViewModel.user.collectAsStateWithLifecycle()
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
     var reportTitle by rememberSaveable { mutableStateOf("") }
@@ -74,8 +78,8 @@ fun CreateReportScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         BasicDropdownMenu(
-            reportType = selectedReportType,
-            reportTypes = reportTypes,
+            selectedValue = selectedReportType,
+            dropdownOptions = reportTypes,
             onTypeSelected = { newType ->
                 selectedReportType = newType // This is where the actual reassignment happens
             }
@@ -123,7 +127,11 @@ fun CreateReportScreen(
 
         Button(
             onClick = {
-                if (reportTitle.isNotEmpty() && reportDescription.isNotEmpty() && selectedReportType.isNotEmpty() && reportSeverity.isNotEmpty()) {
+                if (user?.isAnonymous == true) {
+                    Log.d("auth", "user is not Authorised")
+                    scope.launch { snackbarHostState.showSnackbar("${R.string.snackbar_No_auth}")}
+                }
+                else if (reportTitle.isNotEmpty() && reportDescription.isNotEmpty() && selectedReportType.isNotEmpty() && reportSeverity.isNotEmpty()) {
                     val report = Report(
                         reportTitle,
                         selectedReportType,
@@ -135,7 +143,7 @@ fun CreateReportScreen(
                         snackbarHostState.showSnackbar("${R.string.snackbar_report_successful}")
                     }
                     navigate()
-                } else {
+                }else {
                     // Will be reformatted to use SnackBar in the future
                     Log.d(
                         "Submit", """

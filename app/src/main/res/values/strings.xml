@@ -38,6 +38,8 @@
         <item>Ultra Dark</item>
     </string-array>
     <string name="snackbar_report_successful">Report has been created!</string>
+    <string name="snackbar_No_auth"> You need to be signed in to create a report</string>
+    <string name="Banner"> You are signed in as a Guest</string>
     <string name="settings_language_en_text">Switch to English</string>
     <string name="settings_language_da_text">Switch to Danish</string>
     <string name="web_client_id" translatable="false">62719430560-aqpv98lvu7f55colqnnh91qb84f5ckvd.apps.googleusercontent.com</string>

@@ -34,16 +34,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dk.itu.moapd.x9.mnla_nals.R
 import dk.itu.moapd.x9.mnla_nals.ViewModels.AuthViewModel
+import dk.itu.moapd.x9.mnla_nals.ViewModels.SettingsViewModel
+import dk.itu.moapd.x9.mnla_nals.ui.theme.AppTheme
 
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
-    onThemeChanged: (String) -> Unit,
-    currentTheme: String,
-    authViewModel: AuthViewModel = viewModel()
+    authViewModel: AuthViewModel = viewModel(),
+    settingsViewModel: SettingsViewModel = viewModel(),
 ) {
     Column(modifier = modifier.fillMaxSize(),
     ) {
@@ -53,7 +55,8 @@ fun SettingsScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        SettingsThemeToggle(onThemeChanged = onThemeChanged, currentTheme = currentTheme)
+        SettingsThemeToggle(settingsViewModel)
+
         if (Build.VERSION.SDK_INT >= 33) {
             Spacer(modifier = Modifier.height(32.dp))
             // This is the same as Build.VERSION_CODES.TIRAMISU
@@ -63,16 +66,31 @@ fun SettingsScreen(
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsThemeToggle(onThemeChanged: (String) -> Unit, currentTheme: String) {
-    var themeType by rememberSaveable  { mutableStateOf(currentTheme) }
+fun SettingsThemeToggle(
+    settingsViewModel: SettingsViewModel
+) {
+    val currentTheme by settingsViewModel.currentTheme.collectAsStateWithLifecycle()
     var expanded by rememberSaveable  { mutableStateOf(false) }
     val themeTypes = stringArrayResource(R.array.Themes)
+
+    // Map display strings to enum values for the ViewModel
+    val themeMap = mapOf(
+        themeTypes[0] to AppTheme.STANDARD,
+        themeTypes[1] to AppTheme.LIGHT,
+        themeTypes[2] to AppTheme.DARK,
+        themeTypes[3] to AppTheme.RAINBOW,
+        themeTypes[4] to AppTheme.ULTRA_DARK,
+    )
+
+    // Reverse lookup: enum -> display string
+    val displayName = themeMap.entries.find { it.value == currentTheme }?.key ?: themeTypes[0]
+
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = !expanded }
     ) {
         OutlinedTextField(
-            value = themeType,
+            value = displayName,
             onValueChange = {},
             readOnly = true,
             label = { Text(stringResource(id = R.string.theme_settings)) },
@@ -89,9 +107,8 @@ fun SettingsThemeToggle(onThemeChanged: (String) -> Unit, currentTheme: String) 
                 DropdownMenuItem(
                     text = { Text(type) },
                     onClick = {
-                        themeType = type
                         expanded = false
-                        onThemeChanged(type)
+                        settingsViewModel.setTheme(themeMap[type] ?: AppTheme.STANDARD)
                     }
                 )
             }
@@ -147,7 +164,5 @@ fun AccountInfo(authViewModel: AuthViewModel) {
 @Preview(showBackground = true)
 @Composable
 fun SettingsScreenPreview() {
-    SettingsScreen(
-        onThemeChanged = {},
-        currentTheme = "Light"
-    )}
+    SettingsScreen()
+}

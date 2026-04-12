@@ -27,6 +27,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dk.itu.moapd.x9.mnla_nals.R
+import dk.itu.moapd.x9.mnla_nals.ViewModels.AuthViewModel
 import dk.itu.moapd.x9.mnla_nals.ViewModels.ReportViewModel
 
 
@@ -34,10 +35,12 @@ import dk.itu.moapd.x9.mnla_nals.ViewModels.ReportViewModel
 fun HomeScreen(
     modifier: Modifier = Modifier,
     onAddReport: () -> Unit = {},
-    reportViewModel: ReportViewModel = viewModel()
+    reportViewModel: ReportViewModel = viewModel(),
+    authViewModel: AuthViewModel = viewModel(),
 ) {
     // Use by so we can take advantage of Kotlins inherent get-/setValue
     val reports by reportViewModel.exposedReportList.collectAsState()
+    val user by authViewModel.user.collectAsState()
     Box(modifier = modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -65,19 +68,20 @@ fun HomeScreen(
                 }
             }
         }
+        if(user?.isAnonymous == false) {
+            FloatingActionButton(
+                onClick = onAddReport,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp),
 
-        FloatingActionButton(
-            onClick = onAddReport,
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp),
-
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "Add Report",
-                tint = Color.White
-            )
+                ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add Report",
+                    tint = Color.White
+                )
+            }
         }
     }
 }
