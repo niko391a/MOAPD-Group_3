@@ -1,8 +1,4 @@
 package dk.itu.moapd.x9.mnla_nals.ViewModels
-
-// /home/matt/DEV/MOAPD-Group_3/app/src/main/java/dk/itu/moapd/x9/mnla_nals/ViewModels/ReportViewModel.kt
-
-
 import androidx.lifecycle.ViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
