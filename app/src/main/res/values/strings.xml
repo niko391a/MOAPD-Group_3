@@ -34,7 +34,6 @@
         <item>Light</item>
         <item>Dark</item>
         <item>Rainbow</item>
-        <item>Ultra Dark</item>
     </string-array>
     <string name="snackbar_report_successful">Report has been created!</string>
     <string name="snackbar_No_auth"> You need to be signed in to create a report</string>

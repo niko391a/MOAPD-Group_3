@@ -22,7 +22,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.FirebaseApp
 import dk.itu.moapd.x9.mnla_nals.ViewModels.AuthViewModel
+import dk.itu.moapd.x9.mnla_nals.ViewModels.ReportViewModel
 import dk.itu.moapd.x9.mnla_nals.ViewModels.SettingsViewModel
+import dk.itu.moapd.x9.mnla_nals.ViewModels.SnackViewModel
 import dk.itu.moapd.x9.mnla_nals.screens.CreateReportScreen
 import dk.itu.moapd.x9.mnla_nals.screens.HomeScreen
 import dk.itu.moapd.x9.mnla_nals.screens.LoginScreen
@@ -46,6 +48,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val settingsViewModel: SettingsViewModel = viewModel()
             val authViewModel: AuthViewModel = viewModel()
+            val reportViewModel: ReportViewModel = viewModel()
 
             val user by authViewModel.user.collectAsStateWithLifecycle()
             val selectedTheme by settingsViewModel.currentTheme.collectAsStateWithLifecycle()
@@ -63,12 +66,20 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AppNavigationBar(
-    authViewModel: AuthViewModel = viewModel()) {
+    authViewModel: AuthViewModel = viewModel(),
+    snackViewModel: SnackViewModel = viewModel(),
+) {
+
     var selectedNavItem by rememberSaveable  { mutableIntStateOf(0) }
     val snackbarHostState = remember { SnackbarHostState() }
     val user by authViewModel.user.collectAsStateWithLifecycle()
-    val scope = rememberCoroutineScope()
 
+
+    LaunchedEffect(Unit) {
+        snackViewModel.snackbarMessage.collect { message ->
+            snackbarHostState.showSnackbar(message)
+        }
+    }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -108,7 +119,7 @@ fun AppNavigationBar(
             }
             1 -> {
                 if (user?.isAnonymous == true) {
-                    LaunchedEffect(Unit) { // <-- use LaunchedEffect instead of scope.launch
+                    LaunchedEffect(Unit) {
                         snackbarHostState.showSnackbar("You need to sign in to access this feature")
                     }
                 }else {
@@ -143,7 +154,6 @@ fun AppTheme(theme: AppTheme, content: @Composable () -> Unit) {
         AppTheme.LIGHT -> X9Theme(darkTheme = false, content = content)
         AppTheme.DARK -> X9Theme(darkTheme = true, content = content)
         AppTheme.RAINBOW -> CustomThemes("Rainbow",content = content)  // Add custom rainbow theme later
-        AppTheme.ULTRA_DARK -> CustomThemes("Ultra Dark",content = content)  // Add custom ultra dark theme later
     }
 }
 @Composable

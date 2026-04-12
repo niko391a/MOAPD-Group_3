@@ -36,7 +36,6 @@
         <item>Lys</item>
         <item>Mørk</item>
         <item>Regnbue</item>
-        <item>Ultra Mørk</item>
     </string-array>
     <string name="snackbar_report_successful">Rapport er oprettet</string>
     <string name="snackbar_No_auth"> Du skal være logget ind for at lave en rapport</string>

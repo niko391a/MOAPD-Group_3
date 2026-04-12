@@ -16,4 +16,5 @@ class ReportViewModel : ViewModel() {
     fun addReport(report: Report) {
         reportList.add(report)
     }
+
 }

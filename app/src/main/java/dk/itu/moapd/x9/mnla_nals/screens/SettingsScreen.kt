@@ -119,7 +119,6 @@ fun SettingsThemeToggle(settingsViewModel: SettingsViewModel) {
         themeTypes[1] to AppTheme.LIGHT,
         themeTypes[2] to AppTheme.DARK,
         themeTypes[3] to AppTheme.RAINBOW,
-        themeTypes[4] to AppTheme.ULTRA_DARK,
     )
 
     val displayName = themeMap.entries.find { it.value == currentTheme }?.key ?: themeTypes[0]
