@@ -25,7 +25,8 @@ import dk.itu.moapd.x9.mnla_nals.R
 fun BasicDropdownMenu(
     selectedValue: String,         // The current value
     dropdownOptions: Array<String>,  // The list of options
-    onTypeSelected: (String) -> Unit // The callback to update the state
+    onTypeSelected: (String) -> Unit, // The callback to update the state
+    label: String = ""
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -35,7 +36,7 @@ fun BasicDropdownMenu(
             value = selectedValue,
             onValueChange = {},
             readOnly = true,
-            label = { Text(stringResource(id = R.string.create_report_type)) },
+            label = { Text(label) },
             trailingIcon = {
                 // Using a standard IconButton for the toggle
                 IconButton(onClick = { expanded = !expanded }) {
