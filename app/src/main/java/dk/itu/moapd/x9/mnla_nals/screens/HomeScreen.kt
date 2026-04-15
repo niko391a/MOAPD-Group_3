@@ -39,7 +39,7 @@ fun HomeScreen(
     authViewModel: AuthViewModel = viewModel(),
 ) {
     // Use by so we can take advantage of Kotlins inherent get-/setValue
-    val reports by reportViewModel.exposedReportList.collectAsState()
+    val reports by reportViewModel.reports.collectAsState(initial = emptyList())
     val user by authViewModel.user.collectAsState()
     Box(modifier = modifier.fillMaxSize()) {
         Column(

@@ -32,7 +32,6 @@ import dk.itu.moapd.x9.mnla_nals.screens.SettingsScreen
 import dk.itu.moapd.x9.mnla_nals.ui.theme.AppTheme
 import dk.itu.moapd.x9.mnla_nals.ui.theme.CustomThemes
 import dk.itu.moapd.x9.mnla_nals.ui.theme.X9Theme
-import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
