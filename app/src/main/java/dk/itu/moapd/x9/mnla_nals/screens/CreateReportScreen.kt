@@ -141,16 +141,18 @@ fun CreateReportScreen(
                 else if (reportTitle.isNotEmpty() && reportDescription.isNotEmpty() && selectedReportType.isNotEmpty() && reportSeverity.isNotEmpty()) {
                     val report = Report(
                         reportTitle,
-                        selectedReportType,
                         reportDescription,
+                        selectedReportType,
                         reportSeverity
                     )
-                    reportViewModel.addReport(report)
+
+                    user?.uid?.let { uid -> reportViewModel.addReport(report, uid) }
+
                     snackViewModel.sendSnackbarMessage(reportSuccess)
 
                     navigate()
 
-                }else {
+                } else {
                     // Will be reformatted to use SnackBar in the future
                     Log.d(
                         "Submit", """
