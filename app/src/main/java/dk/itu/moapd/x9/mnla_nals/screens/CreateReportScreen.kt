@@ -13,13 +13,17 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dk.itu.moapd.x9.mnla_nals.R
+import dk.itu.moapd.x9.mnla_nals.ViewModels.AuthViewModel
 import dk.itu.moapd.x9.mnla_nals.ViewModels.ReportViewModel
+import dk.itu.moapd.x9.mnla_nals.ViewModels.SnackViewModel
 import dk.itu.moapd.x9.mnla_nals.components.AnimatedColorToggleButton
 import dk.itu.moapd.x9.mnla_nals.components.BasicDropdownMenu
 import dk.itu.moapd.x9.mnla_nals.data.Report
@@ -29,9 +33,12 @@ import kotlinx.coroutines.launch
 fun CreateReportScreen(
     modifier: Modifier = Modifier,
     reportViewModel: ReportViewModel = viewModel(),
+    snackViewModel: SnackViewModel = viewModel(),
     navigate: () -> Unit,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
+    authViewModel: AuthViewModel = viewModel()
 ) {
+    val user by authViewModel.user.collectAsStateWithLifecycle()
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
     var reportTitle by rememberSaveable { mutableStateOf("") }
@@ -41,6 +48,8 @@ fun CreateReportScreen(
 
     val scope = rememberCoroutineScope()
     val reportTypes = stringArrayResource(R.array.create_report_types)
+    val context = LocalContext.current
+
 
     Column(
         modifier = modifier
@@ -74,11 +83,12 @@ fun CreateReportScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         BasicDropdownMenu(
-            reportType = selectedReportType,
-            reportTypes = reportTypes,
+            selectedValue = selectedReportType,
+            dropdownOptions = reportTypes,
             onTypeSelected = { newType ->
                 selectedReportType = newType // This is where the actual reassignment happens
-            }
+            },
+            label = stringResource(id = R.string.create_report_type)
         )
 
 
@@ -123,7 +133,11 @@ fun CreateReportScreen(
 
         Button(
             onClick = {
-                if (reportTitle.isNotEmpty() && reportDescription.isNotEmpty() && selectedReportType.isNotEmpty() && reportSeverity.isNotEmpty()) {
+                if (user?.isAnonymous == true) {
+                    Log.d("auth", "user is not Authorised")
+                    scope.launch { snackbarHostState.showSnackbar(context.getString(R.string.snackbar_No_auth)) }
+                }
+                else if (reportTitle.isNotEmpty() && reportDescription.isNotEmpty() && selectedReportType.isNotEmpty() && reportSeverity.isNotEmpty()) {
                     val report = Report(
                         reportTitle,
                         selectedReportType,
@@ -131,11 +145,11 @@ fun CreateReportScreen(
                         reportSeverity
                     )
                     reportViewModel.addReport(report)
-                    scope.launch {
-                        snackbarHostState.showSnackbar("${R.string.snackbar_report_successful}")
-                    }
+                    snackViewModel.sendSnackbarMessage(context.getString(R.string.snackbar_report_successful))
+
                     navigate()
-                } else {
+
+                }else {
                     // Will be reformatted to use SnackBar in the future
                     Log.d(
                         "Submit", """
@@ -147,7 +161,7 @@ fun CreateReportScreen(
                     """.trimIndent()
                     )
                     scope.launch {
-                        snackbarHostState.showSnackbar("${R.string.snackbar_report_unsuccessful}")
+                        snackbarHostState.showSnackbar(context.getString(R.string.snackbar_report_unsuccessful))
                     }
                 }
             },

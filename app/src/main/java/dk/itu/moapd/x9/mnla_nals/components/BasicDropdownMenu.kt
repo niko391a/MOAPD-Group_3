@@ -23,19 +23,20 @@ import dk.itu.moapd.x9.mnla_nals.R
 
 @Composable
 fun BasicDropdownMenu(
-    reportType: String,         // The current value
-    reportTypes: Array<String>,  // The list of options
-    onTypeSelected: (String) -> Unit // The callback to update the state
+    selectedValue: String,         // The current value
+    dropdownOptions: Array<String>,  // The list of options
+    onTypeSelected: (String) -> Unit, // The callback to update the state
+    label: String = ""
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     // Wrap in a Box to provide a coordinate parent for the menu
     Box(modifier = Modifier.fillMaxWidth()) {
         OutlinedTextField(
-            value = reportType,
+            value = selectedValue,
             onValueChange = {},
             readOnly = true,
-            label = { Text(stringResource(id = R.string.create_report_type)) },
+            label = { Text(label) },
             trailingIcon = {
                 // Using a standard IconButton for the toggle
                 IconButton(onClick = { expanded = !expanded }) {
@@ -62,7 +63,7 @@ fun BasicDropdownMenu(
             // This ensures the menu aligns with the start of the Box
             modifier = Modifier.fillMaxWidth(0.9f) // Optional: Adjust width manually
         ) {
-            reportTypes.forEach { type ->
+            dropdownOptions.forEach { type ->
                 DropdownMenuItem(
                     text = { Text(type) },
                     onClick = {
