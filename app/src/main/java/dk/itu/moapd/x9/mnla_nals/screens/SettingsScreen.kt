@@ -1,153 +1,205 @@
 package dk.itu.moapd.x9.mnla_nals.screens
 
 import android.app.LocaleManager
-import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.res.stringArrayResource
-import androidx.compose.material3.Button
-import androidx.compose.ui.platform.LocalContext
-import java.util.Locale
 import android.os.Build
 import android.os.LocaleList
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.firebase.auth.FirebaseUser
 import dk.itu.moapd.x9.mnla_nals.R
 import dk.itu.moapd.x9.mnla_nals.ViewModels.AuthViewModel
+import dk.itu.moapd.x9.mnla_nals.ViewModels.SettingsViewModel
+import dk.itu.moapd.x9.mnla_nals.components.AnimatedColorToggleButton
+import dk.itu.moapd.x9.mnla_nals.components.BasicDropdownMenu
+import dk.itu.moapd.x9.mnla_nals.ui.theme.AppTheme
+import java.util.Locale
 
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
-    onThemeChanged: (String) -> Unit,
-    currentTheme: String,
-    authViewModel: AuthViewModel = viewModel()
+    authViewModel: AuthViewModel = viewModel(),
+    settingsViewModel: SettingsViewModel = viewModel(),
 ) {
-    Column(modifier = modifier.fillMaxSize(),
+    // Collect here at the top level so child composables receive plain values,
+    // not StateFlows — this is the idiomatic "state hoisting" pattern in Compose
+    val user by authViewModel.user.collectAsStateWithLifecycle()
+    val currentLocaleTag by settingsViewModel.currentLocaleTag.collectAsStateWithLifecycle()
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         Spacer(modifier = Modifier.height(8.dp))
 
-        AccountInfo(authViewModel)
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        SettingsThemeToggle(onThemeChanged = onThemeChanged, currentTheme = currentTheme)
-        if (Build.VERSION.SDK_INT >= 33) {
-            Spacer(modifier = Modifier.height(32.dp))
-            // This is the same as Build.VERSION_CODES.TIRAMISU
-            SettingsLanguageSelector()
-        }
-    }
-}
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SettingsThemeToggle(onThemeChanged: (String) -> Unit, currentTheme: String) {
-    var themeType by rememberSaveable  { mutableStateOf(currentTheme) }
-    var expanded by rememberSaveable  { mutableStateOf(false) }
-    val themeTypes = stringArrayResource(R.array.Themes)
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded }
-    ) {
-        OutlinedTextField(
-            value = themeType,
-            onValueChange = {},
-            readOnly = true,
-            label = { Text(stringResource(id = R.string.theme_settings)) },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier
-                .menuAnchor()
-                .fillMaxWidth()
-        )
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
+        SettingsSection(
+            icon = Icons.Default.AccountCircle,
+            title = stringResource(R.string.settings_label_account)
         ) {
-            themeTypes.forEach { type ->
-                DropdownMenuItem(
-                    text = { Text(type) },
-                    onClick = {
-                        themeType = type
-                        expanded = false
-                        onThemeChanged(type)
-                    }
+            AccountInfo(
+                user = user,
+                onSignOut = { authViewModel.signOut() }
+            )
+        }
+
+        SettingsSection(
+            icon = Icons.Default.Settings,
+            title = stringResource(R.string.settings_label_theme)
+        ) {
+            SettingsThemeToggle(settingsViewModel)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            SettingsSection(icon = Icons.Default.Settings, title = stringResource(R.string.settings_label_language)) {
+                SettingsLanguageSelector(
+                    currentLocaleTag = currentLocaleTag,
+                    onLocaleSelected = { tag -> settingsViewModel.setLocale(tag) }
                 )
             }
         }
     }
 }
 
-// Min API 33+ friendly version:
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+/**
+ * Reusable section wrapper. Uses a slot API (content lambda) so each section
+ * controls its own internals while sharing the same header chrome.
+ */
 @Composable
-fun SettingsLanguageSelector() {
-    val context = LocalContext.current
+fun SettingsSection(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    title: String,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(20.dp)
+            )
+            Text(
+                text = title,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
 
-    Button(onClick = {
-        context.getSystemService(LocaleManager::class.java)
-            .applicationLocales = LocaleList(Locale.forLanguageTag("en"))
-    }) {
-        Text(stringResource(R.string.settings_language_en_text))
-    }
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
-    Button(onClick = {
-        context.getSystemService(LocaleManager::class.java)
-            .applicationLocales = LocaleList(Locale.forLanguageTag("da"))
-    }) {
-        Text(stringResource(R.string.settings_language_da_text))
+        content()
     }
 }
 
 @Composable
-fun AccountInfo(authViewModel: AuthViewModel) {
+fun SettingsThemeToggle(settingsViewModel: SettingsViewModel) {
+    val currentTheme by settingsViewModel.currentTheme.collectAsStateWithLifecycle()
+    val themeTypes = stringArrayResource(R.array.Themes)
+
+    val themeMap = mapOf(
+        themeTypes[0] to AppTheme.STANDARD,
+        themeTypes[1] to AppTheme.LIGHT,
+        themeTypes[2] to AppTheme.DARK,
+        themeTypes[3] to AppTheme.RAINBOW,
+    )
+
+    val displayName = themeMap.entries.find { it.value == currentTheme }?.key ?: themeTypes[0]
+
+    BasicDropdownMenu(
+        selectedValue = displayName,
+        dropdownOptions = themeTypes,
+        onTypeSelected = { selected ->
+            settingsViewModel.setTheme(themeMap[selected] ?: AppTheme.STANDARD)
+        }
+    )
+}
+
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+@Composable
+fun SettingsLanguageSelector(
+    currentLocaleTag: String,
+    onLocaleSelected: (String) -> Unit
+) {
+    val context = LocalContext.current
+
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        AnimatedColorToggleButton(
+            buttonText = stringResource(R.string.settings_language_en_text),
+            isSelected = currentLocaleTag == "en",
+            modifier = Modifier.weight(1f),
+            onClick = {
+                onLocaleSelected("en")
+                context.getSystemService(LocaleManager::class.java)
+                    .applicationLocales = LocaleList(Locale.forLanguageTag("en"))
+            }
+        )
+
+        AnimatedColorToggleButton(
+            buttonText = stringResource(R.string.settings_language_da_text),
+            isSelected = currentLocaleTag == "da",
+            modifier = Modifier.weight(1f),
+            onClick = {
+                onLocaleSelected("da")
+                context.getSystemService(LocaleManager::class.java)
+                    .applicationLocales = LocaleList(Locale.forLanguageTag("da"))
+            }
+        )
+    }
+}
+
+/**
+ * Receives user state and a sign-out callback instead of the ViewModel directly.
+ * This makes AccountInfo easier to preview and test in isolation — it has no
+ * knowledge of where the data comes from, only how to display it.
+ */
+@Composable
+fun AccountInfo(
+    user: FirebaseUser?,
+    onSignOut: () -> Unit
+) {
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
         ),
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(100.dp)
+        modifier = Modifier.fillMaxWidth()
     ) {
-        Text(
-            text = "Filled",
+        Row(
             modifier = Modifier
+                .fillMaxWidth()
                 .padding(16.dp),
-            textAlign = TextAlign.Center,
-        )
-        Button(
-            onClick = { authViewModel.signOut() }
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(stringResource(R.string.settings_sign_out))
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text(
+                    // Anonymous users have null email — handle both cases
+                    text = user?.email ?: stringResource(R.string.settings_label_guest),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            OutlinedButton(onClick = onSignOut) {
+                Text(stringResource(R.string.settings_sign_out))
+            }
         }
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-fun SettingsScreenPreview() {
-    SettingsScreen(
-        onThemeChanged = {},
-        currentTheme = "Light"
-    )}

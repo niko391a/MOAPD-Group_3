@@ -1,15 +1,20 @@
 package dk.itu.moapd.x9.mnla_nals.ViewModels
+
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
-import com.google.firebase.Firebase
-import com.google.firebase.database.database
 import dk.itu.moapd.x9.mnla_nals.data.Report
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class ReportViewModel : ViewModel() {
-    // Reference to your Realtime Database
-    private val database = Firebase.database.reference.child("reports")
+    // Expose screen UI state
+    private val reportList =  mutableStateListOf<Report>()
+    private val _uiState = MutableStateFlow(reportList)
+    val exposedReportList: StateFlow<List<Report>> = _uiState.asStateFlow()
 
     fun addReport(report: Report) {
-        // Push creates a unique ID for each report
-        database.push().setValue(report)
+        reportList.add(report)
     }
+
 }
