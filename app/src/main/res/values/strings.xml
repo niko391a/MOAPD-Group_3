@@ -47,4 +47,5 @@
     <string name="settings_label_language">Language</string>
     <string name="settings_label_account">Account</string>
     <string name="settings_label_guest">Guest account</string>
+    <string name="theme_settings">Theme Settings</string>
 </resources>

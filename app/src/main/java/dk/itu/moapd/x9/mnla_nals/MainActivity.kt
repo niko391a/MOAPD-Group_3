@@ -73,6 +73,7 @@ fun AppNavigationBar(
     var selectedNavItem by rememberSaveable  { mutableIntStateOf(0) }
     val snackbarHostState = remember { SnackbarHostState() }
     val user by authViewModel.user.collectAsStateWithLifecycle()
+    val snackBarNoAuthMessage = stringResource(id = R.string.snackbar_No_auth)
 
 
     LaunchedEffect(Unit) {
@@ -120,7 +121,7 @@ fun AppNavigationBar(
             1 -> {
                 if (user?.isAnonymous == true) {
                     LaunchedEffect(Unit) {
-                        snackbarHostState.showSnackbar("You need to sign in to access this feature")
+                        snackbarHostState.showSnackbar(snackBarNoAuthMessage)
                     }
                 }else {
                     CreateReportScreen(
@@ -158,6 +159,7 @@ fun AppTheme(theme: AppTheme, content: @Composable () -> Unit) {
 }
 @Composable
 fun GuestBanner(modifier: Modifier = Modifier) {
+    val stringBannerGuest = stringResource(id = R.string.Banner)
     Surface(
         color = MaterialTheme.colorScheme.tertiaryContainer,
         modifier = modifier.fillMaxWidth()
@@ -176,7 +178,7 @@ fun GuestBanner(modifier: Modifier = Modifier) {
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = "${R.string.Banner}",
+                text = stringBannerGuest,
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onTertiaryContainer
             )

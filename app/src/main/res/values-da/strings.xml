@@ -30,7 +30,7 @@
         <item>Ødelagte køretøjer</item>
         <item>Andet</item>
     </string-array>
-    <string name="theme_settings">Theme Settings</string>
+    <string name="theme_settings">Tema instilliner</string>
     <string-array name="Themes">
         <item>Standard</item>
         <item>Lys</item>

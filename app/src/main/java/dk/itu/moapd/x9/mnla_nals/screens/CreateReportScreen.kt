@@ -13,7 +13,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -46,10 +45,12 @@ fun CreateReportScreen(
     var selectedReportType by rememberSaveable { mutableStateOf("") }
     var reportSeverity by rememberSaveable { mutableStateOf("") }
 
+
     val scope = rememberCoroutineScope()
     val reportTypes = stringArrayResource(R.array.create_report_types)
-    val context = LocalContext.current
-
+    val notAuthorised = stringResource(R.string.snackbar_No_auth)
+    val reportSuccess = stringResource(R.string.snackbar_report_successful)
+    val reportUnsuccessful = stringResource(R.string.snackbar_report_unsuccessful)
 
     Column(
         modifier = modifier
@@ -135,7 +136,7 @@ fun CreateReportScreen(
             onClick = {
                 if (user?.isAnonymous == true) {
                     Log.d("auth", "user is not Authorised")
-                    scope.launch { snackbarHostState.showSnackbar(context.getString(R.string.snackbar_No_auth)) }
+                    scope.launch { snackbarHostState.showSnackbar(notAuthorised) }
                 }
                 else if (reportTitle.isNotEmpty() && reportDescription.isNotEmpty() && selectedReportType.isNotEmpty() && reportSeverity.isNotEmpty()) {
                     val report = Report(
@@ -145,7 +146,7 @@ fun CreateReportScreen(
                         reportSeverity
                     )
                     reportViewModel.addReport(report)
-                    snackViewModel.sendSnackbarMessage(context.getString(R.string.snackbar_report_successful))
+                    snackViewModel.sendSnackbarMessage(reportSuccess)
 
                     navigate()
 
@@ -161,7 +162,7 @@ fun CreateReportScreen(
                     """.trimIndent()
                     )
                     scope.launch {
-                        snackbarHostState.showSnackbar(context.getString(R.string.snackbar_report_unsuccessful))
+                        snackbarHostState.showSnackbar(reportUnsuccessful)
                     }
                 }
             },

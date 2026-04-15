@@ -87,7 +87,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.compose.material.icons.core)
     implementation(libs.androidx.lifecycle.runtime.compose)
-    
+
     androidTestImplementation(platform(libs.androidx.compose.bom))
     debugImplementation(libs.androidx.compose.ui.tooling)
     
@@ -98,8 +98,18 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation(libs.firebase.storage)
     implementation(libs.firebase.database)
-
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.firebase.ui.database)
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
+
+    // Import the BoM for the Firebase platform
+    implementation(platform("com.google.firebase:firebase-bom:34.12.0"))
+
+    // Add the dependency for the Realtime Database library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation("com.google.firebase:firebase-database")
 
     // Also add the dependencies for the Credential Manager libraries and specify their versions
     implementation("androidx.credentials:credentials:1.3.0")
