@@ -11,29 +11,45 @@ import kotlinx.coroutines.flow.callbackFlow
 class DatabaseRepository {
     private val database: DatabaseReference = Firebase.database.reference
 
-    /**
-     * Pushes a report object tot he real time database
-     * @param report the report to be added.
-     */
-    fun addReport(
-        report: Report,
-    ) {
-        database.child("reports").push().setValue(report)
-        Log.d("Info", "Report added successfully to database")
+    private fun DatabaseError.toUserMessage(): String = when (code) {
+        DatabaseError.PERMISSION_DENIED -> "Permission denied. You may not have access to this data."
+        DatabaseError.NETWORK_ERROR     -> "Network error. Please check your connection."
+        DatabaseError.OPERATION_FAILED  -> "Operation failed. Please try again."
+        DatabaseError.DISCONNECTED      -> "Disconnected from the database."
+        else                            -> "Database error: $message"
     }
 
     /**
-     * Removes a report from the realtime database based on an id
+     * Pushes a report object to the real time database.
+     * @param report the report to be added.
+     */
+    fun addReport(report: Report) {
+        database.child("reports").push().setValue(report)
+            .addOnSuccessListener {
+                Log.d(TAG, "Report added successfully")
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Failed to add report: ${e.message}")
+            }
+    }
+
+    /**
+     * Removes a report from the realtime database based on an id.
      * @param reportId the id of the report to be removed.
      */
     fun removeReport(reportId: String) {
         database.child("reports").child(reportId).removeValue()
+            .addOnSuccessListener {
+                Log.d(TAG, "Report $reportId removed successfully")
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Failed to remove report $reportId: ${e.message}")
+            }
     }
 
     /**
      * Returns a Flow that emits a fresh list whenever the reports node changes.
-     * We keep uid-scoped paths since that's how you're currently writing data —
-     * all reports live under reports/
+     * All reports live under reports/
      */
     fun getReportsFlow(): Flow<List<Report>> = callbackFlow {
         val ref = database.child("reports")
@@ -41,20 +57,26 @@ class DatabaseRepository {
         val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val reports = snapshot.children.mapNotNull { child ->
-                    // Use the firebase generated key as the reports id
+                    // Use the Firebase-generated key as the report's id
                     child.getValue(Report::class.java)?.copy(id = child.key ?: "")
                 }
                 trySend(reports)
             }
 
             override fun onCancelled(error: DatabaseError) {
+                val message = error.toUserMessage()
+                Log.e(TAG, "Listener cancelled (code=${error.code}): $message")
                 close(error.toException())
             }
         }
-        Log.d("Info", "Report retrieved successfully")
+
         ref.addValueEventListener(listener)
 
         // Removes the listener when the Flow is cancelled (e.g. ViewModel cleared)
         awaitClose { ref.removeEventListener(listener) }
+    }
+
+    companion object {
+        private const val TAG = "DatabaseRepository"
     }
 }
