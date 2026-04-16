@@ -140,10 +140,10 @@ fun CreateReportScreen(
                 }
                 else if (reportTitle.isNotEmpty() && reportDescription.isNotEmpty() && selectedReportType.isNotEmpty() && reportSeverity.isNotEmpty()) {
                     val report = Report(
-                        reportTitle,
-                        reportDescription,
-                        selectedReportType,
-                        reportSeverity
+                        title = reportTitle,
+                        description = reportDescription,
+                        type = selectedReportType,
+                        severity = reportSeverity
                     )
 
                     user?.uid?.let { uid -> reportViewModel.addReport(report, uid) }
