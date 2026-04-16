@@ -24,8 +24,8 @@ class ReportViewModel : ViewModel() {
             initialValue = emptyList()
         )
 
-    fun addReport(report: Report, uid: String) {
-        db.addReport(report, uid)
+    fun addReport(report: Report) {
+        db.addReport(report)
         Log.d("info", "Added report: $report")
     }
 }

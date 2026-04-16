@@ -134,19 +134,27 @@ fun CreateReportScreen(
 
         Button(
             onClick = {
-                if (user?.isAnonymous == true) {
+                val currentUser = user // local val can be smart cast
+
+                if (currentUser?.isAnonymous == true) {
                     Log.d("auth", "user is not Authorised")
                     scope.launch { snackbarHostState.showSnackbar(notAuthorised) }
                 }
-                else if (reportTitle.isNotEmpty() && reportDescription.isNotEmpty() && selectedReportType.isNotEmpty() && reportSeverity.isNotEmpty()) {
+                else if (
+                    reportTitle.isNotEmpty()
+                    && reportDescription.isNotEmpty()
+                    && selectedReportType.isNotEmpty()
+                    && reportSeverity.isNotEmpty()
+                    && currentUser != null
+                    ) {
                     val report = Report(
+                        uid = currentUser.uid,
                         title = reportTitle,
                         description = reportDescription,
                         type = selectedReportType,
                         severity = reportSeverity
                     )
-
-                    user?.uid?.let { uid -> reportViewModel.addReport(report, uid) }
+                    reportViewModel.addReport(report)
 
                     snackViewModel.sendSnackbarMessage(reportSuccess)
 

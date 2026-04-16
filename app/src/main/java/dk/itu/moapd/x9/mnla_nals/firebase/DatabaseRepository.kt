@@ -13,9 +13,8 @@ class DatabaseRepository {
 
     fun addReport(
         report: Report,
-        uid: String
     ) {
-        database.child("reports").child(uid).push().setValue(report)
+        database.child("reports").push().setValue(report)
         Log.d("Info", "Report added successfully to database")
     }
 
