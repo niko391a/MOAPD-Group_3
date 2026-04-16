@@ -6,5 +6,6 @@ data class Report(
     val title: String = "",
     val description: String = "",
     val type: String = "",
-    val severity: String = ""
+    val severity: String = "",
+    val createdAt: Long = System.currentTimeMillis()
 )

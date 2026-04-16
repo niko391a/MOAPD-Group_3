@@ -11,6 +11,10 @@ import kotlinx.coroutines.flow.callbackFlow
 class DatabaseRepository {
     private val database: DatabaseReference = Firebase.database.reference
 
+    /**
+     * Pushes a report object tot he real time database
+     * @param report the report to be added.
+     */
     fun addReport(
         report: Report,
     ) {
@@ -18,6 +22,13 @@ class DatabaseRepository {
         Log.d("Info", "Report added successfully to database")
     }
 
+    /**
+     * Deletes a report from the realtime database based on an id
+     * @param reportId the id of the report to be deleted.
+     */
+    fun deleteReport(reportId: String) {
+        database.child("reports").child(reportId).removeValue()
+    }
 
     /**
      * Returns a Flow that emits a fresh list whenever the reports node changes.
@@ -30,6 +41,7 @@ class DatabaseRepository {
         val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val reports = snapshot.children.mapNotNull { child ->
+                    // Use the firebase generated key as the reports id
                     child.getValue(Report::class.java)?.copy(id = child.key ?: "")
                 }
                 trySend(reports)
