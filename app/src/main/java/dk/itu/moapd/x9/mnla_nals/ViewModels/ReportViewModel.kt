@@ -28,4 +28,8 @@ class ReportViewModel : ViewModel() {
         db.addReport(report)
         Log.d("info", "Added report: $report")
     }
+
+    fun removeReport(reportId: String) {
+        db.removeReport(reportId)
+    }
 }

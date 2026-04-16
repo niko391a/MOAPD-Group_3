@@ -23,10 +23,10 @@ class DatabaseRepository {
     }
 
     /**
-     * Deletes a report from the realtime database based on an id
-     * @param reportId the id of the report to be deleted.
+     * Removes a report from the realtime database based on an id
+     * @param reportId the id of the report to be removed.
      */
-    fun deleteReport(reportId: String) {
+    fun removeReport(reportId: String) {
         database.child("reports").child(reportId).removeValue()
     }
 

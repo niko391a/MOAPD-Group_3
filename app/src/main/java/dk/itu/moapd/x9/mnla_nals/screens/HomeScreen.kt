@@ -23,8 +23,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dk.itu.moapd.x9.mnla_nals.data.Report
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dk.itu.moapd.x9.mnla_nals.R
 import dk.itu.moapd.x9.mnla_nals.ViewModels.AuthViewModel
@@ -63,7 +67,7 @@ fun HomeScreen(
                     contentPadding = PaddingValues(bottom = 16.dp)
                 ) {
                     items(reports) { report ->
-                        ReportItem(report)
+                        ReportItem(report, reportViewModel)
                     }
                 }
             }
@@ -87,13 +91,37 @@ fun HomeScreen(
 }
 
 @Composable
-fun ReportItem(report: Report) {
-    Card(modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = report.title, style = MaterialTheme.typography.titleLarge)
-            Text(text = "Type: ${report.type}")
-            Text(text = "Severity: ${report.severity}")
-            Text(text = report.description, style = MaterialTheme.typography.bodyMedium)
+fun ReportItem(
+    report: Report,
+    reportViewModel: ReportViewModel
+) {
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Card(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                // Extra top padding so the title text doesn't sit under the X button
+                modifier = Modifier.padding(start = 16.dp, end = 40.dp, top = 8.dp, bottom = 16.dp)
+            ) {
+                Text(text = report.title, style = MaterialTheme.typography.titleLarge)
+                Text(text = "Type: ${report.type}")
+                Text(text = "Severity: ${report.severity}")
+                Text(text = report.description, style = MaterialTheme.typography.bodyMedium)
+            }
+        }
+
+        IconButton(
+            onClick = { reportViewModel.removeReport(report.id) },
+            modifier = Modifier.align(Alignment.TopEnd) // pins to upper-right of the Box
+        ) {
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = "Delete report"
+            )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HomeScreenPreview() {
+    HomeScreen()
 }
