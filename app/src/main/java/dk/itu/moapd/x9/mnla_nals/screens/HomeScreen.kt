@@ -93,8 +93,11 @@ fun HomeScreen(
 @Composable
 fun ReportItem(
     report: Report,
-    reportViewModel: ReportViewModel
+    reportViewModel: ReportViewModel,
+    authViewModel: AuthViewModel = viewModel(),
 ) {
+    val user by authViewModel.user.collectAsState()
+
     Box(modifier = Modifier.fillMaxWidth()) {
         Card(modifier = Modifier.fillMaxWidth()) {
             Column(
@@ -107,15 +110,16 @@ fun ReportItem(
                 Text(text = report.description, style = MaterialTheme.typography.bodyMedium)
             }
         }
-
-        IconButton(
-            onClick = { reportViewModel.removeReport(report.id) },
-            modifier = Modifier.align(Alignment.TopEnd) // pins to upper-right of the Box
-        ) {
-            Icon(
-                imageVector = Icons.Default.Close,
-                contentDescription = "Delete report"
-            )
+        if (report.uid == user?.uid) {
+            IconButton(
+                onClick = { reportViewModel.removeReport(report.id) },
+                modifier = Modifier.align(Alignment.TopEnd) // pins to upper-right of the Box
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Delete report"
+                )
+            }
         }
     }
 }
