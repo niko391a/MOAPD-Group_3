@@ -17,6 +17,7 @@ google-services = "4.4.4"
 firebaseBom = "34.10.0"
 firebaseUiAuth = "9.0.0"
 lifecycleRuntimeCompose = "2.10.0"
+playServicesLocation = "21.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -41,6 +42,8 @@ firebase-storage = { module = "com.google.firebase:firebase-storage" }
 firebase-database = { module = "com.google.firebase:firebase-database" }
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
 firebase-ui-database = { module = "com.firebaseui:firebase-ui-database", version.ref = "firebaseUiAuth" }
+google-play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -90,6 +90,7 @@ dependencies {
     androidTestImplementation(platform(libs.androidx.compose.bom))
     debugImplementation(libs.androidx.compose.ui.tooling)
     implementation("androidx.compose.material:material-icons-extended")
+    implementation(libs.google.play.services.location)
     
     // Firebase
     implementation(platform(libs.firebase.bom))

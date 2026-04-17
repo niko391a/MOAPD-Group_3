@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
@@ -107,7 +108,7 @@ fun AppNavigationBar(
                         selectedNavItem = 1
                         reportViewModel.setReportToEdit(null)
                     },
-                    icon = { Icon(Icons.Default.List, contentDescription = "Reports") },
+                    icon = { Icon(Icons.AutoMirrored.Filled.List, contentDescription = "Reports") },
                     label = { Text(stringResource(id = R.string.nav_report)) }
                 )
                 NavigationBarItem(
@@ -148,7 +149,9 @@ fun AppNavigationBar(
                 }
 
             }
-            2 -> {}
+            2 -> {
+
+            }
             3 -> {
                 SettingsScreen(
                     Modifier.padding(innerPadding),
