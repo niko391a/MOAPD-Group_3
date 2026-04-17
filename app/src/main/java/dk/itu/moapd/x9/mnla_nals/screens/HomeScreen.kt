@@ -25,6 +25,7 @@ import dk.itu.moapd.x9.mnla_nals.data.Report
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -118,6 +119,15 @@ fun ReportItem(
                 Icon(
                     imageVector = Icons.Default.Close,
                     contentDescription = "Delete report"
+                )
+            }
+            IconButton(
+                onClick = { reportViewModel.removeReport(report.id)},
+                modifier = Modifier.align(Alignment.BottomEnd) // pins to upper-right of the Box
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = "Edit report"
                 )
             }
         }
