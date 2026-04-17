@@ -36,11 +36,12 @@ fun CreateReportScreen(
     navigate: () -> Unit,
     snackbarHostState: SnackbarHostState,
     authViewModel: AuthViewModel = viewModel(),
-    userReport: Report? = null
 ) {
     val user by authViewModel.user.collectAsStateWithLifecycle()
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
+    val userReport by reportViewModel.reportToEdit.collectAsStateWithLifecycle()
+
     var reportTitle by rememberSaveable { mutableStateOf(userReport?.title ?: "") }
     var reportDescription by rememberSaveable { mutableStateOf(userReport?.description ?: "") }
     var selectedReportType by rememberSaveable { mutableStateOf(userReport?.type ?: "") }
@@ -152,6 +153,7 @@ fun CreateReportScreen(
                     ) {
 
                     val report = Report(
+                        id = userReport?.id ?: "",
                         uid = currentUser.uid,
                         title = reportTitle,
                         description = reportDescription,

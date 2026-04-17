@@ -68,7 +68,7 @@ fun HomeScreen(
                     contentPadding = PaddingValues(bottom = 16.dp)
                 ) {
                     items(reports) { report ->
-                        ReportItem(report, reportViewModel)
+                        ReportItem(report, reportViewModel, authViewModel, onAddReport)
                     }
                 }
             }
@@ -95,7 +95,8 @@ fun HomeScreen(
 fun ReportItem(
     report: Report,
     reportViewModel: ReportViewModel,
-    authViewModel: AuthViewModel = viewModel(),
+    authViewModel: AuthViewModel,
+    onAddReport: () -> Unit
 ) {
     val user by authViewModel.user.collectAsState()
 
@@ -122,7 +123,10 @@ fun ReportItem(
                 )
             }
             IconButton(
-                onClick = { reportViewModel.removeReport(report.id)},
+                onClick = {
+                    reportViewModel.setReportToEdit(report)
+                    onAddReport()
+                },
                 modifier = Modifier.align(Alignment.BottomEnd) // pins to upper-right of the Box
             ) {
                 Icon(
