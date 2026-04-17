@@ -8,7 +8,7 @@ data class Report(
     * establishing a relation between the key stored in firebase and the objects we interact with
     * in Kotlin therefore if we were to not ignore it then it would create redundant noise in the data tab
     */
-    @Exclude val id: String = "",
+    @get:Exclude val id: String = "",
     val uid: String = "",
     val title: String = "",
     val description: String = "",
