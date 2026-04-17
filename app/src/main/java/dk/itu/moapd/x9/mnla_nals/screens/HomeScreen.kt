@@ -46,6 +46,8 @@ fun HomeScreen(
     // Use by so we can take advantage of Kotlins inherent get-/setValue
     val reports by reportViewModel.reports.collectAsState(initial = emptyList())
     val user by authViewModel.user.collectAsState()
+    val sortedReports = reports.sortedByDescending { it.createdAt }
+
     Box(modifier = modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -67,7 +69,7 @@ fun HomeScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     contentPadding = PaddingValues(bottom = 16.dp)
                 ) {
-                    items(reports) { report ->
+                    items(sortedReports) { report ->
                         ReportItem(report, reportViewModel, authViewModel, onAddReport)
                     }
                 }
