@@ -16,24 +16,27 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dk.itu.moapd.x9.mnla_nals.data.Report
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dk.itu.moapd.x9.mnla_nals.R
 import dk.itu.moapd.x9.mnla_nals.ViewModels.AuthViewModel
 import dk.itu.moapd.x9.mnla_nals.ViewModels.ReportViewModel
+import dk.itu.moapd.x9.mnla_nals.components.SeverityPill
 
 
 @Composable
@@ -106,11 +109,15 @@ fun ReportItem(
         Card(modifier = Modifier.fillMaxWidth()) {
             Column(
                 // Extra top padding so the title text doesn't sit under the X button
-                modifier = Modifier.padding(start = 16.dp, end = 40.dp, top = 8.dp, bottom = 16.dp)
+                modifier = Modifier.padding(start = 16.dp, end = 40.dp, top = 8.dp, bottom = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp) // adds 8dp between every child
             ) {
                 Text(text = report.title, style = MaterialTheme.typography.titleLarge)
                 Text(text = "Type: ${report.type}")
-                Text(text = "Severity: ${report.severity}")
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = "Severity: ")
+                    SeverityPill(severity = report.severity)
+                }
                 Text(text = report.description, style = MaterialTheme.typography.bodyMedium)
             }
         }
