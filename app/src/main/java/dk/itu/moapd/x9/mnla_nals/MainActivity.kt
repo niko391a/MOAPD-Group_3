@@ -115,6 +115,7 @@ fun AppNavigationBar(
             0 -> {
                 HomeScreen(
                     modifier = Modifier.padding(innerPadding),
+                    onAddReport = { selectedNavItem = 1 }
                 )
             }
             1 -> {
