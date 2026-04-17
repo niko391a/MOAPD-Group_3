@@ -32,7 +32,6 @@ import dk.itu.moapd.x9.mnla_nals.screens.SettingsScreen
 import dk.itu.moapd.x9.mnla_nals.ui.theme.AppTheme
 import dk.itu.moapd.x9.mnla_nals.ui.theme.CustomThemes
 import dk.itu.moapd.x9.mnla_nals.ui.theme.X9Theme
-import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
@@ -68,11 +67,13 @@ class MainActivity : ComponentActivity() {
 fun AppNavigationBar(
     authViewModel: AuthViewModel = viewModel(),
     snackViewModel: SnackViewModel = viewModel(),
+    reportViewModel: ReportViewModel = viewModel(),
 ) {
 
     var selectedNavItem by rememberSaveable  { mutableIntStateOf(0) }
     val snackbarHostState = remember { SnackbarHostState() }
     val user by authViewModel.user.collectAsStateWithLifecycle()
+    val snackBarNoAuthMessage = stringResource(id = R.string.snackbar_No_auth)
 
 
     LaunchedEffect(Unit) {
@@ -98,7 +99,10 @@ fun AppNavigationBar(
                 )
                 NavigationBarItem(
                     selected = selectedNavItem == 1,
-                    onClick = { selectedNavItem = 1 },
+                    onClick = {
+                        selectedNavItem = 1
+                        reportViewModel.setReportToEdit(null)
+                    },
                     icon = { Icon(Icons.Default.List, contentDescription = "Reports") },
                     label = { Text(stringResource(id = R.string.nav_report)) }
                 )
@@ -115,16 +119,17 @@ fun AppNavigationBar(
             0 -> {
                 HomeScreen(
                     modifier = Modifier.padding(innerPadding),
+                    onAddReport = { selectedNavItem = 1 }
                 )
             }
             1 -> {
                 if (user?.isAnonymous == true) {
                     LaunchedEffect(Unit) {
-                        snackbarHostState.showSnackbar("You need to sign in to access this feature")
+                        snackbarHostState.showSnackbar(snackBarNoAuthMessage)
                     }
                 }else {
                     CreateReportScreen(
-                        Modifier.padding(innerPadding),
+                        modifier = Modifier.padding(innerPadding),
                         navigate = { selectedNavItem = 0 },
                         snackbarHostState = snackbarHostState
                     )
@@ -158,6 +163,7 @@ fun AppTheme(theme: AppTheme, content: @Composable () -> Unit) {
 }
 @Composable
 fun GuestBanner(modifier: Modifier = Modifier) {
+    val stringBannerGuest = stringResource(id = R.string.Banner)
     Surface(
         color = MaterialTheme.colorScheme.tertiaryContainer,
         modifier = modifier.fillMaxWidth()
@@ -176,7 +182,7 @@ fun GuestBanner(modifier: Modifier = Modifier) {
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = "${R.string.Banner}",
+                text = stringBannerGuest,
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onTertiaryContainer
             )

@@ -13,7 +13,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -36,20 +35,27 @@ fun CreateReportScreen(
     snackViewModel: SnackViewModel = viewModel(),
     navigate: () -> Unit,
     snackbarHostState: SnackbarHostState,
-    authViewModel: AuthViewModel = viewModel()
+    authViewModel: AuthViewModel = viewModel(),
 ) {
     val user by authViewModel.user.collectAsStateWithLifecycle()
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
-    var reportTitle by rememberSaveable { mutableStateOf("") }
-    var reportDescription by rememberSaveable { mutableStateOf("") }
-    var selectedReportType by rememberSaveable { mutableStateOf("") }
-    var reportSeverity by rememberSaveable { mutableStateOf("") }
+    val userReport by reportViewModel.reportToEdit.collectAsStateWithLifecycle()
+
+    var reportTitle by rememberSaveable { mutableStateOf(userReport?.title ?: "") }
+    var reportDescription by rememberSaveable { mutableStateOf(userReport?.description ?: "") }
+    var selectedReportType by rememberSaveable { mutableStateOf(userReport?.type ?: "") }
+    var reportSeverity by rememberSaveable { mutableStateOf(userReport?.severity ?: "") }
+
+    val isEditMode = userReport != null
 
     val scope = rememberCoroutineScope()
     val reportTypes = stringArrayResource(R.array.create_report_types)
-    val context = LocalContext.current
-
+    val notAuthorised = stringResource(R.string.snackbar_No_auth)
+    val reportAddSuccess = stringResource(R.string.snackbar_report_add_successful)
+    val reportModifySuccess = stringResource(R.string.snackbar_report_modify_successful)
+    val reportUnsuccessful = stringResource(R.string.snackbar_report_unsuccessful)
+    val deleteSuccessfully = stringResource(R.string.delete_successful)
 
     Column(
         modifier = modifier
@@ -133,44 +139,75 @@ fun CreateReportScreen(
 
         Button(
             onClick = {
-                if (user?.isAnonymous == true) {
+                val currentUser = user // local val can be smart cast
+
+                if (currentUser?.isAnonymous == true) {
                     Log.d("auth", "user is not Authorised")
-                    scope.launch { snackbarHostState.showSnackbar(context.getString(R.string.snackbar_No_auth)) }
+                    scope.launch { snackbarHostState.showSnackbar(notAuthorised) }
                 }
-                else if (reportTitle.isNotEmpty() && reportDescription.isNotEmpty() && selectedReportType.isNotEmpty() && reportSeverity.isNotEmpty()) {
+                else if (
+                    reportTitle.isNotEmpty()
+                    && reportDescription.isNotEmpty()
+                    && selectedReportType.isNotEmpty()
+                    && reportSeverity.isNotEmpty()
+                    && currentUser != null
+                    ) {
+
                     val report = Report(
-                        reportTitle,
-                        selectedReportType,
-                        reportDescription,
-                        reportSeverity
+                        id = userReport?.id ?: "",
+                        uid = currentUser.uid,
+                        title = reportTitle,
+                        description = reportDescription,
+                        type = selectedReportType,
+                        severity = reportSeverity
                     )
-                    reportViewModel.addReport(report)
-                    snackViewModel.sendSnackbarMessage(context.getString(R.string.snackbar_report_successful))
+
+                    if (isEditMode) {
+                        reportViewModel.modifyReport(report)
+                        snackViewModel.sendSnackbarMessage(reportModifySuccess)
+                    } else {
+                        reportViewModel.addReport(report)
+                        snackViewModel.sendSnackbarMessage(reportAddSuccess)
+                    }
 
                     navigate()
-
-                }else {
+                } else {
                     // Will be reformatted to use SnackBar in the future
                     Log.d(
                         "Submit", """
                     User report has been submitted with invalid information:
-                    Report Title: ${reportTitle}
-                    Report Type: ${selectedReportType}
-                    Report Description: ${reportDescription}
-                    Severity: ${reportSeverity}
+                    Report Title: $reportTitle
+                    Report Type: $selectedReportType
+                    Report Description: $reportDescription
+                    Severity: $reportSeverity
                     """.trimIndent()
                     )
                     scope.launch {
-                        snackbarHostState.showSnackbar(context.getString(R.string.snackbar_report_unsuccessful))
+                        snackbarHostState.showSnackbar(reportUnsuccessful)
                     }
                 }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                stringResource(id = R.string.create_report_submit),
+                text = stringResource(id = if (isEditMode) R.string.modify_report_submit else R.string.create_report_submit),
                 fontWeight = FontWeight.Bold
             )
+        }
+        if (isEditMode) {
+            Button(
+                onClick = {
+                    reportViewModel.removeReport(userReport!!)
+                    snackViewModel.sendSnackbarMessage(deleteSuccessfully)
+                    navigate()
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = stringResource(R.string.Delete),
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(24.dp))

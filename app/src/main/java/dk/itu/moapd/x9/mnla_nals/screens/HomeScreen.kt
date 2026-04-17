@@ -23,8 +23,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dk.itu.moapd.x9.mnla_nals.data.Report
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dk.itu.moapd.x9.mnla_nals.R
 import dk.itu.moapd.x9.mnla_nals.ViewModels.AuthViewModel
@@ -39,8 +44,10 @@ fun HomeScreen(
     authViewModel: AuthViewModel = viewModel(),
 ) {
     // Use by so we can take advantage of Kotlins inherent get-/setValue
-    val reports by reportViewModel.exposedReportList.collectAsState()
+    val reports by reportViewModel.reports.collectAsState(initial = emptyList())
     val user by authViewModel.user.collectAsState()
+    val sortedReports = reports.sortedByDescending { it.createdAt }
+
     Box(modifier = modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -62,8 +69,8 @@ fun HomeScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     contentPadding = PaddingValues(bottom = 16.dp)
                 ) {
-                    items(reports) { report ->
-                        ReportItem(report)
+                    items(sortedReports) { report ->
+                        ReportItem(report, reportViewModel, authViewModel, onAddReport)
                     }
                 }
             }
@@ -87,13 +94,45 @@ fun HomeScreen(
 }
 
 @Composable
-fun ReportItem(report: Report) {
-    Card(modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = report.title, style = MaterialTheme.typography.titleLarge)
-            Text(text = "Type: ${report.type}")
-            Text(text = "Severity: ${report.severity}")
-            Text(text = report.description, style = MaterialTheme.typography.bodyMedium)
+fun ReportItem(
+    report: Report,
+    reportViewModel: ReportViewModel,
+    authViewModel: AuthViewModel,
+    onAddReport: () -> Unit
+) {
+    val user by authViewModel.user.collectAsState()
+
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Card(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                // Extra top padding so the title text doesn't sit under the X button
+                modifier = Modifier.padding(start = 16.dp, end = 40.dp, top = 8.dp, bottom = 16.dp)
+            ) {
+                Text(text = report.title, style = MaterialTheme.typography.titleLarge)
+                Text(text = "Type: ${report.type}")
+                Text(text = "Severity: ${report.severity}")
+                Text(text = report.description, style = MaterialTheme.typography.bodyMedium)
+            }
+        }
+        if (report.uid == user?.uid) {
+            IconButton(
+                onClick = {
+                    reportViewModel.setReportToEdit(report)
+                    onAddReport()
+                },
+                modifier = Modifier.align(Alignment.BottomEnd) // pins to upper-right of the Box
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = "Edit report"
+                )
+            }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HomeScreenPreview() {
+    HomeScreen()
 }

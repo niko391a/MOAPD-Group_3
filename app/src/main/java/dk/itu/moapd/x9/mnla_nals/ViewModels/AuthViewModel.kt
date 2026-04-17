@@ -3,6 +3,9 @@ package dk.itu.moapd.x9.mnla_nals.ViewModels
 import android.content.Context
 import android.util.Log
 import androidx.credentials.*
+import androidx.credentials.exceptions.GetCredentialCancellationException
+import androidx.credentials.exceptions.GetCredentialException
+import androidx.credentials.exceptions.NoCredentialException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.libraries.identity.googleid.*
@@ -14,6 +17,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlin.coroutines.cancellation.CancellationException
 
 class AuthViewModel : ViewModel() {
 
@@ -37,7 +41,15 @@ class AuthViewModel : ViewModel() {
                 val result = credentialManager.getCredential(context, request)
 
                 handleSignIn(result.credential)
-            } catch (e: Exception) {
+            } catch (e: CancellationException) {
+                Log.e("Auth", "Sign-in cancelled", e)
+            }catch (e: GetCredentialCancellationException) {
+                Log.e("Auth", "Sign-in cancelled", e)
+            }catch (e: GetCredentialException) {
+                Log.e("Auth", "Credential Manager error", e)
+            }catch (e: NoCredentialException) {
+                Log.e("Auth", "No credential found", e)
+            }catch (e: Exception) {
                 Log.e("Auth", "Sign-in failed", e)
             }
         }
@@ -51,6 +63,10 @@ class AuthViewModel : ViewModel() {
                 auth.signInAnonymously().await()
                 _user.value = auth.currentUser
                 Log.d("Auth", "Guest sign-in success: ${auth.currentUser?.uid}")
+            }catch (e: CancellationException) {
+                Log.e("Auth", "Sign-in cancelled", e)
+            } catch (e: FirebaseAuthException) {
+                Log.e("Auth", "Sign-in failed", e)
             } catch (e: Exception) {
                 Log.e("Auth", "Guest sign-in failed", e)
                 _user.value = null
