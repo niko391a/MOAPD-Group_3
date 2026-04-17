@@ -37,13 +37,13 @@ class DatabaseRepository {
      * Removes a report from the realtime database based on an id.
      * @param reportId the id of the report to be removed.
      */
-    fun removeReport(reportId: String) {
-        database.child("reports").child(reportId).removeValue()
+    fun removeReport(report: Report) {
+        database.child("reports").child(report.id).removeValue()
             .addOnSuccessListener {
-                Log.d(TAG, "Report $reportId removed successfully")
+                Log.d(TAG, "Report $report removed successfully")
             }
             .addOnFailureListener { e ->
-                Log.e(TAG, "Failed to remove report $reportId: ${e.message}")
+                Log.e(TAG, "Failed to remove report $report: ${e.message}")
             }
     }
 

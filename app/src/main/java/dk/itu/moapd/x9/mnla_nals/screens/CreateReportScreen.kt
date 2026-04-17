@@ -55,6 +55,7 @@ fun CreateReportScreen(
     val reportAddSuccess = stringResource(R.string.snackbar_report_add_successful)
     val reportModifySuccess = stringResource(R.string.snackbar_report_modify_successful)
     val reportUnsuccessful = stringResource(R.string.snackbar_report_unsuccessful)
+    val deleteSuccessfully = stringResource(R.string.delete_successful)
 
     Column(
         modifier = modifier
@@ -175,10 +176,10 @@ fun CreateReportScreen(
                     Log.d(
                         "Submit", """
                     User report has been submitted with invalid information:
-                    Report Title: ${reportTitle}
-                    Report Type: ${selectedReportType}
-                    Report Description: ${reportDescription}
-                    Severity: ${reportSeverity}
+                    Report Title: $reportTitle
+                    Report Type: $selectedReportType
+                    Report Description: $reportDescription
+                    Severity: $reportSeverity
                     """.trimIndent()
                     )
                     scope.launch {
@@ -192,6 +193,21 @@ fun CreateReportScreen(
                 text = stringResource(id = if (isEditMode) R.string.modify_report_submit else R.string.create_report_submit),
                 fontWeight = FontWeight.Bold
             )
+        }
+        if (isEditMode) {
+            Button(
+                onClick = {
+                    reportViewModel.removeReport(userReport!!)
+                    snackViewModel.sendSnackbarMessage(deleteSuccessfully)
+                    navigate()
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = stringResource(R.string.Delete),
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(24.dp))

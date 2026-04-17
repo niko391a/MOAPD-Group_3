@@ -44,6 +44,8 @@
     <string name="settings_language_da_text">Skift til Dansk</string>
     <string name="settings_sign_out">Log af</string>
     <string name="snackbar_report_unsuccessful">Alle felter skal udfyldes!</string>
+    <string name="Delete">Slet rapport</string>
+    <string name="delete_successful">Din rapport er blevet slettet</string>
     <string name="settings_label_theme">Tema</string>
     <string name="settings_label_language">Sprog</string>
     <string name="settings_label_account">Konto</string>

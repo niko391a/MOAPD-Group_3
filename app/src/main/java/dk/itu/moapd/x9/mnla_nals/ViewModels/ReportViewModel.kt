@@ -30,9 +30,9 @@ class ReportViewModel : ViewModel() {
         Log.d("info", "Added report: $report")
     }
 
-    fun removeReport(reportId: String) {
-        db.removeReport(reportId)
-        Log.d("info", "Removed report: $reportId")
+    fun removeReport(report: Report) {
+        db.removeReport(report)
+        Log.d("info", "Removed report: $report")
     }
 
     fun modifyReport(report: Report) {

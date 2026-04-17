@@ -43,6 +43,8 @@
     <string name="web_client_id" translatable="false">62719430560-aqpv98lvu7f55colqnnh91qb84f5ckvd.apps.googleusercontent.com</string>
     <string name="settings_sign_out">Log out</string>
     <string name="snackbar_report_unsuccessful">You must fill out all fields!</string>
+    <string name="Delete">Delete repport</string>
+    <string name="delete_successful">Your repport was deleted successfully</string>
     <string name="settings_label_theme">Theme</string>
     <string name="settings_label_language">Language</string>
     <string name="settings_label_account">Account</string>

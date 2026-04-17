@@ -114,15 +114,6 @@ fun ReportItem(
         }
         if (report.uid == user?.uid) {
             IconButton(
-                onClick = { reportViewModel.removeReport(report.id) },
-                modifier = Modifier.align(Alignment.TopEnd) // pins to upper-right of the Box
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = "Delete report"
-                )
-            }
-            IconButton(
                 onClick = {
                     reportViewModel.setReportToEdit(report)
                     onAddReport()

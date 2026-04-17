@@ -67,6 +67,7 @@ class MainActivity : ComponentActivity() {
 fun AppNavigationBar(
     authViewModel: AuthViewModel = viewModel(),
     snackViewModel: SnackViewModel = viewModel(),
+    reportViewModel: ReportViewModel = viewModel(),
 ) {
 
     var selectedNavItem by rememberSaveable  { mutableIntStateOf(0) }
@@ -98,7 +99,10 @@ fun AppNavigationBar(
                 )
                 NavigationBarItem(
                     selected = selectedNavItem == 1,
-                    onClick = { selectedNavItem = 1 },
+                    onClick = {
+                        selectedNavItem = 1
+                        reportViewModel.setReportToEdit(null)
+                    },
                     icon = { Icon(Icons.Default.List, contentDescription = "Reports") },
                     label = { Text(stringResource(id = R.string.nav_report)) }
                 )
