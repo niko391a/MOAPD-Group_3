@@ -15,7 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -30,19 +29,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dk.itu.moapd.x9.mnla_nals.data.Report
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.IconButton
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dk.itu.moapd.x9.mnla_nals.R
 import dk.itu.moapd.x9.mnla_nals.ViewModels.AuthViewModel
@@ -57,7 +45,7 @@ fun HomeScreen(
     reportViewModel: ReportViewModel = viewModel(),
     authViewModel: AuthViewModel = viewModel(),
 ) {
-    // Use by so we can take advantage of Kotlins inherent get-/setValue
+    // Use by so we can take advantage of Kotlin's inherent get-/setValue
     val reports by reportViewModel.reports.collectAsState(initial = emptyList())
     val user by authViewModel.user.collectAsState()
     val sortedReports = reports.sortedByDescending { it.createdAt }
@@ -127,7 +115,7 @@ fun ReportItem(
             Column(
                 // Extra top padding so the title text doesn't sit under the X button
                 modifier = Modifier.padding(start = 16.dp, end = 40.dp, top = 8.dp, bottom = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp) // adds 8dp between every child
+                verticalArrangement = Arrangement.spacedBy(4.dp) // adds 4dp between every child
             ) {
               Row(
                 modifier = Modifier.fillMaxWidth()
