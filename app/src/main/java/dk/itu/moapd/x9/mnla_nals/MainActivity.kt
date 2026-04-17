@@ -32,6 +32,10 @@ import dk.itu.moapd.x9.mnla_nals.screens.SettingsScreen
 import dk.itu.moapd.x9.mnla_nals.ui.theme.AppTheme
 import dk.itu.moapd.x9.mnla_nals.ui.theme.CustomThemes
 import dk.itu.moapd.x9.mnla_nals.ui.theme.X9Theme
+import androidx.compose.material.icons.filled.Map
+
+
+
 
 class MainActivity : ComponentActivity() {
 
@@ -109,6 +113,14 @@ fun AppNavigationBar(
                 NavigationBarItem(
                     selected = selectedNavItem == 2,
                     onClick = { selectedNavItem = 2 },
+                    icon = { Icon(Icons.Default.Map, contentDescription = "Map") },
+                    label = { Text(stringResource(id = R.string.Map)) }
+                )
+
+
+                NavigationBarItem(
+                    selected = selectedNavItem == 3,
+                    onClick = { selectedNavItem = 3 },
                     icon = { Icon(Icons.Default.Settings, contentDescription = "Settings") },
                     label = { Text(stringResource(id = R.string.nav_settings)) }
                 )
@@ -136,7 +148,8 @@ fun AppNavigationBar(
                 }
 
             }
-            2 -> {
+            2 -> {}
+            3 -> {
                 SettingsScreen(
                     Modifier.padding(innerPadding),
                 )

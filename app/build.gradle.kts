@@ -89,6 +89,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     debugImplementation(libs.androidx.compose.ui.tooling)
+    implementation("androidx.compose.material:material-icons-extended")
     
     // Firebase
     implementation(platform(libs.firebase.bom))
@@ -102,6 +103,8 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.firebase.ui.database)
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
+
+
 
     // Import the BoM for the Firebase platform
     implementation(platform("com.google.firebase:firebase-bom:34.12.0"))
