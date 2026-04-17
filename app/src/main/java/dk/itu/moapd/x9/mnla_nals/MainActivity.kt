@@ -125,7 +125,7 @@ fun AppNavigationBar(
                     }
                 }else {
                     CreateReportScreen(
-                        Modifier.padding(innerPadding),
+                        modifier = Modifier.padding(innerPadding),
                         navigate = { selectedNavItem = 0 },
                         snackbarHostState = snackbarHostState
                     )

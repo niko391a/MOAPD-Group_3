@@ -35,7 +35,7 @@
         <item>Dark</item>
         <item>Rainbow</item>
     </string-array>
-    <string name="snackbar_report_successful">Report has been created!</string>
+    <string name="snackbar_report_add_successful">Report has been created!</string>
     <string name="snackbar_No_auth"> You need to be signed in to create a report</string>
     <string name="Banner"> You are signed in as a Guest</string>
     <string name="settings_language_en_text">Switch to English</string>
@@ -48,4 +48,6 @@
     <string name="settings_label_account">Account</string>
     <string name="settings_label_guest">Guest account</string>
     <string name="theme_settings">Theme Settings</string>
+    <string name="snackbar_report_modify_successful">Report has been modified!</string>
+    <string name="modify_report_submit">Submit change</string>
 </resources>

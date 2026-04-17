@@ -48,6 +48,19 @@ class DatabaseRepository {
     }
 
     /**
+     * Modifies a report from the realtime database based on an id.
+     * @param report the report to be modified.
+     */
+    fun modifyReport(report: Report) {
+        database.child("reports").child(report.id).setValue(report)
+            .addOnSuccessListener {
+                Log.d(TAG, "Report modified successfully")
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Failed to modify report: ${e.message}")
+            }
+    }
+    /**
      * Returns a Flow that emits a fresh list whenever the reports node changes.
      * All reports live under reports/
      */
