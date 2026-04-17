@@ -1,20 +1,30 @@
 package dk.itu.moapd.x9.mnla_nals.screens
 
+import android.text.format.DateUtils
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -32,12 +42,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dk.itu.moapd.x9.mnla_nals.R
 import dk.itu.moapd.x9.mnla_nals.ViewModels.AuthViewModel
 import dk.itu.moapd.x9.mnla_nals.ViewModels.ReportViewModel
 import dk.itu.moapd.x9.mnla_nals.components.SeverityPill
-
+import dk.itu.moapd.x9.mnla_nals.data.Report
 
 @Composable
 fun HomeScreen(
@@ -104,6 +115,12 @@ fun ReportItem(
     onAddReport: () -> Unit
 ) {
     val user by authViewModel.user.collectAsState()
+    val timeSinceUploaded = DateUtils.getRelativeTimeSpanString(
+        report.createdAt,
+        System.currentTimeMillis(),
+        DateUtils.MINUTE_IN_MILLIS
+    ).toString()
+
 
     Box(modifier = Modifier.fillMaxWidth()) {
         Card(modifier = Modifier.fillMaxWidth()) {
@@ -112,6 +129,20 @@ fun ReportItem(
                 modifier = Modifier.padding(start = 16.dp, end = 40.dp, top = 8.dp, bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp) // adds 8dp between every child
             ) {
+              Row(
+                modifier = Modifier.fillMaxWidth()
+            ){
+                Icon(
+                    imageVector = Icons.Default.DateRange,
+                    contentDescription = "Time since report was created",
+                    modifier = Modifier.padding(bottom = 8.dp, top = 8.dp)
+                )
+                Text(
+                    text = timeSinceUploaded,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 8.dp, top = 12.dp)
+                )
+            }
                 Text(text = report.title, style = MaterialTheme.typography.titleLarge)
                 Text(text = "Type: ${report.type}")
                 Row(verticalAlignment = Alignment.CenterVertically) {
