@@ -34,8 +34,7 @@ import dk.itu.moapd.x9.mnla_nals.ui.theme.AppTheme
 import dk.itu.moapd.x9.mnla_nals.ui.theme.CustomThemes
 import dk.itu.moapd.x9.mnla_nals.ui.theme.X9Theme
 import androidx.compose.material.icons.filled.Map
-
-
+import dk.itu.moapd.x9.mnla_nals.screens.MapScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -150,6 +149,11 @@ fun AppNavigationBar(
 
             }
             2 -> {
+                MapScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    navigate = { selectedNavItem = 0 },
+                    snackbarHostState = snackbarHostState
+                )
 
             }
             3 -> {

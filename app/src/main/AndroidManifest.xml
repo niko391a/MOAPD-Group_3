@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
+    <!-- https://medium.com/@myofficework000/permissions-with-jetpack-compose-79820a249ae7 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <application
         android:name=".app.MaterialDesignApplication"
         android:allowBackup="true"
@@ -13,8 +15,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.X9"
         android:localeConfig="@xml/locales_config">
-        <!-- https://medium.com/@myofficework000/permissions-with-jetpack-compose-79820a249ae7 -->
-        <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
