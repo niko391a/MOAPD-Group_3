@@ -36,6 +36,7 @@ fun MapScreen(
     ) {
 
         if (multiplePermissionsState.allPermissionsGranted) {
+            // here needs to show map free map api for this
             Text("All location permissions granted!")
         } else {
             Button(onClick = { multiplePermissionsState.launchMultiplePermissionRequest() }) {
