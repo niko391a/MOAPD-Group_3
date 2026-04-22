@@ -13,6 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.X9"
         android:localeConfig="@xml/locales_config">
+        <!-- https://medium.com/@myofficework000/permissions-with-jetpack-compose-79820a249ae7 -->
+        <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
