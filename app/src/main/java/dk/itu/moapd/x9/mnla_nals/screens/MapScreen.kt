@@ -1,12 +1,17 @@
 package dk.itu.moapd.x9.mnla_nals.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
@@ -28,12 +33,21 @@ fun MapScreen(
             android.Manifest.permission.ACCESS_FINE_LOCATION,
         )
     )
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(24.dp)
+    ) {
 
-    if (multiplePermissionsState.allPermissionsGranted) {
-        Text("All location permissions granted!")
-    } else {
-        Button(onClick = { multiplePermissionsState.launchMultiplePermissionRequest() }) {
-            Text("Request Location Permissions")
+        if (multiplePermissionsState.allPermissionsGranted) {
+            Text("All location permissions granted!")
+        } else {
+            Button(onClick = { multiplePermissionsState.launchMultiplePermissionRequest() }) {
+                Text("Request Location Permissions")
+            }
         }
+
     }
+
 }
