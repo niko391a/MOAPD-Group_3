@@ -53,4 +53,5 @@
     <string name="snackbar_report_modify_successful">Report has been modified!</string>
     <string name="modify_report_submit">Submit change</string>
     <string name="Map">Map</string>
+    <string name="itu_title">Itu\n</string>
 </resources>

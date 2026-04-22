@@ -52,5 +52,6 @@
     <string name="settings_label_guest">Gæste konto</string>
     <string name="snackbar_report_modify_successful">Rapport er blevet ændret!</string>
     <string name="modify_report_submit">"Indsend ændring "</string>
-    <string name="Map">Kort</string>>
+    <string name="Map">Kort</string>
+    <string name="itu_title">Itu\n</string>>
 </resources>

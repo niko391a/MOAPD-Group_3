@@ -53,6 +53,7 @@ class MainActivity : ComponentActivity() {
             val authViewModel: AuthViewModel = viewModel()
             val reportViewModel: ReportViewModel = viewModel()
 
+
             val user by authViewModel.user.collectAsStateWithLifecycle()
             val selectedTheme by settingsViewModel.currentTheme.collectAsStateWithLifecycle()
 
