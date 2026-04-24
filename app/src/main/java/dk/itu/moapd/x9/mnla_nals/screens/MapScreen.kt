@@ -32,6 +32,8 @@ fun MapScreen(
     ) {
 
     PermissionGranter(permissionViewModel)
+    val hasPermission = permissionViewModel.requestPermission.collectAsState().value
+
 
     // Itu's coordinates
     val itu = LatLng(55.6596, 12.5910)
@@ -40,13 +42,15 @@ fun MapScreen(
     here Itu cords are hard code can use this and might need the report id asweel as something to show it
     Maybe geofencing
      */
-
+    // update to persons position and show it on the map
+    
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(itu, 15f)
     }
 
 
-    if (permissionViewModel.requestPermission.collectAsState().value) {
+
+    if (hasPermission) {
         GoogleMap(
             modifier = modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
