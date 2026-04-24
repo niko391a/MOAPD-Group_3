@@ -25,6 +25,7 @@ import dk.itu.moapd.x9.mnla_nals.ViewModels.PermissionViewModel
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
+// need to show all user reports with markers
 fun MapScreen(
     modifier: Modifier = Modifier,
     navigate: () -> Unit,
