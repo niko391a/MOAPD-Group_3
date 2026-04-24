@@ -76,7 +76,9 @@ fun MapScreen(
             )
         }
     } else {
-        Text("Request Location Permissions")
-
+        PermissionRequiredScreen(
+            modifier = modifier,
+            onGoBack = navigate
+        )
     }
 }
