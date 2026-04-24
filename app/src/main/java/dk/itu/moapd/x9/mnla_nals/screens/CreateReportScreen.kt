@@ -54,7 +54,6 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-// To Do needs to fetch user location and add that to the report
 fun CreateReportScreen(
     modifier: Modifier = Modifier,
     reportViewModel: ReportViewModel = viewModel(),
