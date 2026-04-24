@@ -37,6 +37,7 @@ import dk.itu.moapd.x9.mnla_nals.ViewModels.ReportViewModel
 import dk.itu.moapd.x9.mnla_nals.ViewModels.SnackViewModel
 import dk.itu.moapd.x9.mnla_nals.components.AnimatedColorToggleButton
 import dk.itu.moapd.x9.mnla_nals.components.BasicDropdownMenu
+import dk.itu.moapd.x9.mnla_nals.components.PermissionGranter
 import dk.itu.moapd.x9.mnla_nals.data.Report
 import kotlinx.coroutines.launch
 
@@ -72,23 +73,8 @@ fun CreateReportScreen(
     val reportUnsuccessful = stringResource(R.string.snackbar_report_unsuccessful)
     val deleteSuccessfully = stringResource(R.string.delete_successful)
 
-    val multiplePermissionsState = rememberMultiplePermissionsState(
-        listOf(
-            android.Manifest.permission.ACCESS_COARSE_LOCATION,
-            android.Manifest.permission.ACCESS_FINE_LOCATION,
-        )
-    )
+    PermissionGranter(permissionViewModel)
 
-    if (!permissionViewModel.requestPermission.collectAsState().value) {
-        LaunchedEffect(Unit) {
-            multiplePermissionsState.launchMultiplePermissionRequest()
-        }
-        if (multiplePermissionsState.allPermissionsGranted) {
-            permissionViewModel.onPermissionButtonClicked()
-        } else {
-            permissionViewModel.onPermissionRequestHandled()
-        }
-    }
 
     if(permissionViewModel.requestPermission.collectAsState().value) {
         Log.d("Permission", "Permissions granted, showing CreateReportScreen")

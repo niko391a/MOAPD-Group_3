@@ -22,6 +22,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dk.itu.moapd.x9.mnla_nals.ViewModels.PermissionViewModel
+import dk.itu.moapd.x9.mnla_nals.components.PermissionGranter
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -34,12 +35,7 @@ fun MapScreen(
 
     ) {
 
-    val multiplePermissionsState = rememberMultiplePermissionsState(
-        listOf(
-            android.Manifest.permission.ACCESS_COARSE_LOCATION,
-            android.Manifest.permission.ACCESS_FINE_LOCATION,
-        )
-    )
+    PermissionGranter(permissionViewModel)
 
     // Itu's coordinates
     val itu = LatLng(55.6596, 12.5910)
@@ -47,16 +43,7 @@ fun MapScreen(
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(itu, 15f)
     }
-    if (!permissionViewModel.requestPermission.collectAsState().value) {
-        LaunchedEffect(Unit) {
-            multiplePermissionsState.launchMultiplePermissionRequest()
-        }
-        if (multiplePermissionsState.allPermissionsGranted) {
-            permissionViewModel.onPermissionButtonClicked()
-        } else {
-            permissionViewModel.onPermissionRequestHandled()
-        }
-    }
+
 
     if (permissionViewModel.requestPermission.collectAsState().value) {
         GoogleMap(
