@@ -7,7 +7,9 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 
@@ -26,6 +28,7 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import dk.itu.moapd.x9.mnla_nals.ViewModels.PermissionViewModel
 import dk.itu.moapd.x9.mnla_nals.ViewModels.ReportViewModel
 import dk.itu.moapd.x9.mnla_nals.components.PermissionGranter
+import dk.itu.moapd.x9.mnla_nals.data.Report
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -68,26 +71,43 @@ fun MapScreen(
         }
 
     val reports by reportViewModel.reports.collectAsState()
+    var selectedReport by remember { mutableStateOf<Report?>(null) }
+
 
     if (hasPermission) {
-        GoogleMap(
-            modifier = modifier.fillMaxSize(),
-            cameraPositionState = cameraPositionState,
-            properties = MapProperties(
-                mapType = MapType.NORMAL,
-                isMyLocationEnabled = true,
-            ),
-        ) {
-            reports.forEach { report ->
-                val reportPosition = LatLng(report.latitude, report.longitude)
+        if (selectedReport != null) {
+            Log.d("MapScreen", "Selected report: $selectedReport")
+            ReportDetailScreen(
+                selectedReport = selectedReport!!,
+                navigate = { selectedReport = null },
+                modifier = modifier,
+            )
+        }else {
+            GoogleMap(
+                modifier = modifier.fillMaxSize(),
+                cameraPositionState = cameraPositionState,
+                properties = MapProperties(
+                    mapType = MapType.NORMAL,
+                    isMyLocationEnabled = true,
+                ),
+            ) {
+                reports.forEach { report ->
+                    val reportPosition = LatLng(report.latitude, report.longitude)
                     Marker(
                         state = MarkerState(position = reportPosition),
                         title = report.title,
-                        snippet = report.description
+                        snippet = report.description,
+                        onClick = {
+                            selectedReport = report
+                            true
+                        }
+
                     )
-                Log.d("MapScreen", "Report: $report")
+                    Log.d("MapScreen", "Report: $report")
+                }
             }
         }
+
     }else{
             PermissionRequiredScreen(
                 modifier = modifier,
