@@ -1,26 +1,35 @@
 package dk.itu.moapd.x9.mnla_nals.screens
 
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.LocalFocusManager
 import android.util.Log
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.LocationOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.accompanist.permissions.shouldShowRationale
 import dk.itu.moapd.x9.mnla_nals.R
 import dk.itu.moapd.x9.mnla_nals.ViewModels.AuthViewModel
 import dk.itu.moapd.x9.mnla_nals.ViewModels.PermissionViewModel
@@ -61,6 +70,7 @@ fun CreateReportScreen(
     val reportModifySuccess = stringResource(R.string.snackbar_report_modify_successful)
     val reportUnsuccessful = stringResource(R.string.snackbar_report_unsuccessful)
     val deleteSuccessfully = stringResource(R.string.delete_successful)
+
     val multiplePermissionsState = rememberMultiplePermissionsState(
         listOf(
             android.Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -236,7 +246,10 @@ fun CreateReportScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
     }
-    }else{
-        Text("Request Location Permissions")
+    }else {
+        PermissionRequiredScreen(
+            modifier = modifier,
+            onGoBack = navigate
+        )
     }
 }

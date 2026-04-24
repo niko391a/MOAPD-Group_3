@@ -53,5 +53,11 @@
     <string name="snackbar_report_modify_successful">Rapport er blevet ændret!</string>
     <string name="modify_report_submit">"Indsend ændring "</string>
     <string name="Map">Kort</string>
-    <string name="itu_title">Itu\n</string>>
+    <string name="itu_title">Itu\n</string>
+    <string name="permission_message">Vi skal bruge din location for at tilgå denne funktion</string>
+    <string name="permission_title">"Lokation  tilladelse "</string>
+    <string name="Grant_perm">Tillad</string>
+    <string name="permission_leave">Gå tilbage</string>
+    <string name="Open_settings">Åben instilinger</string>
+    >
 </resources>
