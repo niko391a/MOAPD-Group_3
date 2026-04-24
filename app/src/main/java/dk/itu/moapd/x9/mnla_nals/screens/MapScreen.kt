@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -23,6 +24,7 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import dk.itu.moapd.x9.mnla_nals.R
 import dk.itu.moapd.x9.mnla_nals.ViewModels.PermissionViewModel
+import dk.itu.moapd.x9.mnla_nals.ViewModels.ReportViewModel
 import dk.itu.moapd.x9.mnla_nals.components.PermissionGranter
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -32,6 +34,7 @@ fun MapScreen(
     navigate: () -> Unit,
     snackbarHostState: SnackbarHostState,
     permissionViewModel: PermissionViewModel = viewModel(),
+    reportViewModel: ReportViewModel = viewModel()
 
     ) {
     val context = LocalContext.current
@@ -41,6 +44,8 @@ fun MapScreen(
 
     PermissionGranter(permissionViewModel)
     val hasPermission = permissionViewModel.requestPermission.collectAsState().value
+
+    val reports by reportViewModel.reports.collectAsState()
 
 
     // Itu's coordinates
@@ -77,13 +82,13 @@ fun MapScreen(
             ),
         ) {
             // creates the read markers on the map
-            val markerState = remember {
+            /*val markerState = remember {
                 MarkerState(position = itu)
             }
             Marker(
                 state = markerState,
                 title = stringResource(R.string.itu_title),
-            )
+            )*/
         }
     } else {
         PermissionRequiredScreen(
