@@ -65,7 +65,7 @@ class DatabaseRepository {
      * All reports live under reports/
      */
     fun getReportsFlow(localeTag: String): Flow<List<Report>> = callbackFlow {
-        val ref = database.child("reports").child("language").equalTo(localeTag)
+        val ref = database.child("reports").orderByChild("language").equalTo(localeTag)
 
         val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {

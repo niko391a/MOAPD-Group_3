@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -49,7 +50,8 @@ fun HomeScreen(
 ) {
     // Use by so we can take advantage of Kotlin's inherent get-/setValue
     val currentLocaleTag by settingsViewModel.currentLocaleTag.collectAsState()
-    val reports by reportViewModel.getReports(currentLocaleTag).collectAsState()
+    val reportsFlow = remember(currentLocaleTag) { reportViewModel.getReports(currentLocaleTag) }
+    val reports by reportsFlow.collectAsState()
     val user by authViewModel.user.collectAsState()
     val sortedReports = reports.sortedByDescending { it.createdAt }
 
