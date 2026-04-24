@@ -25,11 +25,12 @@ import dk.itu.moapd.x9.mnla_nals.ViewModels.AuthViewModel
 import dk.itu.moapd.x9.mnla_nals.ViewModels.SettingsViewModel
 import dk.itu.moapd.x9.mnla_nals.components.AnimatedColorToggleButton
 import dk.itu.moapd.x9.mnla_nals.components.BasicDropdownMenu
+import dk.itu.moapd.x9.mnla_nals.data.Report
 import dk.itu.moapd.x9.mnla_nals.ui.theme.AppTheme
 import java.util.Locale
 
 @Composable
-fun ReportDetailScreen() {
+fun ReportDetailScreen(selectedReport: Report) {
 
 }
 
