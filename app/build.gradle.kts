@@ -1,4 +1,3 @@
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -84,49 +83,41 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
+
+    // Compose
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons.core)
     implementation(libs.androidx.foundation.layout)
     implementation(libs.androidx.runtime.saveable)
-    implementation(libs.material)
-    implementation(libs.androidx.compose.material.icons.core)
-    implementation(libs.androidx.lifecycle.runtime.compose)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     debugImplementation(libs.androidx.compose.ui.tooling)
+
     implementation("androidx.compose.material:material-icons-extended")
 
     // Location
     implementation(libs.google.play.services.location)
     implementation("com.google.accompanist:accompanist-permissions:0.36.0")
     implementation(libs.maps.compose)
-    
+
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation("com.google.firebase:firebase-analytics")
-    implementation(libs.firebase.ui.auth)
     implementation("com.google.firebase:firebase-auth")
-    implementation(libs.firebase.storage)
-    implementation(libs.firebase.database)
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.firebase.ui.database)
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
-
-
-
-    // Import the BoM for the Firebase platform
-    implementation(platform("com.google.firebase:firebase-bom:34.12.0"))
-
-    // Add the dependency for the Realtime Database library
-    // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation("com.google.firebase:firebase-database")
+    implementation(libs.firebase.ui.auth)
+    implementation(libs.firebase.ui.database)
+    implementation(libs.firebase.storage)
 
-    // Also add the dependencies for the Credential Manager libraries and specify their versions
+    // Google Identity / Credentials
     implementation("androidx.credentials:credentials:1.3.0")
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")

@@ -16,7 +16,7 @@
     <string name="create_report_title">Rapport tittel</string>
     <string name="create_report_location">Rapport lokation</string>
     <string name="create_report_date">Rapport dato</string>
-    <string name="create_report_type">Rapport type</string>
+    <string name="create_report_type">Rapport kategori</string>
     <string name="create_report_type_desc">Vælg rapport type</string>
     <string name="create_report_description">Rapport beskrivelse</string>
     <string name="create_report_severity_low">LAV</string>
@@ -52,6 +52,8 @@
     <string name="settings_label_guest">Gæste konto</string>
     <string name="snackbar_report_modify_successful">Rapport er blevet ændret!</string>
     <string name="modify_report_submit">"Indsend ændring "</string>
+    <string name="home_report_type">Kategori</string>
+    <string name="home_report_severity">Alvor</string>>
     <string name="Map">Kort</string>
     <string name="itu_title">Itu\n</string>
     <string name="permission_message">Vi skal bruge din location for at tilgå denne funktion</string>

@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -35,6 +36,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import dk.itu.moapd.x9.mnla_nals.R
 import dk.itu.moapd.x9.mnla_nals.ViewModels.AuthViewModel
 import dk.itu.moapd.x9.mnla_nals.ViewModels.ReportViewModel
+import dk.itu.moapd.x9.mnla_nals.ViewModels.SettingsViewModel
 import dk.itu.moapd.x9.mnla_nals.components.SeverityPill
 import dk.itu.moapd.x9.mnla_nals.data.Report
 
@@ -44,9 +46,12 @@ fun HomeScreen(
     onAddReport: () -> Unit = {},
     reportViewModel: ReportViewModel = viewModel(),
     authViewModel: AuthViewModel = viewModel(),
+    settingsViewModel: SettingsViewModel = viewModel()
 ) {
     // Use by so we can take advantage of Kotlin's inherent get-/setValue
-    val reports by reportViewModel.reports.collectAsState(initial = emptyList())
+    val currentLocaleTag by settingsViewModel.currentLocaleTag.collectAsState()
+    val reportsFlow = remember(currentLocaleTag) { reportViewModel.getReports(currentLocaleTag) }
+    val reports by reportsFlow.collectAsState()
     val user by authViewModel.user.collectAsState()
     val sortedReports = reports.sortedByDescending { it.createdAt }
 
@@ -132,9 +137,9 @@ fun ReportItem(
                 )
             }
                 Text(text = report.title, style = MaterialTheme.typography.titleLarge)
-                Text(text = "Type: ${report.type}")
+                Text(text = stringResource(id = R.string.home_report_type) + ": ${report.type}")
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "Severity: ")
+                    Text(text = stringResource(id = R.string.home_report_severity) + ": ")
                     SeverityPill(severity = report.severity)
                 }
                 Text(text = report.description, style = MaterialTheme.typography.bodyMedium)

@@ -16,5 +16,6 @@ data class Report(
     val severity: String = "",
     val createdAt: Long = System.currentTimeMillis(),
     val longitude: Double = 0.0,
-    val latitude: Double = 0.0
+    val latitude: Double = 0.0,
+    val language: String = "",
 )
