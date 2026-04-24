@@ -1,7 +1,6 @@
 package dk.itu.moapd.x9.mnla_nals.screens
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,6 +18,10 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import dk.itu.moapd.x9.mnla_nals.R
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.viewmodel.compose.viewModel
+import dk.itu.moapd.x9.mnla_nals.ViewModels.PermissionViewModel
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -26,8 +29,10 @@ fun MapScreen(
     modifier: Modifier = Modifier,
     navigate: () -> Unit,
     snackbarHostState: SnackbarHostState,
-    
-) {
+    permissionViewModel: PermissionViewModel = viewModel(),
+
+    ) {
+
     val multiplePermissionsState = rememberMultiplePermissionsState(
         listOf(
             android.Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -41,9 +46,18 @@ fun MapScreen(
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(itu, 15f)
     }
-    multiplePermissionsState.launchMultiplePermissionRequest()
+    if (!permissionViewModel.requestPermission.collectAsState().value) {
+        LaunchedEffect(Unit) {
+            multiplePermissionsState.launchMultiplePermissionRequest()
+        }
+        if (multiplePermissionsState.allPermissionsGranted) {
+            permissionViewModel.onPermissionButtonClicked()
+        } else {
+            permissionViewModel.onPermissionRequestHandled()
+        }
+    }
 
-    if (multiplePermissionsState.allPermissionsGranted) {
+    if (permissionViewModel.requestPermission.collectAsState().value) {
         GoogleMap(
             modifier = modifier.fillMaxSize(), // 3. Use modifier, not Modifier
             cameraPositionState = cameraPositionState,

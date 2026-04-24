@@ -19,8 +19,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import dk.itu.moapd.x9.mnla_nals.R
 import dk.itu.moapd.x9.mnla_nals.ViewModels.AuthViewModel
+import dk.itu.moapd.x9.mnla_nals.ViewModels.PermissionViewModel
 import dk.itu.moapd.x9.mnla_nals.ViewModels.ReportViewModel
 import dk.itu.moapd.x9.mnla_nals.ViewModels.SnackViewModel
 import dk.itu.moapd.x9.mnla_nals.components.AnimatedColorToggleButton
@@ -28,6 +31,7 @@ import dk.itu.moapd.x9.mnla_nals.components.BasicDropdownMenu
 import dk.itu.moapd.x9.mnla_nals.data.Report
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun CreateReportScreen(
     modifier: Modifier = Modifier,
@@ -36,6 +40,7 @@ fun CreateReportScreen(
     navigate: () -> Unit,
     snackbarHostState: SnackbarHostState,
     authViewModel: AuthViewModel = viewModel(),
+    permissionViewModel: PermissionViewModel = viewModel(),
 ) {
     val user by authViewModel.user.collectAsStateWithLifecycle()
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -56,7 +61,26 @@ fun CreateReportScreen(
     val reportModifySuccess = stringResource(R.string.snackbar_report_modify_successful)
     val reportUnsuccessful = stringResource(R.string.snackbar_report_unsuccessful)
     val deleteSuccessfully = stringResource(R.string.delete_successful)
+    val multiplePermissionsState = rememberMultiplePermissionsState(
+        listOf(
+            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+            android.Manifest.permission.ACCESS_FINE_LOCATION,
+        )
+    )
 
+    if (!permissionViewModel.requestPermission.collectAsState().value) {
+        LaunchedEffect(Unit) {
+            multiplePermissionsState.launchMultiplePermissionRequest()
+        }
+        if (multiplePermissionsState.allPermissionsGranted) {
+            permissionViewModel.onPermissionButtonClicked()
+        } else {
+            permissionViewModel.onPermissionRequestHandled()
+        }
+    }
+
+    if(permissionViewModel.requestPermission.collectAsState().value) {
+        Log.d("Permission", "Permissions granted, showing CreateReportScreen")
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -211,5 +235,8 @@ fun CreateReportScreen(
         }
 
         Spacer(modifier = Modifier.height(24.dp))
+    }
+    }else{
+        Text("Request Location Permissions")
     }
 }
