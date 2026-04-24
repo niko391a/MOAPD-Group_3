@@ -52,4 +52,6 @@
     <string name="theme_settings">Theme Settings</string>
     <string name="snackbar_report_modify_successful">Report has been modified!</string>
     <string name="modify_report_submit">Submit change</string>
+    <string name="home_report_type">Type</string>
+    <string name="home_report_severity">Severity</string>
 </resources>
