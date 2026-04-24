@@ -17,13 +17,24 @@ class ReportViewModel : ViewModel() {
     val db = DatabaseRepository()
     private val _reportToEdit = MutableStateFlow<Report?>(null)
     val reportToEdit: StateFlow<Report?> = _reportToEdit.asStateFlow()
-    val reports: StateFlow<List<Report>> = db.getReportsFlow()
-        .catch { e -> Log.e("ReportViewModel", "Reports flow error: ${e.message}") }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = emptyList()
-        )
+//    val reports: StateFlow<List<Report>> = db.getReportsFlow(localeTag)
+//        .catch { e -> Log.e("ReportViewModel", "Reports flow error: ${e.message}") }
+//        .stateIn(
+//            scope = viewModelScope,
+//            started = SharingStarted.WhileSubscribed(5_000),
+//            initialValue = emptyList()
+//        )
+
+    fun getReports(localeTag: String) : StateFlow<List<Report>> {
+        val reports: StateFlow<List<Report>> = db.getReportsFlow(localeTag)
+            .catch { e -> Log.e("ReportViewModel", "Reports flow error: ${e.message}") }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = emptyList()
+            )
+        return reports
+    }
 
     fun addReport(report: Report) {
         db.addReport(report)

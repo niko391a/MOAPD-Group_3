@@ -14,5 +14,6 @@ data class Report(
     val description: String = "",
     val type: String = "",
     val severity: String = "",
-    val createdAt: Long = System.currentTimeMillis()
+    val createdAt: Long = System.currentTimeMillis(),
+    val language: String = "",
 )

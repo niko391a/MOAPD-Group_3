@@ -35,6 +35,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import dk.itu.moapd.x9.mnla_nals.R
 import dk.itu.moapd.x9.mnla_nals.ViewModels.AuthViewModel
 import dk.itu.moapd.x9.mnla_nals.ViewModels.ReportViewModel
+import dk.itu.moapd.x9.mnla_nals.ViewModels.SettingsViewModel
 import dk.itu.moapd.x9.mnla_nals.components.SeverityPill
 import dk.itu.moapd.x9.mnla_nals.data.Report
 
@@ -44,9 +45,11 @@ fun HomeScreen(
     onAddReport: () -> Unit = {},
     reportViewModel: ReportViewModel = viewModel(),
     authViewModel: AuthViewModel = viewModel(),
+    settingsViewModel: SettingsViewModel = viewModel()
 ) {
     // Use by so we can take advantage of Kotlin's inherent get-/setValue
-    val reports by reportViewModel.reports.collectAsState(initial = emptyList())
+    val currentLocaleTag by settingsViewModel.currentLocaleTag.collectAsState()
+    val reports by reportViewModel.getReports(currentLocaleTag).collectAsState()
     val user by authViewModel.user.collectAsState()
     val sortedReports = reports.sortedByDescending { it.createdAt }
 

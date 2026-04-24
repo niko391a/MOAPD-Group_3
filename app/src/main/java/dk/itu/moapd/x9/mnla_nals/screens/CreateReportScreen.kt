@@ -22,6 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import dk.itu.moapd.x9.mnla_nals.R
 import dk.itu.moapd.x9.mnla_nals.ViewModels.AuthViewModel
 import dk.itu.moapd.x9.mnla_nals.ViewModels.ReportViewModel
+import dk.itu.moapd.x9.mnla_nals.ViewModels.SettingsViewModel
 import dk.itu.moapd.x9.mnla_nals.ViewModels.SnackViewModel
 import dk.itu.moapd.x9.mnla_nals.components.AnimatedColorToggleButton
 import dk.itu.moapd.x9.mnla_nals.components.BasicDropdownMenu
@@ -36,11 +37,13 @@ fun CreateReportScreen(
     navigate: () -> Unit,
     snackbarHostState: SnackbarHostState,
     authViewModel: AuthViewModel = viewModel(),
+    settingsViewModel: SettingsViewModel = viewModel()
 ) {
     val user by authViewModel.user.collectAsStateWithLifecycle()
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
     val userReport by reportViewModel.reportToEdit.collectAsStateWithLifecycle()
+    val currentLocale by settingsViewModel.currentLocaleTag.collectAsStateWithLifecycle()
 
     var reportTitle by rememberSaveable { mutableStateOf(userReport?.title ?: "") }
     var reportDescription by rememberSaveable { mutableStateOf(userReport?.description ?: "") }
@@ -159,7 +162,9 @@ fun CreateReportScreen(
                         title = reportTitle,
                         description = reportDescription,
                         type = selectedReportType,
-                        severity = reportSeverity
+                        severity = reportSeverity,
+                        language = currentLocale
+
                     )
 
                     if (isEditMode) {

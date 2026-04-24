@@ -64,8 +64,8 @@ class DatabaseRepository {
      * Returns a Flow that emits a fresh list whenever the reports node changes.
      * All reports live under reports/
      */
-    fun getReportsFlow(): Flow<List<Report>> = callbackFlow {
-        val ref = database.child("reports")
+    fun getReportsFlow(localeTag: String): Flow<List<Report>> = callbackFlow {
+        val ref = database.child("reports").child("language").equalTo(localeTag)
 
         val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
