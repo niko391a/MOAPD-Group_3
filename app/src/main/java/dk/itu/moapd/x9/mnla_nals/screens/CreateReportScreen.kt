@@ -1,35 +1,46 @@
 package dk.itu.moapd.x9.mnla_nals.screens
 
+import android.annotation.SuppressLint
 import android.util.Log
-import android.content.Intent
-import android.net.Uri
-import android.provider.Settings
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.LocationOff
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.google.accompanist.permissions.shouldShowRationale
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import dk.itu.moapd.x9.mnla_nals.R
 import dk.itu.moapd.x9.mnla_nals.ViewModels.AuthViewModel
 import dk.itu.moapd.x9.mnla_nals.ViewModels.PermissionViewModel
@@ -62,6 +73,10 @@ fun CreateReportScreen(
     var reportDescription by rememberSaveable { mutableStateOf(userReport?.description ?: "") }
     var selectedReportType by rememberSaveable { mutableStateOf(userReport?.type ?: "") }
     var reportSeverity by rememberSaveable { mutableStateOf(userReport?.severity ?: "") }
+    val context = LocalContext.current
+    val fusedLocationClient = remember {
+        LocationServices.getFusedLocationProviderClient(context)
+    }
 
     val isEditMode = userReport != null
 
@@ -74,9 +89,11 @@ fun CreateReportScreen(
     val deleteSuccessfully = stringResource(R.string.delete_successful)
 
     PermissionGranter(permissionViewModel)
+    val permissionsGranted = permissionViewModel.requestPermission.collectAsState().value
 
 
-    if(permissionViewModel.requestPermission.collectAsState().value) {
+
+    if(permissionsGranted) {
         Log.d("Permission", "Permissions granted, showing CreateReportScreen")
     Column(
         modifier = modifier
@@ -160,54 +177,64 @@ fun CreateReportScreen(
 
         Button(
             onClick = {
-                val currentUser = user // local val can be smart cast
+                @SuppressLint("MissingPermission")
+                fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+                    .addOnSuccessListener { location ->
+                        val currentUser = user // local val can be smart cast
 
-                if (currentUser?.isAnonymous == true) {
-                    Log.d("auth", "user is not Authorised")
-                    scope.launch { snackbarHostState.showSnackbar(notAuthorised) }
-                }
-                else if (
-                    reportTitle.isNotEmpty()
-                    && reportDescription.isNotEmpty()
-                    && selectedReportType.isNotEmpty()
-                    && reportSeverity.isNotEmpty()
-                    && currentUser != null
-                    ) {
+                        if (currentUser?.isAnonymous == true) {
+                            Log.d("auth", "user is not Authorised")
+                            scope.launch { snackbarHostState.showSnackbar(notAuthorised) }
+                        } else if (
+                            reportTitle.isNotEmpty()
+                            && reportDescription.isNotEmpty()
+                            && selectedReportType.isNotEmpty()
+                            && reportSeverity.isNotEmpty()
+                            && currentUser != null
+                        ) {
+                            @SuppressLint("MissingPermission")
 
-                    val report = Report(
-                        id = userReport?.id ?: "",
-                        uid = currentUser.uid,
-                        title = reportTitle,
-                        description = reportDescription,
-                        type = selectedReportType,
-                        severity = reportSeverity
-                    )
+                            val report = Report(
+                                id = userReport?.id ?: "",
+                                uid = currentUser.uid,
+                                title = reportTitle,
+                                description = reportDescription,
+                                type = selectedReportType,
+                                severity = reportSeverity,
+                                latitude = location?.latitude ?: 0.0,
+                                longitude = location?.longitude ?: 0.0
 
-                    if (isEditMode) {
-                        reportViewModel.modifyReport(report)
-                        snackViewModel.sendSnackbarMessage(reportModifySuccess)
-                    } else {
-                        reportViewModel.addReport(report)
-                        snackViewModel.sendSnackbarMessage(reportAddSuccess)
-                    }
+                            )
 
-                    navigate()
-                } else {
-                    // Will be reformatted to use SnackBar in the future
-                    Log.d(
-                        "Submit", """
+                            if (isEditMode) {
+                                reportViewModel.modifyReport(report)
+                                snackViewModel.sendSnackbarMessage(reportModifySuccess)
+                            } else {
+                                reportViewModel.addReport(report)
+                                snackViewModel.sendSnackbarMessage(reportAddSuccess)
+                            }
+
+
+                            navigate()
+                        } else {
+                            // Will be reformatted to use SnackBar in the future
+                            Log.d(
+                                "Submit", """
                     User report has been submitted with invalid information:
                     Report Title: $reportTitle
                     Report Type: $selectedReportType
                     Report Description: $reportDescription
                     Severity: $reportSeverity
+                    latitude: ${location?.latitude}
+                    longitude: ${location?.longitude}
                     """.trimIndent()
-                    )
-                    scope.launch {
-                        snackbarHostState.showSnackbar(reportUnsuccessful)
+                            )
+                            scope.launch {
+                                snackbarHostState.showSnackbar(reportUnsuccessful)
+                            }
+                        }
                     }
-                }
-            },
+                      },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
