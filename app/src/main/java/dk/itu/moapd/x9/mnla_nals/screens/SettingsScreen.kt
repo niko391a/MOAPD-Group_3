@@ -37,7 +37,6 @@ fun SettingsScreen(
     // Collect here at the top level so child composables receive plain values,
     // not StateFlows — this is the idiomatic "state hoisting" pattern in Compose
     val user by authViewModel.user.collectAsStateWithLifecycle()
-    val currentLocaleTag by settingsViewModel.currentLocaleTag.collectAsStateWithLifecycle()
 
     Column(
         modifier = modifier
@@ -67,7 +66,6 @@ fun SettingsScreen(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             SettingsSection(icon = Icons.Default.Settings, title = stringResource(R.string.settings_label_language)) {
                 SettingsLanguageSelector(
-                    currentLocaleTag = currentLocaleTag,
                     onLocaleSelected = { tag -> settingsViewModel.setLocale(tag) },
                     settingsViewModel = settingsViewModel
                 )
@@ -136,11 +134,11 @@ fun SettingsThemeToggle(settingsViewModel: SettingsViewModel) {
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun SettingsLanguageSelector(
-    currentLocaleTag: String,
     onLocaleSelected: (String) -> Unit,
     settingsViewModel: SettingsViewModel
 ) {
     val context = LocalContext.current
+    val currentLocaleTag by settingsViewModel.currentLocaleTag.collectAsStateWithLifecycle()
 
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         AnimatedColorToggleButton(

@@ -137,9 +137,9 @@ fun ReportItem(
                 )
             }
                 Text(text = report.title, style = MaterialTheme.typography.titleLarge)
-                Text(text = "Type: ${report.type}")
+                Text(text = stringResource(id = R.string.home_report_type) + ": ${report.type}")
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "Severity: ")
+                    Text(text = stringResource(id = R.string.home_report_severity) + ": ")
                     SeverityPill(severity = report.severity)
                 }
                 Text(text = report.description, style = MaterialTheme.typography.bodyMedium)
