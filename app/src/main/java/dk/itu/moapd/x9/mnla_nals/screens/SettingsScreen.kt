@@ -68,7 +68,8 @@ fun SettingsScreen(
             SettingsSection(icon = Icons.Default.Settings, title = stringResource(R.string.settings_label_language)) {
                 SettingsLanguageSelector(
                     currentLocaleTag = currentLocaleTag,
-                    onLocaleSelected = { tag -> settingsViewModel.setLocale(tag) }
+                    onLocaleSelected = { tag -> settingsViewModel.setLocale(tag) },
+                    settingsViewModel = settingsViewModel
                 )
             }
         }
@@ -136,7 +137,8 @@ fun SettingsThemeToggle(settingsViewModel: SettingsViewModel) {
 @Composable
 fun SettingsLanguageSelector(
     currentLocaleTag: String,
-    onLocaleSelected: (String) -> Unit
+    onLocaleSelected: (String) -> Unit,
+    settingsViewModel: SettingsViewModel
 ) {
     val context = LocalContext.current
 
@@ -149,6 +151,7 @@ fun SettingsLanguageSelector(
                 onLocaleSelected("en")
                 context.getSystemService(LocaleManager::class.java)
                     .applicationLocales = LocaleList(Locale.forLanguageTag("en"))
+                settingsViewModel.setLocale("en")
             }
         )
 
@@ -160,6 +163,7 @@ fun SettingsLanguageSelector(
                 onLocaleSelected("da")
                 context.getSystemService(LocaleManager::class.java)
                     .applicationLocales = LocaleList(Locale.forLanguageTag("da"))
+                settingsViewModel.setLocale("da")
             }
         )
     }
