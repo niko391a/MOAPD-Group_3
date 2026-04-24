@@ -1,6 +1,7 @@
 package dk.itu.moapd.x9.mnla_nals.screens
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -9,7 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
+
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.android.gms.location.LocationServices
@@ -22,7 +23,6 @@ import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
-import dk.itu.moapd.x9.mnla_nals.R
 import dk.itu.moapd.x9.mnla_nals.ViewModels.PermissionViewModel
 import dk.itu.moapd.x9.mnla_nals.ViewModels.ReportViewModel
 import dk.itu.moapd.x9.mnla_nals.components.PermissionGranter
@@ -45,11 +45,10 @@ fun MapScreen(
     PermissionGranter(permissionViewModel)
     val hasPermission = permissionViewModel.requestPermission.collectAsState().value
 
-    val reports by reportViewModel.reports.collectAsState()
-
-
-    // Itu's coordinates
-    var userLocation = LatLng(55.6596, 12.5910)
+    // Defaults to itu
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(LatLng(55.6596, 12.5910), 15f)
+    }
     // need to show all user reports with markers
     /*
     here Itu cords are hard code can use this and might need the report id asweel as something to show it
@@ -60,17 +59,15 @@ fun MapScreen(
     fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
         .addOnSuccessListener { location ->
             if (location != null) {
-                userLocation = LatLng(location.latitude, location.longitude)
-                // Update the camera position to the user's location
-                val cameraPositionState = CameraPosition.fromLatLngZoom(userLocation, 15f)
+                val userLocation = LatLng(location.latitude, location.longitude)
+                // Animate camera to the new position
+                cameraPositionState.move(
+                    com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom(userLocation, 15f)
+                )
             }
         }
-    // Default to ITU if users Dosent have a location
-    val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(userLocation, 15f)
-    }
 
-
+    val reports by reportViewModel.reports.collectAsState()
 
     if (hasPermission) {
         GoogleMap(
@@ -81,19 +78,20 @@ fun MapScreen(
                 isMyLocationEnabled = true,
             ),
         ) {
-            // creates the read markers on the map
-            /*val markerState = remember {
-                MarkerState(position = itu)
+            reports.forEach { report ->
+                val reportPosition = LatLng(report.latitude, report.longitude)
+                    Marker(
+                        state = MarkerState(position = reportPosition),
+                        title = report.title,
+                        snippet = report.description
+                    )
+                Log.d("MapScreen", "Report: $report")
             }
-            Marker(
-                state = markerState,
-                title = stringResource(R.string.itu_title),
-            )*/
         }
-    } else {
-        PermissionRequiredScreen(
-            modifier = modifier,
-            onGoBack = navigate
+    }else{
+            PermissionRequiredScreen(
+                modifier = modifier,
+                onGoBack = navigate
         )
     }
 }
