@@ -4,17 +4,26 @@ import android.R.attr.button
 import android.app.LocaleManager
 import android.os.Build
 import android.os.LocaleList
+import android.text.format.DateUtils
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -28,6 +37,7 @@ import dk.itu.moapd.x9.mnla_nals.ViewModels.AuthViewModel
 import dk.itu.moapd.x9.mnla_nals.ViewModels.SettingsViewModel
 import dk.itu.moapd.x9.mnla_nals.components.AnimatedColorToggleButton
 import dk.itu.moapd.x9.mnla_nals.components.BasicDropdownMenu
+import dk.itu.moapd.x9.mnla_nals.components.SeverityPill
 import dk.itu.moapd.x9.mnla_nals.data.Report
 import dk.itu.moapd.x9.mnla_nals.ui.theme.AppTheme
 import java.util.Locale
@@ -36,35 +46,122 @@ import java.util.Locale
 fun ReportDetailScreen(
     selectedReport: Report,
     modifier: Modifier = Modifier,
-    navigate: () -> Unit,) {
-    Log.d("ReportDetailScreen", "Report: $selectedReport")
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+    navigate: () -> Unit,
+) {
+    val scrollState = rememberScrollState()
+
+    // THis is just a Template shouldt be actually used.
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(16.dp)
+            .verticalScroll(scrollState),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        // 1. Top Bar / Back Button
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
+            IconButton(onClick = navigate) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Go Back"
+                )
+            }
             Text(
-                text = selectedReport.title,
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold
+                text = "Report Details",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 8.dp)
             )
-            Text(
-                text = "Severity: ${selectedReport.severity}",
-                style = MaterialTheme.typography.bodyMedium
+        }
+
+        // 2. Main Title
+        Text(
+            text = selectedReport.title,
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.ExtraBold,
+            modifier = Modifier.padding(horizontal = 8.dp)
+        )
+
+        // 3. Metadata Card (Date, Type, Severity Info)
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
             )
-            Text(
-                text = "Description: ${selectedReport.description}",
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Button(
-                onClick = navigate,
-                modifier = Modifier.align(Alignment.End)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Text(text = "Close")
+                // when was it uploaded?
+                val timeSinceUploaded = DateUtils.getRelativeTimeSpanString(
+                    selectedReport.createdAt,
+                    System.currentTimeMillis(),
+                    DateUtils.MINUTE_IN_MILLIS
+                ).toString()
+                // row of date and time
+                IconTextRow(icon = Icons.Default.DateRange, text = "Reported: $timeSinceUploaded")
+
+                // Type Row
+                IconTextRow(icon = Icons.Default.Info, text = "Type: ${selectedReport.type}")
+
+                // Severity Row
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.Warning,
+                        contentDescription = "Severity",
+                        modifier = Modifier.size(20.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(
+                        text = "Severity: ",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    SeverityPill(severity = selectedReport.severity)
+                }
             }
         }
 
+        // The description
+        Column(modifier = Modifier.padding(horizontal = 8.dp)) {
+            Text(
+                text = "Description",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = selectedReport.description,
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+    }
+}
+@Composable // for having icon on the ledt with a title or text beside it
+private fun IconTextRow(icon: ImageVector, text: String) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            modifier = Modifier.size(20.dp),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(modifier = Modifier.width(12.dp))
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
 }
 
 @Composable
