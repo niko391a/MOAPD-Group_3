@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.detekt)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.secrets.gradle)
+
 }
 
 android {
@@ -39,8 +41,13 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
+    secrets {
+        propertiesFileName = "local.properties"
+        ignoreList.add("sdk.dir")
+    }
     ktlint {
         android.set(true)
         outputToConsole.set(true)
@@ -93,6 +100,13 @@ dependencies {
     implementation(libs.androidx.runtime.saveable)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     debugImplementation(libs.androidx.compose.ui.tooling)
+
+    implementation("androidx.compose.material:material-icons-extended")
+
+    // Location
+    implementation(libs.google.play.services.location)
+    implementation("com.google.accompanist:accompanist-permissions:0.36.0")
+    implementation(libs.maps.compose)
 
     // Firebase
     implementation(platform(libs.firebase.bom))

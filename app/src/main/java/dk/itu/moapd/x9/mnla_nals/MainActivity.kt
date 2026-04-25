@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
@@ -32,6 +33,11 @@ import dk.itu.moapd.x9.mnla_nals.screens.SettingsScreen
 import dk.itu.moapd.x9.mnla_nals.ui.theme.AppTheme
 import dk.itu.moapd.x9.mnla_nals.ui.theme.CustomThemes
 import dk.itu.moapd.x9.mnla_nals.ui.theme.X9Theme
+import androidx.compose.material.icons.filled.Map
+
+import dk.itu.moapd.x9.mnla_nals.screens.MapScreen
+import dk.itu.moapd.x9.mnla_nals.screens.ReportDetailScreen
+
 
 class MainActivity : ComponentActivity() {
 
@@ -48,6 +54,7 @@ class MainActivity : ComponentActivity() {
             val settingsViewModel: SettingsViewModel = viewModel()
             val authViewModel: AuthViewModel = viewModel()
             val reportViewModel: ReportViewModel = viewModel()
+
 
             val user by authViewModel.user.collectAsStateWithLifecycle()
             val selectedTheme by settingsViewModel.currentTheme.collectAsStateWithLifecycle()
@@ -103,12 +110,20 @@ fun AppNavigationBar(
                         selectedNavItem = 1
                         reportViewModel.setReportToEdit(null)
                     },
-                    icon = { Icon(Icons.Default.List, contentDescription = "Reports") },
+                    icon = { Icon(Icons.AutoMirrored.Filled.List, contentDescription = "Reports") },
                     label = { Text(stringResource(id = R.string.nav_report)) }
                 )
                 NavigationBarItem(
                     selected = selectedNavItem == 2,
                     onClick = { selectedNavItem = 2 },
+                    icon = { Icon(Icons.Default.Map, contentDescription = "Map") },
+                    label = { Text(stringResource(id = R.string.Map)) }
+                )
+
+
+                NavigationBarItem(
+                    selected = selectedNavItem == 3,
+                    onClick = { selectedNavItem = 3 },
                     icon = { Icon(Icons.Default.Settings, contentDescription = "Settings") },
                     label = { Text(stringResource(id = R.string.nav_settings)) }
                 )
@@ -137,6 +152,14 @@ fun AppNavigationBar(
 
             }
             2 -> {
+                MapScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    navigate = { selectedNavItem = 0 },
+                    snackbarHostState = snackbarHostState,
+                )
+
+            }
+            3 -> {
                 SettingsScreen(
                     Modifier.padding(innerPadding),
                 )

@@ -54,4 +54,11 @@
     <string name="modify_report_submit">Submit change</string>
     <string name="home_report_type">Type</string>
     <string name="home_report_severity">Severity</string>
+    <string name="Map">Map</string>
+    <string name="itu_title">Itu\n</string>
+    <string name="permission_message">We need location access to use this feature. Please grant permission to continue.</string>
+    <string name="permission_title">Location permission required</string>
+    <string name="Grant_perm">Grant permission</string>
+    <string name="permission_leave">Go Back</string>
+    <string name="Open_settings">Open settings</string>
 </resources>
