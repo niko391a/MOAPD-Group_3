@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -59,16 +60,19 @@ fun MapScreen(
      */
     // update to persons position and show it on the map
     @SuppressLint("MissingPermission")
-    fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
-        .addOnSuccessListener { location ->
-            if (location != null) {
-                val userLocation = LatLng(location.latitude, location.longitude)
-                // Animate camera to the new position
-                cameraPositionState.move(
-                    com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom(userLocation, 15f)
-                )
-            }
+    LaunchedEffect(hasPermission) {
+        if (hasPermission) {
+            fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+                .addOnSuccessListener { location ->
+                    if (location != null) {
+                        val userLocation = LatLng(location.latitude, location.longitude)
+                        cameraPositionState.move(
+                            com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom(userLocation, 15f)
+                        )
+                    }
+                }
         }
+    }
 
     val reports by reportViewModel.reports.collectAsState()
     var selectedReport by remember { mutableStateOf<Report?>(null) }

@@ -108,6 +108,9 @@ dependencies {
     implementation("com.google.accompanist:accompanist-permissions:0.36.0")
     implementation(libs.maps.compose)
 
+    // Image
+    implementation(libs.coil.compose)
+
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation("com.google.firebase:firebase-analytics")
