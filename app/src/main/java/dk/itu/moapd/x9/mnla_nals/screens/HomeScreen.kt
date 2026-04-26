@@ -142,7 +142,8 @@ fun ReportItem(
                     Text(text = stringResource(id = R.string.home_report_severity) + ": ")
                     SeverityPill(severity = report.severity)
                 }
-                Text(text = report.description, style = MaterialTheme.typography.bodyMedium)
+                // User can view report description in report details view, so for better UX this has been commented out
+//                Text(text = report.description, style = MaterialTheme.typography.bodyMedium)
             }
         }
         if (report.uid == user?.uid) {
