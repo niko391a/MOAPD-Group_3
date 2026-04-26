@@ -246,7 +246,7 @@ fun CreateReportScreen(
                                 reportViewModel.modifyReport(report)
                                 snackViewModel.sendSnackbarMessage(reportModifySuccess)
                             } else {
-                                reportViewModel.addReport(report)
+                                reportViewModel.addReportWithImage(report, selectedImageUri)
                                 snackViewModel.sendSnackbarMessage(reportAddSuccess)
                             }
 
