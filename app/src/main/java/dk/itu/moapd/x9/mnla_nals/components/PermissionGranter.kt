@@ -1,5 +1,6 @@
 package dk.itu.moapd.x9.mnla_nals.components
 
+import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -12,12 +13,13 @@ import dk.itu.moapd.x9.mnla_nals.ViewModels.PermissionViewModel
 fun PermissionGranter(
     permissionViewModel: PermissionViewModel,
 ) {
-    val multiplePermissionsState = rememberMultiplePermissionsState(
-        listOf(
-            android.Manifest.permission.ACCESS_COARSE_LOCATION,
-            android.Manifest.permission.ACCESS_FINE_LOCATION,
-        )
-    )
+    val permissions = buildList {
+        add(android.Manifest.permission.ACCESS_COARSE_LOCATION)
+        add(android.Manifest.permission.ACCESS_FINE_LOCATION)
+    }
+
+    val multiplePermissionsState = rememberMultiplePermissionsState(permissions)
+
     if (!permissionViewModel.requestPermission.collectAsState().value) {
         LaunchedEffect(Unit) {
             multiplePermissionsState.launchMultiplePermissionRequest()
