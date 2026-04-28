@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 
 
@@ -20,18 +21,21 @@ class ReportViewModel : ViewModel() {
     private val storage = StorageRepository()
     private val _reportToEdit = MutableStateFlow<Report?>(null)
     val reportToEdit: StateFlow<Report?> = _reportToEdit.asStateFlow()
+    private val _localeTag = MutableStateFlow("en")
 
-    val reports: StateFlow<List<Report>> = db.getReportsFlow("en")
-        .catch { e -> Log.e("ReportViewModel", "Reports flow error: ${e.message}") }
+    val reports: StateFlow<List<Report>> = _localeTag
+        .flatMapLatest { locale ->
+            db.getReportsFlow(locale)
+                .catch { e -> Log.e("ReportViewModel", "Reports flow error: ${e.message}") }
+        }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = emptyList()
         )
 
-
-    fun getReports(localeTag: String) : StateFlow<List<Report>> {
-        return reports
+    fun setLocale(localeTag: String) {
+        _localeTag.value = localeTag
     }
 
     fun addReport(report: Report) {

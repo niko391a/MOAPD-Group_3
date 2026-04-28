@@ -23,6 +23,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,8 +55,11 @@ fun HomeScreen(
 ) {
     // Use by so we can take advantage of Kotlin's inherent get-/setValue
     val currentLocaleTag by settingsViewModel.currentLocaleTag.collectAsState()
-    val reportsFlow = remember(currentLocaleTag) { reportViewModel.getReports(currentLocaleTag) }
-    val reports by reportsFlow.collectAsState()
+    LaunchedEffect(currentLocaleTag) {
+        reportViewModel.setLocale(currentLocaleTag)
+    }
+
+    val reports by reportViewModel.reports.collectAsState()
     val user by authViewModel.user.collectAsState()
     val sortedReports = reports.sortedByDescending { it.createdAt }
     // track which report the user tapped
