@@ -1,10 +1,12 @@
 package dk.itu.moapd.x9.mnla_nals.ViewModels
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dk.itu.moapd.x9.mnla_nals.data.Report
 import dk.itu.moapd.x9.mnla_nals.firebase.DatabaseRepository
+import dk.itu.moapd.x9.mnla_nals.firebase.StorageRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +16,8 @@ import kotlinx.coroutines.flow.stateIn
 
 
 class ReportViewModel : ViewModel() {
-    val db = DatabaseRepository()
+    private val db = DatabaseRepository()
+    private val storage = StorageRepository()
     private val _reportToEdit = MutableStateFlow<Report?>(null)
     val reportToEdit: StateFlow<Report?> = _reportToEdit.asStateFlow()
 
@@ -34,6 +37,24 @@ class ReportViewModel : ViewModel() {
     fun addReport(report: Report) {
         db.addReport(report)
         Log.d("info", "Added report: $report")
+    }
+
+    fun addReportWithImage(report: Report, imageUri: Uri?) {
+        if (imageUri == null) {
+            // No image selected — save immediately
+            addReport(report)
+            return
+        }
+
+        storage.uploadReportImage(
+            uri = imageUri,
+            onSuccess = { downloadUrl ->
+                addReport(report.copy(imageUrl = downloadUrl))
+            },
+            onFailure = { e ->
+                Log.e("ReportViewModel", "Image upload failed: ${e.message}")
+            }
+        )
     }
 
     fun removeReport(report: Report) {

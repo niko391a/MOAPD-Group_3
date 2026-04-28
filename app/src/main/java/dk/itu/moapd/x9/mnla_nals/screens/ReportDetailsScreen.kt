@@ -23,7 +23,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -31,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.google.firebase.auth.FirebaseUser
 import dk.itu.moapd.x9.mnla_nals.R
 import dk.itu.moapd.x9.mnla_nals.ViewModels.AuthViewModel
@@ -50,7 +53,6 @@ fun ReportDetailScreen(
 ) {
     val scrollState = rememberScrollState()
 
-    // THis is just a Template shouldt be actually used.
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -59,7 +61,6 @@ fun ReportDetailScreen(
             .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // 1. Top Bar / Back Button
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -78,75 +79,12 @@ fun ReportDetailScreen(
             )
         }
 
-        // 2. Main Title
-        Text(
-            text = selectedReport.title,
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.ExtraBold,
-            modifier = Modifier.padding(horizontal = 8.dp)
-        )
+        ReportData(selectedReport)
 
-        // 3. Metadata Card (Date, Type, Severity Info)
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-            )
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                // when was it uploaded?
-                val timeSinceUploaded = DateUtils.getRelativeTimeSpanString(
-                    selectedReport.createdAt,
-                    System.currentTimeMillis(),
-                    DateUtils.MINUTE_IN_MILLIS
-                ).toString()
-                // row of date and time
-                IconTextRow(icon = Icons.Default.DateRange, text = "Reported: $timeSinceUploaded")
-
-                // Type Row
-                IconTextRow(icon = Icons.Default.Info, text = "Type: ${selectedReport.type}")
-
-                // Severity Row
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Default.Warning,
-                        contentDescription = "Severity",
-                        modifier = Modifier.size(20.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text(
-                        text = "Severity: ",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    SeverityPill(severity = selectedReport.severity)
-                }
-            }
-        }
-
-        // The description
-        Column(modifier = Modifier.padding(horizontal = 8.dp)) {
-            Text(
-                text = "Description",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.primary
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = selectedReport.description,
-                style = MaterialTheme.typography.bodyLarge
-            )
-        }
-
-        Spacer(modifier = Modifier.height(32.dp))
+        ImageData(imageUrl = selectedReport.imageUrl)
     }
 }
-@Composable // for having icon on the ledt with a title or text beside it
+@Composable // for having icon on the left with a title or text beside it
 private fun IconTextRow(icon: ImageVector, text: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Icon(
@@ -161,6 +99,7 @@ private fun IconTextRow(icon: ImageVector, text: String) {
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
+
     }
 }
 
@@ -170,11 +109,82 @@ fun MapData() {
 }
 
 @Composable
-fun ImageData() {
-
+private fun ImageData(imageUrl: String) {
+    if (imageUrl.isNotEmpty()) {
+        AsyncImage(
+            model = imageUrl,
+            contentDescription = "Report image",
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(220.dp)
+                .clip(MaterialTheme.shapes.medium),
+            contentScale = ContentScale.Crop
+        )
+    }
 }
 
 @Composable
-fun ReportData() {
-    
+fun ReportData(selectedReport: Report) {
+    Text(
+        text = selectedReport.title,
+        style = MaterialTheme.typography.headlineMedium,
+        fontWeight = FontWeight.ExtraBold,
+        modifier = Modifier.padding(horizontal = 8.dp)
+    )
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            // when was it uploaded?
+            val timeSinceUploaded = DateUtils.getRelativeTimeSpanString(
+                selectedReport.createdAt,
+                System.currentTimeMillis(),
+                DateUtils.MINUTE_IN_MILLIS
+            ).toString()
+            // row of date and time
+            IconTextRow(icon = Icons.Default.DateRange, text = "Reported: $timeSinceUploaded")
+
+            // Type Row
+            IconTextRow(icon = Icons.Default.Info, text = "Type: ${selectedReport.type}")
+
+            // Severity Row
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Default.Warning,
+                    contentDescription = "Severity",
+                    modifier = Modifier.size(20.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Text(
+                    text = "Severity: ",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                SeverityPill(severity = selectedReport.severity)
+            }
+        }
+    }
+
+    // The description
+    Column(modifier = Modifier.padding(horizontal = 8.dp)) {
+        Text(
+            text = "Description",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.primary
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = selectedReport.description,
+            style = MaterialTheme.typography.bodyLarge
+        )
+    }
 }

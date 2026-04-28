@@ -56,7 +56,7 @@
     <string name="home_report_severity">Alvor</string>>
     <string name="Map">Kort</string>
     <string name="itu_title">Itu\n</string>
-    <string name="permission_message">Vi skal bruge din location for at tilgå denne funktion</string>
+    <string name="permission_message">Vi skal bruge din lokation for at du kan tilgå denne funktion</string>
     <string name="permission_title">"Lokation  tilladelse "</string>
     <string name="Grant_perm">Tillad</string>
     <string name="permission_leave">Gå tilbage</string>

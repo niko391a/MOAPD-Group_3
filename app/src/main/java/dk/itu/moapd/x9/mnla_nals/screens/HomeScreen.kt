@@ -1,6 +1,7 @@
 package dk.itu.moapd.x9.mnla_nals.screens
 
 import android.text.format.DateUtils
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
@@ -39,6 +41,8 @@ import dk.itu.moapd.x9.mnla_nals.ViewModels.ReportViewModel
 import dk.itu.moapd.x9.mnla_nals.ViewModels.SettingsViewModel
 import dk.itu.moapd.x9.mnla_nals.components.SeverityPill
 import dk.itu.moapd.x9.mnla_nals.data.Report
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 @Composable
 fun HomeScreen(
@@ -54,47 +58,57 @@ fun HomeScreen(
     val reports by reportsFlow.collectAsState()
     val user by authViewModel.user.collectAsState()
     val sortedReports = reports.sortedByDescending { it.createdAt }
+    // track which report the user tapped
+    var selectedReport by remember { mutableStateOf<Report?>(null) }
 
-    Box(modifier = modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(0.dp,32.dp,0.dp,0.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text(
-                text = stringResource(id = R.string.home_title),
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold
-            )
-            
-            if (!reports.isEmpty()) {
-                LazyColumn(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(bottom = 16.dp)
-                ) {
-                    items(sortedReports) { report ->
-                        ReportItem(report, reportViewModel, authViewModel, onAddReport)
+    if (selectedReport != null) {
+        ReportDetailScreen(
+            selectedReport = selectedReport!!,
+            navigate = { selectedReport = null }, // back button clears it
+            modifier = modifier,
+        )
+    } else {
+        Box(modifier = modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(0.dp,32.dp,0.dp,0.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = stringResource(id = R.string.home_title),
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold
+                )
+
+                if (!reports.isEmpty()) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        contentPadding = PaddingValues(bottom = 16.dp)
+                    ) {
+                        items(sortedReports) { report ->
+                            ReportItem(report, reportViewModel, authViewModel, onAddReport, onReportClick = { selectedReport = it })
+                        }
                     }
                 }
             }
-        }
-        if(user?.isAnonymous == false) {
-            FloatingActionButton(
-                onClick = onAddReport,
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(16.dp),
+            if(user?.isAnonymous == false) {
+                FloatingActionButton(
+                    onClick = onAddReport,
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(16.dp),
 
-                ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add Report",
-                    tint = Color.White
-                )
+                    ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Add Report",
+                        tint = Color.White
+                    )
+                }
             }
         }
     }
@@ -105,7 +119,8 @@ fun ReportItem(
     report: Report,
     reportViewModel: ReportViewModel,
     authViewModel: AuthViewModel,
-    onAddReport: () -> Unit
+    onAddReport: () -> Unit,
+    onReportClick: (Report) -> Unit
 ) {
     val user by authViewModel.user.collectAsState()
     val timeSinceUploaded = DateUtils.getRelativeTimeSpanString(
@@ -119,8 +134,10 @@ fun ReportItem(
         Card(modifier = Modifier.fillMaxWidth()) {
             Column(
                 // Extra top padding so the title text doesn't sit under the X button
-                modifier = Modifier.padding(start = 16.dp, end = 40.dp, top = 8.dp, bottom = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp) // adds 4dp between every child
+                modifier = Modifier
+                    .padding(start = 16.dp, end = 40.dp, top = 8.dp, bottom = 16.dp)
+                    .clickable { onReportClick(report) },
+                verticalArrangement = Arrangement.spacedBy(4.dp), // adds 4dp between every child
             ) {
               Row(
                 modifier = Modifier.fillMaxWidth()
@@ -142,7 +159,8 @@ fun ReportItem(
                     Text(text = stringResource(id = R.string.home_report_severity) + ": ")
                     SeverityPill(severity = report.severity)
                 }
-                Text(text = report.description, style = MaterialTheme.typography.bodyMedium)
+                // User can view report description in report details view, so for better UX this has been commented out
+//                Text(text = report.description, style = MaterialTheme.typography.bodyMedium)
             }
         }
         if (report.uid == user?.uid) {
