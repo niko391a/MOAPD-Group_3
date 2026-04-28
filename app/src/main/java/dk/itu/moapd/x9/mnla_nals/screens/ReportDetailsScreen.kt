@@ -104,11 +104,6 @@ private fun IconTextRow(icon: ImageVector, text: String) {
 }
 
 @Composable
-fun MapData() {
-
-}
-
-@Composable
 private fun ImageData(imageUrl: String) {
     if (imageUrl.isNotEmpty()) {
         AsyncImage(
