@@ -61,5 +61,6 @@
     <string name="Grant_perm">Tillad</string>
     <string name="permission_leave">Gå tilbage</string>
     <string name="Open_settings">Åben instilinger</string>
+    <string name="create_report_image_select">Indæst valgfrit billede</string>
     >
 </resources>

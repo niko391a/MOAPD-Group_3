@@ -193,7 +193,7 @@ fun CreateReportScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(onClick = { imagePickerLauncher.launch("image/*") }) {
-            Text("Select Image")
+            Text(stringResource(id = R.string.create_report_image_select))
         }
 
         selectedImageUri?.let { uri ->
