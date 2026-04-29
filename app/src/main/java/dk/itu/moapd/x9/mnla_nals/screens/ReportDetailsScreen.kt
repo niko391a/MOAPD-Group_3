@@ -4,6 +4,7 @@ import android.R.attr.button
 import android.app.LocaleManager
 import android.os.Build
 import android.os.LocaleList
+import android.telecom.Call
 import android.text.format.DateUtils
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -60,6 +61,12 @@ fun ReportDetailScreen(
 ) {
     val scrollState = rememberScrollState()
     val user by authViewModel.user.collectAsState()
+    val Delete = stringResource(R.string.Delete)
+    val Details = stringResource(R.string.Details)
+    val Back = stringResource(R.string.permission_leave)
+    val Edit = stringResource(R.string.Edit)
+
+
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = modifier
@@ -76,11 +83,11 @@ fun ReportDetailScreen(
                 IconButton(onClick = navigate) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Go Back"
+                        contentDescription = Back
                     )
                 }
                 Text(
-                    text = "Report Details",
+                    text = Details,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(start = 8.dp)
@@ -96,7 +103,7 @@ fun ReportDetailScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Edit,
-                            contentDescription = "Edit report"
+                            contentDescription = Edit
                         )
                     }
                     IconButton(
@@ -107,7 +114,7 @@ fun ReportDetailScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Delete,
-                            contentDescription = "Delete report",
+                            contentDescription = Delete,
                             tint = MaterialTheme.colorScheme.error
                         )
                     }
