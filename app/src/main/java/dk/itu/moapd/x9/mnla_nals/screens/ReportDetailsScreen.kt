@@ -85,32 +85,35 @@ fun ReportDetailScreen(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(start = 8.dp)
                 )
-            }
-            if (selectedReport.uid == user?.uid) {
-                IconButton(
-                    onClick = {
-                        reportViewModel.setReportToEdit(selectedReport)
-                        onAddReport()
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = "Edit report"
-                    )
+                Spacer(modifier = Modifier.weight(1f))
+                if (selectedReport.uid == user?.uid) {
+
+                    IconButton(
+                        onClick = {
+                            reportViewModel.setReportToEdit(selectedReport)
+                            onAddReport()
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Edit report"
+                        )
+                    }
+                    IconButton(
+                        onClick = {
+                            reportViewModel.removeReport(selectedReport)
+                            navigate()
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete report",
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    }
                 }
-                IconButton(
-                    onClick = {
-                        reportViewModel.removeReport(selectedReport)
-                        navigate()
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete report",
-                        tint = MaterialTheme.colorScheme.error
-                    )
-                }
             }
+
 
             ReportData(selectedReport)
 
