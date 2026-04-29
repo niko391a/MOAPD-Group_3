@@ -124,7 +124,6 @@ fun MapScreen(
                         Log.d("MapScreen", "Report: $report")
                     }
                 }
-                // Speed display at bottom right
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomStart)
