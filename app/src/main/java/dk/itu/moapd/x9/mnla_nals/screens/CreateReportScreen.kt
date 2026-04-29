@@ -82,6 +82,8 @@ fun CreateReportScreen(
     var reportDescription by rememberSaveable { mutableStateOf(userReport?.description ?: "") }
     var selectedReportType by rememberSaveable { mutableStateOf(userReport?.type ?: "") }
     var reportSeverity by rememberSaveable { mutableStateOf(userReport?.severity ?: "") }
+    var latitude by rememberSaveable { mutableStateOf(userReport?.latitude?.toString() ?: "") }
+    var longitude by rememberSaveable { mutableStateOf(userReport?.longitude?.toString() ?: "") }
     val context = LocalContext.current
     val fusedLocationClient = remember {
         LocationServices.getFusedLocationProviderClient(context)
@@ -226,6 +228,8 @@ fun CreateReportScreen(
                             && selectedReportType.isNotEmpty()
                             && reportSeverity.isNotEmpty()
                             && currentUser != null
+                            && latitude.isNotEmpty()
+                            && longitude.isNotEmpty()
                         ) {
                             @SuppressLint("MissingPermission")
 

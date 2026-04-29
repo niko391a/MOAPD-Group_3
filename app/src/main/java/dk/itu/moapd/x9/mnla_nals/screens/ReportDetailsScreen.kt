@@ -61,7 +61,6 @@ fun ReportDetailScreen(
 ) {
     val scrollState = rememberScrollState()
     val user by authViewModel.user.collectAsState()
-    val Delete = stringResource(R.string.Delete)
     val Details = stringResource(R.string.Details)
     val Back = stringResource(R.string.permission_leave)
     val Edit = stringResource(R.string.Edit)
@@ -104,18 +103,6 @@ fun ReportDetailScreen(
                         Icon(
                             imageVector = Icons.Default.Edit,
                             contentDescription = Edit
-                        )
-                    }
-                    IconButton(
-                        onClick = {
-                            reportViewModel.removeReport(selectedReport)
-                            navigate()
-                        },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = Delete,
-                            tint = MaterialTheme.colorScheme.error
                         )
                     }
                 }
