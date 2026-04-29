@@ -2,17 +2,26 @@ package dk.itu.moapd.x9.mnla_nals.screens
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -53,6 +62,10 @@ fun MapScreen(
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(LatLng(55.6596, 12.5910), 15f)
     }
+    val reports by reportViewModel.reports.collectAsState()
+    var selectedReport by remember { mutableStateOf<Report?>(null) }
+    var currentSpeed by remember { mutableFloatStateOf(0f) }
+    
     // need to show all user reports with markers
     /*
     here Itu cords are hard code can use this and might need the report id asweel as something to show it
@@ -69,14 +82,12 @@ fun MapScreen(
                         cameraPositionState.move(
                             com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom(userLocation, 15f)
                         )
+                        // Convert speed from m/s to km/h (multiply by 3.6)
+                        currentSpeed = location.speed * 3.6f
                     }
                 }
         }
     }
-
-    val reports by reportViewModel.reports.collectAsState()
-    var selectedReport by remember { mutableStateOf<Report?>(null) }
-
 
     if (hasPermission) {
         if (selectedReport != null) {
@@ -87,27 +98,48 @@ fun MapScreen(
                 modifier = modifier,
             )
         }else {
-            GoogleMap(
-                modifier = modifier.fillMaxSize(),
-                cameraPositionState = cameraPositionState,
-                properties = MapProperties(
-                    mapType = MapType.NORMAL,
-                    isMyLocationEnabled = true,
-                ),
+            Box(
+                modifier = modifier.fillMaxSize()
             ) {
-                reports.forEach { report ->
-                    val reportPosition = LatLng(report.latitude, report.longitude)
-                    Marker(
-                        state = MarkerState(position = reportPosition),
-                        title = report.title,
-                        snippet = report.description,
-                        onClick = {
-                            selectedReport = report
-                            true
-                        }
+                GoogleMap(
+                    modifier = Modifier.fillMaxSize(),
+                    cameraPositionState = cameraPositionState,
+                    properties = MapProperties(
+                        mapType = MapType.NORMAL,
+                        isMyLocationEnabled = true,
+                    ),
+                ) {
+                    reports.forEach { report ->
+                        val reportPosition = LatLng(report.latitude, report.longitude)
+                        Marker(
+                            state = MarkerState(position = reportPosition),
+                            title = report.title,
+                            snippet = report.description,
+                            onClick = {
+                                selectedReport = report
+                                true
+                            }
 
+                        )
+                        Log.d("MapScreen", "Report: $report")
+                    }
+                }
+                // Speed display at bottom right
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(16.dp)
+                        .background(
+                            color = Color.Black.copy(alpha = 0.7f),
+                            shape = MaterialTheme.shapes.medium
+                        )
+                        .padding(12.dp),
+                ) {
+                    Text(
+                        text = String.format("%.1f km/h", currentSpeed),
+                        color = Color.White,
+                        style = MaterialTheme.typography.headlineSmall
                     )
-                    Log.d("MapScreen", "Report: $report")
                 }
             }
         }
