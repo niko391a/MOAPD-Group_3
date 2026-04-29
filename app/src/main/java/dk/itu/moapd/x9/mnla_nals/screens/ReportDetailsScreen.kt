@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
@@ -85,26 +86,38 @@ fun ReportDetailScreen(
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }
+            if (selectedReport.uid == user?.uid) {
+                IconButton(
+                    onClick = {
+                        reportViewModel.setReportToEdit(selectedReport)
+                        onAddReport()
+                    },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Edit report"
+                    )
+                }
+                IconButton(
+                    onClick = {
+                        reportViewModel.removeReport(selectedReport)
+                        navigate()
+                    },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete report",
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                }
+            }
 
             ReportData(selectedReport)
 
             ImageData(imageUrl = selectedReport.imageUrl)
         }
     }
-    if (selectedReport.uid == user?.uid) {
-        IconButton(
-            onClick = {
-                reportViewModel.setReportToEdit(selectedReport)
-                onAddReport()
-            },
-            modifier = Modifier.align(Alignment.BottomEnd) // pins to upper-right of the Box
-        ) {
-            Icon(
-                imageVector = Icons.Default.Edit,
-                contentDescription = "Edit report"
-            )
-        }
-    }
+
 }
 @Composable // for having icon on the left with a title or text beside it
 private fun IconTextRow(icon: ImageVector, text: String) {

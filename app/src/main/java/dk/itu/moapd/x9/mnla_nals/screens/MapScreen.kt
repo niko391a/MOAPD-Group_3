@@ -47,7 +47,8 @@ fun MapScreen(
     navigate: () -> Unit,
     snackbarHostState: SnackbarHostState,
     permissionViewModel: PermissionViewModel = viewModel(),
-    reportViewModel: ReportViewModel = viewModel()
+    reportViewModel: ReportViewModel = viewModel(),
+    onAddReport: () -> Unit = {},
 
     ) {
     val context = LocalContext.current
@@ -96,6 +97,7 @@ fun MapScreen(
                 selectedReport = selectedReport!!,
                 navigate = { selectedReport = null },
                 modifier = modifier,
+                onAddReport = onAddReport,
             )
         }else {
             Box(
