@@ -71,6 +71,23 @@ class ReportViewModel : ViewModel() {
         Log.d("info", "Modified report; $report")
     }
 
+    fun modifyReportWithImage(report: Report, imageUri: Uri?) {
+        if (imageUri == null) {
+            modifyReport(report)
+            return
+        }
+
+        storage.uploadReportImage(
+            uri = imageUri,
+            onSuccess = { downloadUrl ->
+                modifyReport(report.copy(imageUrl = downloadUrl))
+            },
+            onFailure = { e ->
+                Log.e("ReportViewModel", "Image upload failed on edit: ${e.message}")
+            }
+        )
+    }
+
     fun setReportToEdit(report: Report?) {
         _reportToEdit.value = report
     }
