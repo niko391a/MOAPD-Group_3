@@ -81,20 +81,17 @@ fun MapScreen(
             return@DisposableEffect onDispose {}
         }
 
-        // 1. Create a request for high accuracy updates every 1-2 seconds
+        // update speed every second
         val locationRequest = com.google.android.gms.location.LocationRequest.Builder(
             Priority.PRIORITY_HIGH_ACCURACY, 2000L // 2000ms = 2 seconds
         ).setMinUpdateIntervalMillis(1000L).build()
 
-        // 2. Create the callback that receives the updates
         val locationCallback = object : com.google.android.gms.location.LocationCallback() {
             override fun onLocationResult(result: com.google.android.gms.location.LocationResult) {
                 result.lastLocation?.let { location ->
                     // Update speed (convert m/s to km/h, default to 0 if unavailable)
                     currentSpeed = if (location.hasSpeed()) location.speed * 3.6f else 0f
-
-                    // Only move the camera the very first time we get a location lock.
-                    // If we move it every second, it gets jittery and the user can't pan the map!
+                    
                     if (!hasMovedCameraOnce) {
                         val userLocation = LatLng(location.latitude, location.longitude)
                         cameraPositionState.move(
