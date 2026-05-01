@@ -8,6 +8,7 @@ import dk.itu.moapd.x9.mnla_nals.ui.theme.AppTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.util.Locale
 
 class SettingsViewModel(application: Application) : AndroidViewModel(application) {
     private val _currentTheme = MutableStateFlow(AppTheme.STANDARD)
@@ -18,11 +19,13 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     private fun readPersistedLocale(): String {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            return getApplication<Application>()
+            val appLocale = getApplication<Application>()
                 .getSystemService(LocaleManager::class.java)
-                .applicationLocales.get(0)?.language ?: "en"
+                .applicationLocales.get(0)
+            if (appLocale != null) return appLocale.language
         }
-        return "en"
+        // No app-specific locale set — reflect whatever the system locale actually is
+        return Locale.getDefault().language
     }
 
     fun setTheme(theme: AppTheme) {

@@ -90,6 +90,7 @@ fun CreateReportScreen(
     }
 
     var selectedImageUri by rememberSaveable { mutableStateOf<Uri?>(null) }
+    val existingImageUrl = userReport?.imageUrl?.takeIf { it.isNotEmpty() }
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -198,9 +199,10 @@ fun CreateReportScreen(
             Text(stringResource(id = R.string.create_report_image_select))
         }
 
-        selectedImageUri?.let { uri ->
+        val imageToShow: Any? = selectedImageUri ?: existingImageUrl
+        imageToShow?.let { image ->
             AsyncImage( // Coil
-                model = uri,
+                model = image,
                 contentDescription = "Selected image",
                 modifier = Modifier
                     .fillMaxWidth()
@@ -244,12 +246,13 @@ fun CreateReportScreen(
                                 severity = reportSeverity,
                                 latitude = finalLat,
                                 longitude = finalLng,
-                                language = currentLocale
+                                language = currentLocale,
+                                imageUrl = existingImageUrl ?: ""
 
                             )
 
                             if (isEditMode) {
-                                reportViewModel.modifyReport(report)
+                                reportViewModel.modifyReportWithImage(report, selectedImageUri)
                                 snackViewModel.sendSnackbarMessage(reportModifySuccess)
                             } else {
                                 reportViewModel.addReportWithImage(report, selectedImageUri)
