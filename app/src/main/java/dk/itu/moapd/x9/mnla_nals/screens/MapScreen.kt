@@ -128,7 +128,7 @@ fun MapScreen(
                 // crash detection
                 // Use different thresholds depending on sensor type.
                 val impactThreshold =
-                    if (event.sensor.type == Sensor.TYPE_LINEAR_ACCELERATION) 30f else 40f
+                    if (event.sensor.type == Sensor.TYPE_LINEAR_ACCELERATION) 30f else 40f // incase you want to test whip you phone around hard and abrudtly stop
 
                 val now = System.currentTimeMillis()
                 val cooldownMs = 3_600_000L // 1 Hour cooldown
