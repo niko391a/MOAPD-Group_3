@@ -228,10 +228,12 @@ fun CreateReportScreen(
                             && selectedReportType.isNotEmpty()
                             && reportSeverity.isNotEmpty()
                             && currentUser != null
-                            && latitude.isNotEmpty()
-                            && longitude.isNotEmpty()
+
                         ) {
                             @SuppressLint("MissingPermission")
+                            val finalLat = if (isEditMode) userReport?.latitude ?: 0.0 else location?.latitude ?: 0.0
+                            val finalLng = if (isEditMode) userReport?.longitude ?: 0.0 else location?.longitude ?: 0.0
+
 
                             val report = Report(
                                 id = userReport?.id ?: "",
@@ -240,8 +242,8 @@ fun CreateReportScreen(
                                 description = reportDescription,
                                 type = selectedReportType,
                                 severity = reportSeverity,
-                                latitude = location?.latitude ?: 0.0,
-                                longitude = location?.longitude ?: 0.0,
+                                latitude = finalLat,
+                                longitude = finalLng,
                                 language = currentLocale
 
                             )

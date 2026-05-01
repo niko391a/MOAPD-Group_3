@@ -10,6 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -73,20 +74,52 @@ fun MapScreen(
     Maybe geofencing
      */
     // update to persons position and show it on the map
-    @SuppressLint("MissingPermission")
-    LaunchedEffect(hasPermission) {
-        if (hasPermission) {
-            fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
-                .addOnSuccessListener { location ->
-                    if (location != null) {
+    var hasMovedCameraOnce by remember { mutableStateOf(false) }
+
+    DisposableEffect(hasPermission) {
+        if (!hasPermission) {
+            return@DisposableEffect onDispose {}
+        }
+
+        // 1. Create a request for high accuracy updates every 1-2 seconds
+        val locationRequest = com.google.android.gms.location.LocationRequest.Builder(
+            Priority.PRIORITY_HIGH_ACCURACY, 2000L // 2000ms = 2 seconds
+        ).setMinUpdateIntervalMillis(1000L).build()
+
+        // 2. Create the callback that receives the updates
+        val locationCallback = object : com.google.android.gms.location.LocationCallback() {
+            override fun onLocationResult(result: com.google.android.gms.location.LocationResult) {
+                result.lastLocation?.let { location ->
+                    // Update speed (convert m/s to km/h, default to 0 if unavailable)
+                    currentSpeed = if (location.hasSpeed()) location.speed * 3.6f else 0f
+
+                    // Only move the camera the very first time we get a location lock.
+                    // If we move it every second, it gets jittery and the user can't pan the map!
+                    if (!hasMovedCameraOnce) {
                         val userLocation = LatLng(location.latitude, location.longitude)
                         cameraPositionState.move(
                             com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom(userLocation, 15f)
                         )
-                        // Convert speed from m/s to km/h (multiply by 3.6)
-                        currentSpeed = location.speed * 3.6f
+                        hasMovedCameraOnce = true
                     }
                 }
+            }
+        }
+
+        //request location updates
+        @SuppressLint("MissingPermission")
+        fun startUpdates() {
+            fusedLocationClient.requestLocationUpdates(
+                locationRequest,
+                locationCallback,
+                android.os.Looper.getMainLooper()
+            )
+        }
+        startUpdates()
+
+        // dispose to save battery
+        onDispose {
+            fusedLocationClient.removeLocationUpdates(locationCallback)
         }
     }
 
