@@ -51,6 +51,8 @@ import dk.itu.moapd.x9.mnla_nals.ViewModels.ReportViewModel
 import dk.itu.moapd.x9.mnla_nals.components.PermissionGranter
 import dk.itu.moapd.x9.mnla_nals.data.Report
 import kotlinx.coroutines.launch
+import kotlin.getValue
+import kotlin.setValue
 
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -88,17 +90,13 @@ fun MapScreen(
     val sensorManager = remember {
         context.getSystemService(android.content.Context.SENSOR_SERVICE) as SensorManager
     }
-    // Time of the impact
-    var lastImpactTimeMs by remember { mutableLongStateOf(0L) }
-    var lastReportTimeMs by remember { mutableLongStateOf(0L) }
-
     // latest location
-    var lastLat by remember { mutableStateOf<Double?>(null) }
+    var lastLat by remember { mutableStateOf<Double?>(null) }// for creation of auto report
     var lastLng by remember { mutableStateOf<Double?>(null) }
 
+    var lastReportTimeMs by reportViewModel::lastReportTimeMs
 
-    var speedAtImpact by remember { mutableFloatStateOf(0f) }
-    
+
     // need to show all user reports with markers
     /*
     here Itu cords are hard code can use this and might need the report id asweel as something to show it
@@ -125,27 +123,42 @@ fun MapScreen(
                 val y = event.values[1]
                 val z = event.values[2]
                 val magnitude = sqrt(x * x + y * y + z * z)
-                Log.d("MapScreen", "Sensor changed: magnitude=$magnitude")
 
 
-                // --- Crash candidate detection (impact) ---
+                // crash detection
                 // Use different thresholds depending on sensor type.
                 val impactThreshold =
-                    if (event.sensor.type == Sensor.TYPE_LINEAR_ACCELERATION) 8f else 15f
-                val minSpeedForImpactKmh = 5f
-                val impactDebounceMs = 1_000L
+                    if (event.sensor.type == Sensor.TYPE_LINEAR_ACCELERATION) 30f else 40f
 
                 val now = System.currentTimeMillis()
-                val canRegisterNewImpact = (now - lastImpactTimeMs) > impactDebounceMs
+                val cooldownMs = 3_600_000L // 1 Hour cooldown
 
-                // Only consider an impact if the user was moving (avoids phone drops while standing still).
-                if (canRegisterNewImpact && currentSpeed >= minSpeedForImpactKmh && magnitude >= impactThreshold) {
-                    lastImpactTimeMs = now
-                    speedAtImpact = currentSpeed
-                    Log.d(
-                        "MapScreen",
-                        "Potential crash detected! sensor=${event.sensor.type} magnitude=$magnitude speedAtImpact=$speedAtImpact km/h"
-                    )
+                 val cooldownOver = (now - lastReportTimeMs >= cooldownMs) // same goes for her if the there is 1 hour between now - lastreporttime in ms
+
+                // Triggers the creation of a report if the outside of cooldown window and debounce
+                if (cooldownOver && magnitude >= impactThreshold) {
+                    Log.d("MapScreen", "Sensor collision detected! magnitude=$magnitude")
+                    lastReportTimeMs = now
+                    val lat = lastLat
+                    val lng = lastLng
+                    if (lat != null && lng != null) {
+                        val report = Report(
+                            uid = latestUserUid.value,
+                            title = "Possible crash detected",
+                            description = "Auto-generated report (sensor impact). Please verify.",
+                            type = "Accident",
+                            severity = "High",
+                            latitude = lat,
+                            longitude = lng,
+                            language = "en"
+                        )
+                        reportViewModel.addReport(report)
+                        Log.d("MapScreen", "Auto-generated report added: $report")
+
+                        scope.launch {
+                            snackbarHostState.showSnackbar("Auto crash report created")
+                        }
+                    }
                 }
             }
 
@@ -169,46 +182,6 @@ fun MapScreen(
                     lastLng = location.longitude
                     // Update speed (convert m/s to km/h, default to 0 if unavailable)
                     currentSpeed = if (location.hasSpeed()) location.speed * 3.6f else 0f // 3.6 floating point to convert speed to km /h
-                    val now = System.currentTimeMillis()
-
-                    // creates the report after 5 seconds
-                    val confirmationWindowMs = 5_000L // 5000 ms is 5 seconds
-                    val cooldownMs = 50_000L // cooldown between reports to make it not instantly trigger again 50 seconds
-
-
-                    val hadRecentImpact = (lastImpactTimeMs != 0L) && (now - lastImpactTimeMs <= confirmationWindowMs)
-                    val cooldownOver = (now - lastReportTimeMs >= cooldownMs)
-
-
-                    if (hadRecentImpact && cooldownOver && currentSpeed <= 1.0f && speedAtImpact >= 5.0f) {
-                        val lat = lastLat
-                        val lng = lastLng
-                        if (lat != null && lng != null) {
-                            Log.d("MapScreen", "Creating crash report")
-                            val report = Report(
-                                uid = latestUserUid.value,
-                                title = "Possible crash detected",
-                                description = "Auto-generated report (impact + abrupt stop). Please verify.",
-                                type = "Accident",
-                                severity = "High",
-                                latitude = lat,
-                                longitude = lng,
-                                language = "en"
-                            )
-                            reportViewModel.addReport(report)
-                            lastReportTimeMs = now
-
-                            scope.launch {
-                                snackbarHostState.showSnackbar("Auto crash report created")
-                            }
-                        }
-
-                        // reset impact so it doesn't re-trigger repeatedly in the window
-                        lastImpactTimeMs = 0L
-                    }
-                    
-                    
-
                     if (!hasMovedCameraOnce) {
                         val userLocation = LatLng(location.latitude, location.longitude)
                         cameraPositionState.move(
