@@ -156,6 +156,7 @@ fun AppNavigationBar(
                     modifier = Modifier.padding(innerPadding),
                     navigate = { selectedNavItem = 0 },
                     snackbarHostState = snackbarHostState,
+                    onAddReport = { selectedNavItem = 1 }
                 )
 
             }

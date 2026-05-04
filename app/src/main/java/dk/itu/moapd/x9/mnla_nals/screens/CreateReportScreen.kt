@@ -82,6 +82,8 @@ fun CreateReportScreen(
     var reportDescription by rememberSaveable { mutableStateOf(userReport?.description ?: "") }
     var selectedReportType by rememberSaveable { mutableStateOf(userReport?.type ?: "") }
     var reportSeverity by rememberSaveable { mutableStateOf(userReport?.severity ?: "") }
+    var latitude by rememberSaveable { mutableStateOf(userReport?.latitude?.toString() ?: "") }
+    var longitude by rememberSaveable { mutableStateOf(userReport?.longitude?.toString() ?: "") }
     val context = LocalContext.current
     val fusedLocationClient = remember {
         LocationServices.getFusedLocationProviderClient(context)
@@ -228,8 +230,12 @@ fun CreateReportScreen(
                             && selectedReportType.isNotEmpty()
                             && reportSeverity.isNotEmpty()
                             && currentUser != null
+
                         ) {
                             @SuppressLint("MissingPermission")
+                            val finalLat = if (isEditMode) userReport?.latitude ?: 0.0 else location?.latitude ?: 0.0
+                            val finalLng = if (isEditMode) userReport?.longitude ?: 0.0 else location?.longitude ?: 0.0
+
 
                             val report = Report(
                                 id = userReport?.id ?: "",
@@ -238,10 +244,11 @@ fun CreateReportScreen(
                                 description = reportDescription,
                                 type = selectedReportType,
                                 severity = reportSeverity,
-                                latitude = location?.latitude ?: 0.0,
-                                longitude = location?.longitude ?: 0.0,
+                                latitude = finalLat,
+                                longitude = finalLng,
                                 language = currentLocale,
                                 imageUrl = existingImageUrl ?: ""
+
                             )
 
                             if (isEditMode) {

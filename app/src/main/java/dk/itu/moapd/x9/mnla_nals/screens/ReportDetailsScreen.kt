@@ -4,6 +4,7 @@ import android.R.attr.button
 import android.app.LocaleManager
 import android.os.Build
 import android.os.LocaleList
+import android.telecom.Call
 import android.text.format.DateUtils
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -15,11 +16,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +41,7 @@ import coil.compose.AsyncImage
 import com.google.firebase.auth.FirebaseUser
 import dk.itu.moapd.x9.mnla_nals.R
 import dk.itu.moapd.x9.mnla_nals.ViewModels.AuthViewModel
+import dk.itu.moapd.x9.mnla_nals.ViewModels.ReportViewModel
 import dk.itu.moapd.x9.mnla_nals.ViewModels.SettingsViewModel
 import dk.itu.moapd.x9.mnla_nals.components.AnimatedColorToggleButton
 import dk.itu.moapd.x9.mnla_nals.components.BasicDropdownMenu
@@ -50,39 +55,66 @@ fun ReportDetailScreen(
     selectedReport: Report,
     modifier: Modifier = Modifier,
     navigate: () -> Unit,
+    reportViewModel: ReportViewModel = viewModel(),
+    authViewModel: AuthViewModel = viewModel(),
+    onAddReport: () -> Unit
 ) {
     val scrollState = rememberScrollState()
+    val user by authViewModel.user.collectAsState()
+    val Details = stringResource(R.string.Details)
+    val Back = stringResource(R.string.permission_leave)
+    val Edit = stringResource(R.string.Edit)
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(16.dp)
-            .verticalScroll(scrollState),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(16.dp)
+                .verticalScroll(scrollState),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            IconButton(onClick = navigate) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Go Back"
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = navigate) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = Back
+                    )
+                }
+                Text(
+                    text = Details,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(start = 8.dp)
                 )
+                Spacer(modifier = Modifier.weight(1f))
+                if (selectedReport.uid == user?.uid) {
+
+                    IconButton(
+                        onClick = {
+                            reportViewModel.setReportToEdit(selectedReport)
+                            onAddReport()
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = Edit
+                        )
+                    }
+                }
             }
-            Text(
-                text = "Report Details",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(start = 8.dp)
-            )
+
+
+            ReportData(selectedReport)
+
+            ImageData(imageUrl = selectedReport.imageUrl)
         }
-
-        ReportData(selectedReport)
-
-        ImageData(imageUrl = selectedReport.imageUrl)
     }
+
 }
 @Composable // for having icon on the left with a title or text beside it
 private fun IconTextRow(icon: ImageVector, text: String) {

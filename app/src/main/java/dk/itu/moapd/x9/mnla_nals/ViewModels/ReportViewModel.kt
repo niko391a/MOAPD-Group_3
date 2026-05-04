@@ -23,6 +23,8 @@ class ReportViewModel : ViewModel() {
     val reportToEdit: StateFlow<Report?> = _reportToEdit.asStateFlow()
     private val _localeTag = MutableStateFlow("en")
 
+    var lastReportTimeMs: Long = 0L
+
     val reports: StateFlow<List<Report>> = _localeTag
         .flatMapLatest { locale ->
             db.getReportsFlow(locale)

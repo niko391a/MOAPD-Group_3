@@ -70,6 +70,7 @@ fun HomeScreen(
             selectedReport = selectedReport!!,
             navigate = { selectedReport = null }, // back button clears it
             modifier = modifier,
+            onAddReport = onAddReport,
         )
     } else {
         Box(modifier = modifier.fillMaxSize()) {
@@ -167,20 +168,7 @@ fun ReportItem(
 //                Text(text = report.description, style = MaterialTheme.typography.bodyMedium)
             }
         }
-        if (report.uid == user?.uid) {
-            IconButton(
-                onClick = {
-                    reportViewModel.setReportToEdit(report)
-                    onAddReport()
-                },
-                modifier = Modifier.align(Alignment.BottomEnd) // pins to upper-right of the Box
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = "Edit report"
-                )
-            }
-        }
+
     }
 }
 

@@ -62,4 +62,6 @@
     <string name="permission_leave">Go Back</string>
     <string name="Open_settings">Open settings</string>
     <string name="create_report_image_select">Insert optional image</string>
+    <string name="Details">Report Details</string>
+    <string name="Edit">Edit report</string>
 </resources>
